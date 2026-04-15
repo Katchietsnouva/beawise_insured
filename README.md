@@ -94,4 +94,3 @@ A few resources to get you started if this is your first Flutter project:
 This keeps the original Flutter template you liked, but makes it specific to **Insured** and ready for your GitHub repository.
 
 If you want, I can also draft a **full README with badges, screenshots, and contribution guidelines** so it looks very professional on GitHub. Do you want me to do that next?
-# beawise_insured

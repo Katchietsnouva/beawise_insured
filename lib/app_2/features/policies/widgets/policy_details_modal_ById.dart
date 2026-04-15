@@ -6,12 +6,19 @@ import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/data/models/list_policy_single_response.dart';
 import 'package:insured/app_2/features/policies/widgets/pesapal_payment_modal_stk.dart';
+import 'package:insured/app_2/features/policies/widgets/policy_card_cert_modal.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PolicyDetailsModalFull extends ConsumerWidget {
   final SinglePolicyResponse? response;
-  const PolicyDetailsModalFull({super.key, required this.response});
+  final VoidCallback onPaymentConfirmed;
+
+  const PolicyDetailsModalFull({
+    super.key,
+    required this.response,
+    required this.onPaymentConfirmed,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -152,10 +159,10 @@ class PolicyDetailsModalFull extends ConsumerWidget {
               // _buildDetailRow('Transaction', policy?.transaction ?? 'N/A'),
 
               // _buildDetailRow('Currency', policy?.currency ?? 'N/A'),
-              _buildDetailRow(
-                'Receipted',
-                ceilCurrency(policy?.receipted ?? 0),
-              ),
+              // _buildDetailRow(
+              //   'Receipted',
+              //   ceilCurrency(policy?.receipted ?? 0),
+              // ),
               _buildDetailRow(
                 'Sum Insured',
                 ceilCurrency(policy?.sumInsured ?? 0),
@@ -176,12 +183,27 @@ class PolicyDetailsModalFull extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              if (policy?.issueCert == true) ...[
+                const SizedBox(height: 16),
+                CustomAdvancedButton(
+                  label: 'Issue Certificate',
+                  variant: ButtonVariant.payBtn,
+                  icon: const Icon(Icons.verified),
+                  onPressed: () {
+                    IssueCertificateModal.show(context, policy!.id.toString());
+                  },
+                ),
+                const SizedBox(height: 24),
+              ],
               if ((policy?.balance ?? 0) > 0)
                 if ((policy?.balance ?? 0) > 0)
                   CustomAdvancedButton(
                     label: 'Click To Pay',
                     variant: ButtonVariant.payBtn,
                     onPressed: () {
+                      print(
+                        "Pay btn clicked in PolicyDetailsModalFull... x onPaymentConfirmed: $onPaymentConfirmed",
+                      );
                       if (policy != null && (policy.balance ?? 0) > 0) {
                         final paymentData = {
                           // "account": "RKTQDM7W",
@@ -196,42 +218,16 @@ class PolicyDetailsModalFull extends ConsumerWidget {
                           user: authState.user,
                           balance: policy!.balance,
                           installationBalance: policy!.issueCertData!.shortfall,
+                          onPaymentConfirmed: onPaymentConfirmed,
+                        );
+                        print(
+                          "debuggin if this runs after  PesapalPaymentModalStk... x onPaymentConfirmed: $onPaymentConfirmed",
                         );
                       }
                     },
                   ),
               if (pdfLink != null && pdfLink.isNotEmpty) ...[
                 const SizedBox(height: 24),
-                // GestureDetector(
-                //   onTap: () => _openPDF(pdfLink),
-                //   child: Container(
-                //     padding: const EdgeInsets.all(16),
-                //     decoration: BoxDecoration(
-                //       color: Theme.of(
-                //         context,
-                //       ).colorScheme.onSurface.withOpacity(0.08),
-                //       borderRadius: BorderRadius.circular(30),
-                //       border: Border.all(
-                //         color: Theme.of(
-                //           context,
-                //         ).colorScheme.onSurface.withOpacity(0.2),
-                //       ),
-                //     ),
-                //     child: const Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         Icon(Icons.picture_as_pdf, color: Colors.redAccent),
-                //         SizedBox(width: 12),
-                //         CustomText(
-                //           'View / Download Risk Note',
-                //           type: CustomTextType.paragraph,
-                //         ),
-                //       ],
-
-                //       // _buildDetailRow('Risk Note Link', policy?.riskNoteLink ?? 'N/A'),
-                //     ),
-                //   ),
-                // ),
                 CustomAdvancedButton(
                   label: 'View / Download Risk Note',
                   variant: ButtonVariant.secondary,

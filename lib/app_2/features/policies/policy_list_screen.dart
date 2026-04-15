@@ -76,12 +76,61 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
     final notifier = ref.read(policyProvider.notifier);
     final response = await notifier.fetchPolicyById(policyId);
     if (response != null && mounted) {
+      print("debuggin if this runs after payment confirmation... 1");
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (_) => PolicyDetailsModalFull(response: response),
+        // builder: (_) => PolicyDetailsModalFull(response: response),
+        builder: (_) => PolicyDetailsModalFull(
+          response: response,
+          onPaymentConfirmed: () async {
+            print("debuggin if this runs after payment confirmation... 2");
+            // 1. Close all modals
+            // Navigator.pop(context); // closes policy modal
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              print('Yoooooow! no pages are left in the stack');
+            }
+            // // 2. Navigate to Production (if not already there)
+            // //    Assuming the production screen is at '/production'
+            // //    You might need to pop until that route or use GoRouter.
+            // // if (GoRouter.of(context).location != '/production') {
+            // //   context.go('/production');
+            // // }
+            // final currentLocation = GoRouterState.of(context).uri.toString();
+            // if (currentLocation != '/production') {
+            //   context.go('/production');
+            // }
+            context.goNamed('production', extra: policyId);
+
+            // if (!mounted) return;
+            await ref.read(policyProvider.notifier).refreshAllAndReset();
+            // 4. Re-open the policy modal with the same ID
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _openPolicyModal(policyId);
+            });
+          },
+        ),
       );
+    }
+  }
+
+  void _handlePaymentSuccess(int policyId) async {
+    // 1. Close the policy modal if it's open
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    // 2. Navigate to Production, passing the policy ID
+    context.goNamed('production', extra: policyId);
+    // 3. Refresh the policy list
+    await ref.read(policyProvider.notifier).refreshAllAndReset();
+    // 4. Reopen the policy modal (optional)
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _openPolicyModal(policyId);
+      });
     }
   }
 
@@ -692,6 +741,7 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
                   onTap: widget.onCardTap != null
                       ? () => widget.onCardTap!(entry)
                       : null,
+                  onPaymentConfirmed: _handlePaymentSuccess,
                 ),
               ),
             );
@@ -731,6 +781,7 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
                 onTap: widget.onCardTap != null
                     ? () => widget.onCardTap!(entry)
                     : null,
+                onPaymentConfirmed: _handlePaymentSuccess,
               ),
             );
           },

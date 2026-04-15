@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
@@ -22,6 +23,7 @@ class PolicyCard extends StatefulWidget {
   final PolicyNotifier notifier;
   final VoidCallback? onTap;
   final ClientViewMode viewMode;
+  final void Function(int policyId) onPaymentConfirmed;
 
   const PolicyCard({
     super.key,
@@ -34,6 +36,7 @@ class PolicyCard extends StatefulWidget {
     required this.notifier,
     this.onTap,
     required this.viewMode,
+    required this.onPaymentConfirmed,
   });
 
   @override
@@ -42,9 +45,15 @@ class PolicyCard extends StatefulWidget {
 
 class _PolicyCardState extends State<PolicyCard> {
   bool _isExpanded = false;
-  static Widget fullDetailsModal(SinglePolicyResponse? response) {
-    return PolicyDetailsModalFull(response: response);
-  }
+  // static Widget fullDetailsModal(SinglePolicyResponse? response) {
+  //   // return PolicyDetailsModalFull(response: response);
+  //   return PolicyDetailsModalFull(
+  //     response: response,
+  //     onPaymentConfirmed: widget.onPaymentConfirmed != null
+  //         ? () => widget.onPaymentConfirmed!(policy.id)
+  //         : null,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +265,7 @@ class _PolicyCardState extends State<PolicyCard> {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (context) => FutureBuilder<SinglePolicyResponse?>(
+              builder: (modalContext) => FutureBuilder<SinglePolicyResponse?>(
                 future: widget.notifier.fetchPolicyById(policyId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -280,7 +289,23 @@ class _PolicyCardState extends State<PolicyCard> {
                       ),
                     );
                   }
-                  return PolicyDetailsModalFull(response: snapshot.data);
+                  return PolicyDetailsModalFull(
+                    response: snapshot.data,
+                    // onPaymentConfirmed: () async {
+                    // print( "debuggin if this runs after payment confirmation... 2 (from card)", );
+                    //   if (Navigator.canPop(modalContext)) {
+                    //     Navigator.pop(modalContext);
+                    //   }
+                    //   context.goNamed('production', extra: policyId);
+                    //   await widget.notifier.refreshAllAndReset();
+                    // },
+                    onPaymentConfirmed: () {
+                      widget.onPaymentConfirmed?.call(policyId);
+                      print(
+                        "debuggin if this runs after payment confirmation... 2 (from card)",
+                      );
+                    },
+                  );
                 },
               ),
             );
@@ -309,6 +334,8 @@ class _PolicyCardState extends State<PolicyCard> {
 
                   // '${ceilCurrency(policy.issueCertData?.shortfall ?? 0)}',
                   installationBalance: policy.issueCertData?.shortfall ?? 0,
+                  onPaymentConfirmed: () =>
+                      widget.onPaymentConfirmed?.call(policy.id),
                 );
               }
             },

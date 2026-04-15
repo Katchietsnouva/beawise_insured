@@ -7,6 +7,7 @@ import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
+import 'package:insured/app_2/features/policies/widgets/pesapal_payment_confirmation_modal.dart';
 
 class PesapalPaymentModalStk {
   static void show(
@@ -16,18 +17,24 @@ class PesapalPaymentModalStk {
     required dynamic user,
     required double balance,
     required double installationBalance,
+    VoidCallback? onPaymentConfirmed,
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return _StkPaymentWidget(
-          paymentData: paymentData,
-          token: token,
-          user: user,
-          balance: balance,
-          installationBalance: installationBalance,
+        return FractionallySizedBox(
+          alignment: Alignment.bottomCenter,
+          heightFactor: 0.90,
+          child: _StkPaymentWidget(
+            paymentData: paymentData,
+            token: token,
+            user: user,
+            balance: balance,
+            installationBalance: installationBalance,
+            onPaymentConfirmed: onPaymentConfirmed,
+          ),
         );
       },
     );
@@ -40,6 +47,7 @@ class _StkPaymentWidget extends StatefulWidget {
   final dynamic user;
   final double balance;
   final double installationBalance;
+  final VoidCallback? onPaymentConfirmed;
 
   const _StkPaymentWidget({
     required this.paymentData,
@@ -47,6 +55,7 @@ class _StkPaymentWidget extends StatefulWidget {
     required this.user,
     required this.balance,
     required this.installationBalance,
+    this.onPaymentConfirmed,
   });
 
   @override
@@ -95,6 +104,7 @@ class _StkPaymentWidgetState extends State<_StkPaymentWidget> {
       updatedData["amount"] = amountController.text;
       updatedData["phone"] = phoneController.text;
 
+      print("Herer is the updatedData being sent for STK Push: $updatedData");
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {
@@ -106,18 +116,62 @@ class _StkPaymentWidgetState extends State<_StkPaymentWidget> {
         body: jsonEncode(updatedData),
       );
 
-      if (!mounted) return;
-      Navigator.pop(context);
+      // if (response.statusCode == 200) {
+      //   _showMessage(context, "STK push sent. Check your phone.", true);
+      //   if (!mounted) return;
+      //   Navigator.pop(context);
+      // } else {
+
+      print("STK Push response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode == 200) {
-        _showMessage(context, "STK push sent. Check your phone.", true);
+        if (!mounted) return;
+
+        // First pop the STK modal
+        Navigator.pop(context);
+
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (ctx) => PaymentConfirmationModal(
+            onPaidSuccessfully: () {
+              // Close confirmation modal
+              // Navigator.pop(ctx);
+              // Execute the success callback (will close policy modal, navigate, refresh, reopen)
+              print(
+                "debuggin if this runs on pesapal_payment_modal_stk.dart... y1 : widget.onPaymentConfirmed: ${widget.onPaymentConfirmed}",
+              );
+              widget.onPaymentConfirmed?.call();
+            },
+            onResend: () {
+              // Close confirmation modal and re-show STK modal
+              // Navigator.pop(ctx);
+              // Re-show the STK modal with same parameters
+              print(
+                "debuggin if this runs on pesapal_payment_modal_stk.dart... y2 widget.onPaymentConfirmed: ${widget.onPaymentConfirmed}",
+              );
+              PesapalPaymentModalStk.show(
+                context,
+                widget.paymentData,
+                token: widget.token,
+                user: widget.user,
+                balance: widget.balance,
+                installationBalance: widget.installationBalance,
+                onPaymentConfirmed: widget.onPaymentConfirmed,
+              );
+            },
+          ),
+        );
       } else {
         _showMessage(context, "Payment failed (${response.statusCode})", false);
+        setState(() => loading = false);
       }
     } catch (e) {
-      if (!mounted) return;
-      Navigator.pop(context);
       _showMessage(context, "Error sending payment: $e", false);
+      // if (!mounted) return;
+      // Navigator.pop(context);
+      setState(() => loading = false);
     }
   }
 

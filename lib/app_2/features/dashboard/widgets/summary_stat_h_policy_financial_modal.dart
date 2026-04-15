@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:intl/intl.dart';
 import 'package:insured/app_2/core/widgets/glass_card.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
@@ -24,7 +25,7 @@ class PolicyFinancialModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = NumberFormat.currency(locale: 'en_US', symbol: 'KES ');
+    // final currency = NumberFormat.currency(locale: 'en_US', symbol: 'KES ');
     return Dialog(
       insetPadding: EdgeInsets.all(10),
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -49,22 +50,22 @@ class PolicyFinancialModal extends StatelessWidget {
               const Divider(),
               _buildDetailRow(
                 'Gross Premium',
-                currency.format(grossPremium),
+                ceilCurrency(grossPremium),
                 Icons.attach_money,
               ),
               _buildDetailRow(
                 'Receipted',
-                currency.format(receipted),
+                ceilCurrency(receipted),
                 Icons.check_circle,
               ),
               _buildDetailRow(
                 'Balance',
-                currency.format(balance),
+                ceilCurrency(balance),
                 Icons.account_balance,
               ),
               _buildDetailRow(
                 'Commission',
-                currency.format(commission),
+                ceilCurrency(commission),
                 Icons.trending_up,
               ),
               const SizedBox(height: 24),

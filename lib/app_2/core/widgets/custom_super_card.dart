@@ -255,6 +255,7 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
                               .map((b) => Expanded(child: b))
                               .toList(),
                         ),
+                      SizedBox(height: Responsive.isMobile(context) ? 4 : 10),
                     ],
                   ],
                 ),

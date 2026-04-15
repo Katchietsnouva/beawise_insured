@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/card_animation_layout.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -80,8 +81,8 @@ class _SummaryStatCardHeaderState extends ConsumerState<SummaryStatCardHeader> {
             color: Colors.purple,
             icon: Icons.policy,
             subValues: {
-              'BAL': 'KES ${policies.balance}',
-              'COMM': '${data.commission}',
+              'BAL': ' ${ceilCurrency(policies.balance)}',
+              'COMM': '${ceilCurrency(data.commission)}',
             },
             // subValue: 'BAL: KES ${policies.balance} ',
             // subValue: 'BAL: KES ${policies.balance} | COMM: ${data.commission}',
@@ -120,12 +121,13 @@ class _SummaryStatCardHeaderState extends ConsumerState<SummaryStatCardHeader> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              IconButton(
-                icon: const Icon(Icons.refresh, size: 20),
-                onPressed: () => ref.invalidate(dashboardDataProvider),
-                tooltip: 'Refresh dashboard',
-              ),
-              // const SizedBox(height: 8),
+              if (!Responsive.isMobile(context))
+                IconButton(
+                  icon: const Icon(Icons.refresh, size: 20),
+                  onPressed: () => ref.invalidate(dashboardDataProvider),
+                  tooltip: 'Refresh dashboard',
+                ),
+              if (Responsive.isMobile(context)) const SizedBox(height: 8),
               isMobile
                   ? Column(
                       children: [topRow, const SizedBox(height: 16), bottomRow],
