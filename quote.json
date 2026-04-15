@@ -1,0 +1,104 @@
+{
+    "status": "success",
+    "message": "Policies retrieved successfully",
+    "policy": [
+        {
+            "client": {
+                "name": "Lawyer Dhana",
+                "client_no": "LA001",
+                "mobile": "0726983819",
+                "email": "ANON@GMAIL.COM"
+            },
+            "policy": {
+                "id": 557,
+                "risknote": 100513,
+                "insurer": "NCBA IG",
+                "product": "Motor Insurance",
+                "starting": "2026-01-15",
+                "ending": "2027-01-15",
+                "sub_cover": null,
+                "motor_class": null,
+                "transaction": "Policy",
+                "policy_no": null,
+                "sales_type": "New",
+                "sum_insured": 1200000,"basic":42000,"tax":6256,"amount":48736,"receipted":0,"balance":48736,"com_rate":1,"commission":420,"reg":"KCL 620B"}},{"client":{"name":"Lawyer Dhana","client_no":"LA001","mobile":"0726983819","email":"ANON@GMAIL.COM"},"policy":{"id":555,"risknote":100511,"insurer":"NCBA IG","product":"Motor Insurance","starting":"2026-01-15","ending":"2027-01-15","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":1200000,"basic ":42000,"tax":6256,"amount":48736,"receipted":0,"balance":48736,"com_rate":1,"commission":420,"reg":"KCL 620B"}},{"client":{"name":"Lawyer Dhana","client_no":"LA001","mobile":"0726983819","email":"ANON@GMAIL.COM"},"policy":{"id":554,"risknote":100510,"insurer":"NCBA IG","product":"Motor Insurance","starting":"2026-01-15","ending":"2027-01-15","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":1200000,"basic ":42000,"tax":6256,"amount":48736,"receipted":0,"balance":48736,"com_rate":1,"commission":420,"reg":"KCL 620B"}},{"client":{"name":"Lawyer Dhana","client_no":"LA001","mobile":"0726983819","email":"ANON@GMAIL.COM"},"policy":{"id":588,"risknote":100544,"insurer":"NCBA IG","product":"Motor Insurance","starting":"2026-01-15","ending":"2027-01-15","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":1200000,"basic ":42000,"tax":6256,"amount":48736,"receipted":0,"balance":48736,"com_rate":1,"commission":420,"reg":"KCL 620B"}},{"client":{"name":"Lawyer Dhana","client_no":"LA001","mobile":"0726983819","email":"ANON@GMAIL.COM"},"policy":{"id":553,"risknote":100509,"insurer":"NCBA IG","product":"Motor Insurance","starting":"2026-01-15","ending":"2027-01-15","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":1200000,"basic ":42000,"tax":6256,"amount":48736,"receipted":0,"balance":48736,"com_rate":1,"commission":420,"reg":"KCL 620B"}},{"client":{"name":"Gloria Sifa","client_no":"GL001","mobile":"0789000000","email":"gloria@gmail.com"},"policy":{"id":606,"risknote":100562,"insurer":"APA","product":"Motor Insurance","starting":"2026-03-28","ending":"2026-04-27","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":0,"basic":40000,"tax": 0,
+                "amount": 757,
+                "receipted": 0,
+                "balance": 757,
+                "com_rate": 1,
+                "commission": 400,
+                "reg": "KAA001L"
+            }
+        },
+        {
+            "client": {
+                "name":"Gloria Sifa","client_no":"GL001","mobile":"0789000000","email":"gloria@gmail.com"},"policy":{"id":607,"risknote":100563,"insurer":"APA","product":"Motor Insurance","starting":"2026-03-28","ending":"2026-04-27","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":0,"basic":40000,"tax": 0,
+                "amount": 757,
+                "receipted": 0,
+                "balance": 757,
+                "com_rate": 1,
+                "commission": 400,
+                "reg": "KBB008W"
+            }
+        },
+        {
+            "client": {
+                "name":"Gloria Sifa","client_no":"GL001","mobile":"0789000000","email":"gloria@gmail.com"},"policy":{"id":605,"risknote":100561,"insurer":"APA","product":"Motor Insurance","starting":"2026-03-27","ending":"2026-04-26","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":0,"basic":40000,"tax": 0,
+                "amount": 757,
+                "receipted": 0,
+                "balance": 757,
+                "com_rate": 1,
+                "commission": 400,
+                "reg": "KAA"
+            }
+        },
+        {
+            "client": {
+                "name":"Gloria Sifa","client_no":"GL001","mobile":"0789000000","email":"gloria@gmail.com"},"policy":{"id":602,"risknote":100558,"insurer":"APA","product":"Motor Insurance","starting":"2026-03-25","ending":"2026-04-24","sub_cover":null,"motor_class":null,"transaction":"Policy","policy_no":null,"sales_type":"New","sum_insured":0,"basic":40000,"tax": 0,
+                "amount": 757,
+                "receipted": 0,
+                "balance": 757,
+                "com_rate": 1,
+                "commission": 400,
+                "reg": "KAA009B"
+            }
+        },
+        {
+            "client": {
+                "name": "Jose Jose",
+                "client_no": "JO014",
+                "mobile": "0790070060",
+                "email": "jose21@gmail.com"
+            },
+            "policy": {
+                "id": 598,
+                "risknote": 100554,
+                "insurer": "APA",
+                "product": "Motor Insurance",
+                "starting": "2026-03-23",
+                "ending": "2026-04-22",
+                "sub_cover": null,
+                "motor_class": null,
+                "transaction": "Policy",
+                "policy_no": null,
+                "sales_type": "New",
+                "sum_insured": 0,
+                "basic": 40000,
+                "tax": 0,
+                "amount": 757,
+                "receipted": 0,
+                "balance": 757,
+                "com_rate": 1,
+                "commission": 400,
+                "reg": "kaahhh"
+            }
+        }
+    ],
+    "pagination": {
+        "current_page": 2,
+        "per_page": 10,
+        "total": 35,
+        "last_page": 4,
+        "from": 11,"to":20,"has_more":true,"next_page_url":"\/api\/agent\/policies?page=3&per_page=10&status=0","prev_page_url":"\/api\/agent\/policies?page=1&per_page=10&status=0"
+    }
+}

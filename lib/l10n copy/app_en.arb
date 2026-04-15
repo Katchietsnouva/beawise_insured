@@ -1,0 +1,14 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "New Motor Policy",
+  "policy": "Policy",
+  "premium": "Premium",
+  "claim": "Claim",
+  "addClient": "Add New Client",
+  "welcomeMessage": "Welcome back, {name}",
+  "@welcomeMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "Bima Mpya ya Gari",
+  "policy": "Bima",
+  "premium": "Ada ya Bima",
+  "claim": "Dai",
+  "addClient": "Ongeza Mteja Mpya",
+  "welcomeMessage": "Karibu tena, {name}"
+}

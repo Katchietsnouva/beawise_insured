@@ -1,0 +1,142 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Insured",
+  "newPolicy": "Nouvelle police automobile",
+  "policy": "Police",
+  "premium": "Prime",
+  "claim": "Réclamation",
+  "addClient": "Ajouter un nouveau client",
+
+  "welcomeMessage": "Bon retour, {name}",
+  "@welcomeMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "settings_appearanceTitle": "Apparence",
+  "settings_appearanceSubtitle": "Personnalisez l'apparence de l'application",
+  "settings_themeLabel": "Thème",
+  "settings_textSizeLabel": "Taille du texte",
+
+  "settings_DisplayTitle": "Affichage",
+  "settings_DisplaySubtitle": "Configurer les options d'affichage par défaut",
+  "settings_DefaultViewLabel": "Vue par défaut",
+  "settings_CompactModeTitle": "Mode compact",
+  "settings_CompactModeDescription": "Réduire l'espacement entre les éléments",
+
+  "settings_NotificationsTitle": "Notifications",
+  "settings_NotificationsSubtitle": "Gérer les préférences de notification",
+  "settings_EnableNotificationsTitle": "Activer les notifications",
+  "settings_EnableNotificationsDescription": "Recevoir des notifications dans l'application",
+  "settings_EmailNotificationsTitle": "Notifications par e-mail",
+  "settings_EmailNotificationsDescription": "Recevoir des mises à jour par e-mail",
+  "settings_RenewalRemindersTitle": "Rappels de renouvellement",
+  "settings_RenewalRemindersDescription": "Recevoir des notifications sur les renouvellements à venir",
+
+  "settings_LanguageTitle": "Langue et région",
+  "settings_LanguageSubtitle": "Définissez vos préférences linguistiques",
+  "settings_LanguageLabel": "Langue",
+
+  "settings_PrivacyTitle": "Confidentialité et sécurité",
+  "settings_PrivacySubtitle": "Contrôlez vos paramètres de confidentialité et de sécurité",
+  "settings_TwoFactorTitle": "Authentification à deux facteurs",
+  "settings_TwoFactorDescription": "Ajouter une couche de sécurité supplémentaire",
+  "settings_ActivityLoggingTitle": "Journal d'activité",
+  "settings_ActivityLoggingDescription": "Suivre l'activité du compte",
+  "settings_ShowSensitiveTitle": "Afficher les données sensibles",
+  "settings_ShowSensitiveDescription": "Afficher les numéros d'identité et les données financières",
+  "settings_ChangePassword": "Changer le mot de passe",
+
+  "settings_DataTitle": "Gestion des données",
+  "settings_DataSubtitle": "Exporter, importer et gérer vos données",
+  "settings_ExportSettings": "Exporter les paramètres",
+  "settings_ImportSettings": "Importer les paramètres",
+  "settings_DownloadAllData": "Télécharger toutes les données",
+  "settings_ClearCache": "Vider le cache",
+
+  "settings_AccessibilityTitle": "Accessibilité",
+  "settings_AccessibilitySubtitle": "Améliorer les fonctionnalités d'accessibilité",
+  "settings_HighContrastTitle": "Mode contraste élevé",
+  "settings_HighContrastDescription": "Augmenter le contraste pour une meilleure visibilité",
+  "settings_ReduceMotionTitle": "Réduire les animations",
+  "settings_ReduceMotionDescription": "Minimiser les animations et transitions",
+  "settings_ScreenReaderTitle": "Support du lecteur d'écran",
+  "settings_ScreenReaderDescription": "Compatibilité améliorée avec les lecteurs d'écran",
+
+  "settings_PerformanceTitle": "Performance",
+  "settings_PerformanceSubtitle": "Optimiser les performances de l'application",
+  "settings_AutoSaveTitle": "Sauvegarde automatique",
+  "settings_AutoSaveDescription": "Enregistrer automatiquement les modifications",
+  "settings_LazyLoadingTitle": "Chargement progressif",
+  "settings_LazyLoadingDescription": "Charger le contenu au fur et à mesure du défilement",
+  "settings_OfflineModeTitle": "Mode hors ligne",
+  "settings_OfflineModeDescription": "Travailler sans connexion Internet",
+
+  "settings_AdvancedTitle": "Avancé",
+  "settings_AdvancedSubtitle": "Fonctionnalités avancées et raccourcis",
+  "settings_KeyboardShortcutsTitle": "Raccourcis clavier",
+  "settings_KeyboardShortcutsDescription": "Activer la navigation au clavier",
+  "settings_DeveloperModeTitle": "Mode développeur",
+  "settings_DeveloperModeDescription": "Afficher les options de débogage avancées",
+  "settings_BetaFeaturesTitle": "Fonctionnalités bêta",
+  "settings_BetaFeaturesDescription": "Essayer les fonctionnalités expérimentales",
+  "settings_ViewKeyboardShortcuts": "Voir les raccourcis clavier",
+
+  "settings_DangerTitle": "Zone dangereuse",
+  "settings_DangerSubtitle": "Actions irréversibles",
+  "settings_ResetAllSettings": "Réinitialiser tous les paramètres",
+  "settings_DeleteAllData": "Supprimer toutes les données",
+
+   "sidebar_dashboard": "Tableau de bord",
+  "subtitle_dashboard": "Gérez vos clients et devis",
+  "sidebar_clients": "Clients",
+  "subtitle_clients": "Voir et gérer tous les clients",
+
+  "sidebar_motorQuote": "Devis automobile",
+  "subtitle_motorQuote": "Gérer les devis automobiles",
+  "sidebar_policies": "Polices",
+  "subtitle_policies": "Voir et gérer les polices",
+
+  "sidebar_dmvic": "DMVIC",
+  "subtitle_dmvic": "Opérations liées au DMVIC",
+  "sidebar_dmvicDoubleInsurance": "Double assurance DMVIC",
+  "subtitle_dmvicDoubleInsurance": "Gérer les polices de double assurance DMVIC",
+  "sidebar_dmvicStock": "Stock DMVIC",
+  "subtitle_dmvicStock": "Gérer les polices liées au stock DMVIC",
+
+  "sidebar_statement": "Relevé",
+  "subtitle_statement": "Voir les relevés",
+  "sidebar_renewals": "Renouvellements",
+  "subtitle_renewals": "Suivre les renouvellements de polices",
+
+  "sidebar_certificates": "Certificats",
+  "subtitle_certificates": "Voir les certificats émis",
+
+  "sidebar_production": "Production",
+  "subtitle_production": "Suivre les indicateurs de production",
+  "sidebar_quotes": "Devis",
+  "subtitle_quotes": "Gérer les devis d'assurance",
+
+  "sidebar_settings": "Paramètres",
+  "subtitle_settings": "Préférences de l'application",
+
+  "sidebar_profile": "Mon profil",
+  "subtitle_profile": "Gérer votre compte",
+
+  "sidebar_notifications": "Notifications",
+  "subtitle_notifications": "Voir toutes vos notifications",
+
+  "sidebar_offlineQueueScreen": "Écran de la file hors ligne",
+  "subtitle_offlineQueueScreen": "Afficher toutes vos sauvegardes hors ligne",
+
+
+  "sidebar_logout": "Déconnexion",
+  "sidebar_loading": "Chargement...",
+
+  "sidebar_add_client": "Ajouter un client",
+  "subtitle_add_client": "Saisir les informations du nouveau client",
+
+  "subtitle_default": "Toujours assuré"
+}

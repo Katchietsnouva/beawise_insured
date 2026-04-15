@@ -1,0 +1,9 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "Nouvelle police automobile",
+  "policy": "Police",
+  "premium": "Prime",
+  "claim": "Réclamation",
+  "addClient": "Ajouter un nouveau client",
+  "welcomeMessage": "Bon retour, {name}"
+}

@@ -1,0 +1,14 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "Nuova polizza auto",
+  "policy": "Polizza",
+  "premium": "Premio",
+  "claim": "Sinistro",
+  "addClient": "Aggiungi nuovo cliente",
+  "welcomeMessage": "Bentornato, {name}",
+  "@welcomeMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
+}

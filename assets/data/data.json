@@ -1,0 +1,42 @@
+{
+    "clients": [
+        {
+            "id": "1",
+            "name": "Amani Juma",
+            "email": "amani.juma@example.co.tz",
+            "phone": "+255 700 000 001",
+            "status": "active",
+            "idNumber": "10000001"
+        },
+        {
+            "id": "2",
+            "name": "Neema Hassan",
+            "email": "neema.hassan@example.co.tz",
+            "phone": "+255 700 000 002",
+            "status": "active",
+            "idNumber": "10000002"
+        },
+        {
+            "id": "3",
+            "name": "Baraka Mosi",
+            "email": "baraka.mosi@example.co.tz",
+            "phone": "+255 700 000 003",
+            "status": "pending",
+            "idNumber": "10000003"
+        }
+    ],
+    "quotes": [
+        {
+            "id": "q1",
+            "clientId": "1",
+            "amount": 12500,
+            "status": "accepted"
+        },
+        {
+            "id": "q2",
+            "clientId": "2",
+            "amount": 8700,
+            "status": "pending"
+        }
+    ]
+}

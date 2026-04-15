@@ -1,0 +1,9 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "Neue Kfz-Versicherung",
+  "policy": "Police",
+  "premium": "Prämie",
+  "claim": "Schadenmeldung",
+  "addClient": "Neuen Kunden hinzufügen",
+  "welcomeMessage": "Willkommen zurück, {name}"
+}

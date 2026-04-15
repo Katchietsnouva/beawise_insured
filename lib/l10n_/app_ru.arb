@@ -1,0 +1,9 @@
+{
+  "appTitle": "Insured",
+  "newPolicy": "Новая страховая полис автомобиля",
+  "policy": "Полис",
+  "premium": "Премия",
+  "claim": "Иск",
+  "addClient": "Добавить нового клиента",
+  "welcomeMessage": "С возвращением, {name}"
+}
