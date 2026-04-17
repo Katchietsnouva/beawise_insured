@@ -1192,7 +1192,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     bool isActive = _currentStep >= step;
     Color mint = Theme.of(context).brightness == Brightness.dark
         ? const Color(0xFF00FFB2)
-        : Colors.green[700]!;
+        : Colors.red[700]!;
     return Column(
       children: [
         AnimatedContainer(

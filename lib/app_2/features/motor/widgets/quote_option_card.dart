@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/premium_calculator.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -129,13 +130,13 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(2),
                               decoration: BoxDecoration(
-                                color: Colors.greenAccent,
+                                color: AppColors.favColour,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.green.withOpacity(0.7),
+                                    color: AppColors.favColour.withOpacity(0.7),
                                     blurRadius: 8,
                                   ),
                                 ],
