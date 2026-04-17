@@ -14,7 +14,7 @@ import 'package:insured/app_2/providers/auth_provider.dart';
 abstract class _SidebarTokens {
   // Shared brand
   static const blue = Color(0xFF3B6BFF);
-  static const purple = Color(0xFF8E5CCB);
+  static const purple = Color.fromARGB(255, 123, 58, 33);
   static const indigo = Color(0xFF6C63FF);
 
   // Gradient used for active pills, indicator, logo accent
