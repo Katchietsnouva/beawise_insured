@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_circular_avatar.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -173,13 +174,13 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
                       if (widget.expandable)
                         // Ink(
                         //   decoration: BoxDecoration(
-                        //     color: Colors.green.withOpacity(0.7),
+                        //     color: AppColors.favColour.withOpacity(0.7),
                         //     shape: BoxShape.circle,
                         //   ), child:
                         IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: _toggleExpand,
-                          color: Colors.green,
+                          color: AppColors.favColour,
                           icon: AnimatedRotation(
                             turns: widget.isExpanded ? 0.5 : 0.0,
                             duration: const Duration(milliseconds: 250),
@@ -609,7 +610,9 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
                 type: CustomTextType.caption,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                color: isDarkMode ? Colors.green : Colors.green[700]!,
+                color: isDarkMode
+                    ? AppColors.favColour
+                    : AppColors.favColourDark!,
               ),
             ),
           ),
@@ -622,7 +625,7 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
             type: CustomTextType.caption,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            color: isDarkMode ? Colors.green : Colors.green[700]!,
+            color: isDarkMode ? AppColors.favColour : AppColors.favColourDark!,
           ),
         ),
       ],
@@ -654,7 +657,9 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
                   type: CustomTextType.caption,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  color: isDarkMode ? Colors.green : Colors.green[700]!,
+                  color: isDarkMode
+                      ? AppColors.favColour
+                      : AppColors.favColourDark!,
                 ),
               ),
             ),
@@ -666,7 +671,9 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
               type: CustomTextType.caption,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              color: isDarkMode ? Colors.green : Colors.green[700]!,
+              color: isDarkMode
+                  ? AppColors.favColour
+                  : AppColors.favColourDark!,
             ),
           ),
         ],
