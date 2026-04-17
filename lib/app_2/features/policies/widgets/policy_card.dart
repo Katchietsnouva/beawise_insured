@@ -241,13 +241,12 @@ class _PolicyCardState extends State<PolicyCard> {
       ],
 
       trailingButton:
-          (((Responsive.isMobile(context)) && !isNotIssued) ||
-              ((!Responsive.isMobile(context) &&
-                      (widget.viewMode == ClientViewMode.grid)) &&
-                  // !isNotIssued
-                  canIssueCert!))
-          ? certBtn
-          : null,
+          // (((Responsive.isMobile(context)) && !isNotIssued) ||
+          //     ((!Responsive.isMobile(context) &&
+          //             (widget.viewMode == ClientViewMode.grid)) &&
+          //         // !isNotIssued
+          //         canIssueCert!))
+          canIssueCert ? certBtn : null,
       expandedContent: [
         // _buildDetailRow('Policy Id', policy.id.toString()),
         // _buildDetailRow('Risk Note', policy.risknote.toString()),
