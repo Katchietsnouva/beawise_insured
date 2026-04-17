@@ -137,6 +137,97 @@ class _SidebarState extends ConsumerState<Sidebar>
             children: [
               const SizedBox(height: 60),
 
+              // _isCollapsed
+              //     ? Visibility(
+              //         visible: Responsive.isMobile(context) ? false : true,
+              //         child: IconButton(
+              //           icon: Icon(
+              //             Icons.chevron_right,
+              //             color: Theme.of(context).colorScheme.onSurface,
+              //             size: 40,
+              //           ),
+              //           onPressed: _toggle,
+              //         ),
+              //       )
+              //     : Responsive.isMobile(context)
+              //     // MOBILE
+              //     ? Center(
+              //         child: Image(
+              //           image: AssetImage(
+              //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //           ),
+              //           height: 38,
+              //           fit: BoxFit.contain,
+              //         ),
+              //       )
+              //     // //  DESKTOP
+              //     // : Row(
+              //     //     children: [
+              //     //       Padding(
+              //     //         padding: const EdgeInsets.only(left: 5, right: 2),
+              //     //         child: Image(
+              //     //           image: AssetImage(
+              //     //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //     //           ),
+              //     //           height: 38,
+              //     //           // width: 150,
+              //     //           fit: BoxFit.contain,
+              //     //         ),
+              //     //       ),
+              //     //       const Spacer(),
+              //     //       Visibility(
+              //     //         visible: Responsive.isMobile(context) ? false : true,
+              //     //         child: IconButton(
+              //     //           tooltip: 'Collapse sidebar',
+              //     //           icon: Icon(
+              //     //             Icons.chevron_left,
+              //     //             color: Theme.of(context).colorScheme.onSurface,
+              //     //             size: 40,
+              //     //           ),
+              //     //           onPressed: _toggle,
+              //     //         ),
+              //     //       ),
+              //     //     ],
+              //     //   ),
+              //     //  DESKTOP
+              //     : SizedBox(
+              //         height: 50, // Gives enough room for the icon button
+              //         child: Stack(
+              //           children: [
+              //             // 1. The Image perfectly centered in the available space
+              //             Center(
+              //               child: Image(
+              //                 image: AssetImage(
+              //                   '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //                 ),
+              //                 height: 50,
+              //                 fit: BoxFit.contain,
+              //               ),
+              //             ),
+
+              //             // 2. The button pinned to the right edge
+              //             Positioned(
+              //               right: 4, // Slight padding from the right edge
+              //               top: 0,
+              //               bottom: 0,
+              //               child: Visibility(
+              //                 visible: !Responsive.isMobile(context),
+              //                 child: IconButton(
+              //                   tooltip: 'Collapse sidebar',
+              //                   icon: Icon(
+              //                     Icons.chevron_left,
+              //                     color: Theme.of(
+              //                       context,
+              //                     ).colorScheme.onSurface,
+              //                     size: 40,
+              //                   ),
+              //                   onPressed: _toggle,
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
               _isCollapsed
                   ? Visibility(
                       visible: Responsive.isMobile(context) ? false : true,
@@ -161,72 +252,33 @@ class _SidebarState extends ConsumerState<Sidebar>
                       ),
                     )
                   // //  DESKTOP
-                  // : Row(
-                  //     children: [
-                  //       Padding(
-                  //         padding: const EdgeInsets.only(left: 5, right: 2),
-                  //         child: Image(
-                  //           image: AssetImage(
-                  //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
-                  //           ),
-                  //           height: 38,
-                  //           // width: 150,
-                  //           fit: BoxFit.contain,
-                  //         ),
-                  //       ),
-                  //       const Spacer(),
-                  //       Visibility(
-                  //         visible: Responsive.isMobile(context) ? false : true,
-                  //         child: IconButton(
-                  //           tooltip: 'Collapse sidebar',
-                  //           icon: Icon(
-                  //             Icons.chevron_left,
-                  //             color: Theme.of(context).colorScheme.onSurface,
-                  //             size: 40,
-                  //           ),
-                  //           onPressed: _toggle,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //  DESKTOP
-                  : SizedBox(
-                      height: 50, // Gives enough room for the icon button
-                      child: Stack(
-                        children: [
-                          // 1. The Image perfectly centered in the available space
-                          Center(
-                            child: Image(
-                              image: AssetImage(
-                                '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
-                              ),
-                              height: 50,
-                              fit: BoxFit.contain,
+                  : Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 2),
+                          child: Image(
+                            image: AssetImage(
+                              '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
                             ),
+                            height: 38,
+                            // width: 150,
+                            fit: BoxFit.contain,
                           ),
-
-                          // 2. The button pinned to the right edge
-                          Positioned(
-                            right: 4, // Slight padding from the right edge
-                            top: 0,
-                            bottom: 0,
-                            child: Visibility(
-                              visible: !Responsive.isMobile(context),
-                              child: IconButton(
-                                tooltip: 'Collapse sidebar',
-                                icon: Icon(
-                                  Icons.chevron_left,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
-                                  size: 40,
-                                ),
-                                onPressed: _toggle,
-                              ),
+                        ),
+                        const Spacer(),
+                        Visibility(
+                          visible: Responsive.isMobile(context) ? false : true,
+                          child: IconButton(
+                            tooltip: 'Collapse sidebar',
+                            icon: Icon(
+                              Icons.chevron_left,
+                              color: Theme.of(context).colorScheme.onSurface,
+                              size: 40,
                             ),
+                            onPressed: _toggle,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
 
               const SizedBox(height: 20),
