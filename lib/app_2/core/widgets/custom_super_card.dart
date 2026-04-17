@@ -648,6 +648,7 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
           if (label.trim().isNotEmpty) ...[
             SizedBox(
               width: labelWidth,
+
               child: Opacity(
                 opacity: 0.6,
                 child: CustomText(
