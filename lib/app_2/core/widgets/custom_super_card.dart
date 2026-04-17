@@ -40,6 +40,7 @@ class CustomSuperCard<T> extends StatefulWidget {
 
   final List<List<String>>? subtitleRowsPairList;
   final List<List<String>>? expandedPairs;
+  final List<int>? SubtitleValueIndicesBold;
 
   const CustomSuperCard({
     super.key,
@@ -68,6 +69,7 @@ class CustomSuperCard<T> extends StatefulWidget {
     this.subtitleRowsTrailingList,
     this.subtitleRowsTrailingListPairs,
     this.subtitleRowsPairList,
+    this.SubtitleValueIndicesBold,
   });
 
   @override
@@ -151,14 +153,36 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
                                     widget
                                         .subtitleRowsPairList!
                                         .isNotEmpty) ...[
-                                  // const SizedBox(height: 8),
-                                  // ...widget.titleSubRowsPairList!,
-                                  ...widget.subtitleRowsPairList!.map(
-                                    (pair) => _buildsubtitleRowsPairList(
-                                      pair[0],
-                                      pair[1],
-                                    ),
-                                  ),
+                                  // // const SizedBox(height: 8),
+                                  // // ...widget.titleSubRowsPairList!,
+                                  // ...widget.subtitleRowsPairList!
+                                  //     .asMap()
+                                  //     .entries
+                                  //     .map(
+                                  //       (pair) => _buildsubtitleRowsPairList(
+                                  //         pair.value[0],
+                                  //         pair.value[1],
+                                  //         index: pair.key,
+                                  //       ),
+                                  //     ),
+                                  ...widget.subtitleRowsPairList!
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                        final index = entry.key;
+                                        final pair = entry.value;
+                                        final isBold =
+                                            widget
+                                                .SubtitleValueIndicesBold?.contains(
+                                              index,
+                                            ) ??
+                                            false;
+                                        return _buildsubtitleRowsPairList(
+                                          pair[0],
+                                          pair[1],
+                                          isBold: isBold,
+                                        );
+                                      }),
                                 ],
                               ],
                             ),
@@ -550,7 +574,12 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
     );
   }
 
-  Widget _buildsubtitleRowsPairList(String label, String value) {
+  Widget _buildsubtitleRowsPairList(
+    String label,
+    String value, {
+    // required int index,
+    bool isBold = false,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -575,6 +604,8 @@ class _CustomSuperCardState<T> extends State<CustomSuperCard<T>> {
               type: CustomTextType.caption,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              // fontWeight: FontWeight.bold,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),

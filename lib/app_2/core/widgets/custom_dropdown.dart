@@ -471,7 +471,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     return InputDecoration(
       filled: true,
       fillColor: surface.withOpacity(0.7),
-      prefixIcon: Icon(widget.icon, color: onSurface.withOpacity(0.7)),
+      // prefixIcon: Icon(widget.icon, color: onSurface.withOpacity(0.7)),
       hintText: widget.hintLabel,
       hintStyle: CustomTextStyles.style(
         context,

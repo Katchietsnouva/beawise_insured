@@ -62,9 +62,12 @@ class CustomSuperTabBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: effectiveColors.containerBg,
+        color: effectiveColors.containerBg.withOpacity(0.05),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: effectiveColors.border),
+        border: Border.all(
+          color: effectiveColors.border.withOpacity(0.01),
+          // color: Colors.red.withOpacity(0.3),
+        ),
       ),
       child: Row(
         children: List.generate(tabs.length, (index) {

@@ -260,18 +260,12 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                                   },
                           ),
                           const SizedBox(height: 16),
+
                           CustomAdvancedButton(
-                            width: 170,
-                            height: 40,
-                            label: "Back to Login",
-                            variant: ButtonVariant.secondary,
-                            onPressed: () {
-                              context.pop();
-                            },
-                            // child: const CustomText(
-                            //   'Back to Login',
-                            //   type: CustomTextType.paragraph,
-                            // ),
+                            variant: ButtonVariant.text,
+                            prefixText: "Back to Login ",
+                            label: " ",
+                            onPressed: () => context.pop(),
                           ),
                         ],
                       ),

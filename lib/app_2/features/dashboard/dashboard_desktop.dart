@@ -307,10 +307,14 @@ class _DashboardDesktopState extends ConsumerState<DashboardDesktop> {
   Widget _buildTabSwitcher(BuildContext context) {
     return CustomSuperTabBar(
       tabs: const [
-        SuperTabItem(label: 'Renewals Due', icon: Icons.history, index: 0),
+        SuperTabItem(
+          label: 'Renewals Due',
+          // icon: Icons.history,
+          index: 0,
+        ),
         SuperTabItem(
           label: 'Certificate extensions',
-          icon: Icons.people_outline,
+          // icon: Icons.people_outline,
           index: 2,
         ),
         // SuperTabItem( label: 'Recent Clients', icon: Icons.description, index: 1,),

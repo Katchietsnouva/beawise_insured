@@ -91,7 +91,7 @@ class CustomTextStyles {
 
       case CustomTextType.caption:
         defaultFontSize = 13;
-        defaultFontWeight = FontWeight.w200;
+        defaultFontWeight = FontWeight.w400;
         opacity = isLightMode ? 0.85 : 0.6;
         // opacity = 1.0;
         break;

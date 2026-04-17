@@ -16,6 +16,7 @@ enum ButtonVariant {
   circular,
   circularPay,
   glow,
+  text,
 }
 
 enum WarnMode { vibrate, none }
@@ -36,6 +37,9 @@ class CustomAdvancedButton extends StatefulWidget {
   final bool debugLogValidation;
   final double? customFontSize;
   final Color? glowColor;
+  final String? prefixText;
+  final TextStyle? prefixStyle;
+  final TextStyle? labelStyle;
 
   const CustomAdvancedButton({
     super.key,
@@ -53,6 +57,10 @@ class CustomAdvancedButton extends StatefulWidget {
     this.debugLogValidation = false,
     this.customFontSize,
     this.glowColor,
+
+    this.prefixText,
+    this.prefixStyle,
+    this.labelStyle,
   });
 
   @override
@@ -249,6 +257,18 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isloading: widget.loading,
           isHovering: _isHovering,
         );
+      case ButtonVariant.text:
+        return _TextButton(
+          // prefixText: "Don't have an account? ",
+          label: widget.label,
+          onPressed: widget.onPressed,
+          isDisabled: _isDisabled,
+          isloading: widget.loading,
+          prefixText: widget.prefixText,
+          prefixStyle: widget.prefixStyle,
+          labelStyle: widget.labelStyle,
+          isHovering: _isHovering,
+        );
     }
   }
 }
@@ -364,7 +384,8 @@ class _PrimaryButton extends StatelessWidget {
                   fontSize: customFontSize ?? 14,
                   fontWeight: FontWeight.w400,
                   // color: (isDisabled || (isloading ?? false))
-                  color: (isDisabled) ? Colors.white70 : Colors.black87,
+                  // color: (isDisabled) ? Colors.white70 : Colors.black87,
+                  color: (isDisabled) ? Colors.white70 : Colors.white70,
                 ),
               ),
               SizedBox(width: 6),
@@ -897,6 +918,77 @@ class _CircularPayButton extends StatelessWidget {
                 child: icon!,
               )
             : const SizedBox.shrink(),
+      ),
+    );
+  }
+}
+
+class _TextButton extends StatelessWidget {
+  final String? prefixText;
+  final String label;
+
+  final TextStyle? prefixStyle;
+  final TextStyle? labelStyle;
+
+  final VoidCallback onPressed;
+  final bool isDisabled;
+  final bool? isloading;
+  final bool isHovering;
+
+  const _TextButton({
+    super.key,
+    this.prefixText,
+    required this.label,
+    this.prefixStyle,
+    this.labelStyle,
+    required this.onPressed,
+    this.isDisabled = false,
+    this.isloading = false,
+    this.isHovering = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (isDisabled || (isloading ?? false)) ? null : onPressed,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: isHovering && !isDisabled
+              ? Theme.of(context).colorScheme.onSurface.withOpacity(0.03)
+              : Colors.transparent,
+        ),
+        child: Opacity(
+          opacity: (isDisabled || (isloading ?? false)) ? 0.5 : 1.0,
+          child: Container(
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  if (prefixText != null)
+                    TextSpan(
+                      text: prefixText,
+                      style:
+                          prefixStyle ??
+                          const TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  const TextSpan(text: " "),
+                  TextSpan(
+                    text: label,
+                    style:
+                        labelStyle ??
+                        TextStyle(
+                          color: AppColors.favColour,
+                          fontSize: 16,
+                          // fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -199,9 +199,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
 
     print('🔐 Loading from storage: agentKey=$agentKey, userJson=$userJson');
-    print(
-      '🔐 Loading from storage: agentKey=$agentKey, userJson=${jsonEncode(jsonDecode(userJson!))}',
-    );
+    // print(
+    //   '🔐 Loading from storage: agentKey=$agentKey, userJson=${jsonEncode(jsonDecode(userJson!))}',
+    // );
+
+    if (userJson != null) {
+      print(
+        '🔐 Loading from storage: agentKey=$agentKey, userJson=${jsonEncode(jsonDecode(userJson))}',
+      );
+    }
+    print('🔐 Loading from storage: agentKey=$agentKey, userJson=$userJson');
 
     // if (agentKey != null) {
     if (agentKey != null || bearerToken != null) {

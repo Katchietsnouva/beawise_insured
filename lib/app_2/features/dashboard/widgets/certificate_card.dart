@@ -119,10 +119,12 @@ class _CertificateCardState extends State<CertificateCard> {
       subtitleRowsPairList: [
         ['Insurer', '${cert.policy.insurer}'],
         [
-          'Period',
-          '${formatHumanDate(cert.certificate.startDate)} → ${formatHumanDate(cert.certificate.endDate)}',
+          'Expiry',
+          // '${formatHumanDate(cert.certificate.startDate)}  →
+          '${formatHumanDate(cert.certificate.endDate)}',
         ],
       ],
+      SubtitleValueIndicesBold: [1],
       // subtitleRows: [
       //   // CustomText(
       //   //   'Certificate No: ${cert.certificate.number}',
@@ -177,7 +179,7 @@ class _CertificateCardState extends State<CertificateCard> {
               widget.viewMode == ClientViewMode.grid)
           ? null
           : Text(
-              'Policy amount: ${ceilCurrency(cert.policy.balance)}',
+              'Premium: ${ceilCurrency(cert.policy.balance)}',
               style: TextStyle(
                 color: isDark ? Colors.green : Colors.green[700]!,
                 fontWeight: FontWeight.bold,

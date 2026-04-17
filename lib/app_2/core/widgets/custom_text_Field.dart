@@ -484,35 +484,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 context,
                 type: CustomTextType.caption,
               ),
-              // prefixIcon: Icon(
-              //   widget.icon,
-              //   color: onSurface.withOpacity(0.7),
-              //   size: Responsive.isMobile(context) ? 18 : 24,
+              // prefixIcon: Padding(
+              //   padding: const EdgeInsets.only(
+              //     left: 12,
+              //     right: 26,
+              //   ), // increase right to push text further
+              //   child: Icon(
+              //     widget.icon,
+              //     color: onSurface.withOpacity(0.7),
+              //     size: Responsive.isMobile(context) ? 18 : 24,
+              //   ),
               // ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(
-                  left: 12,
-                  right: 26,
-                ), // increase right to push text further
-                child: Icon(
-                  widget.icon,
-                  color: onSurface.withOpacity(0.7),
-                  size: Responsive.isMobile(context) ? 18 : 24,
-                ),
-              ),
-              // suffixIcon: widget.isDateField
-              //     ? Icon(Icons.calendar_today, color: onSurface.withOpacity(0.7))
-              //     : (widget.obscureText
-              //           ? GestureDetector(
-              //               onTap: _toggleObscure,
-              //               child: Icon(
-              //                 _obscureText
-              //                     ? Icons.visibility_off
-              //                     : Icons.visibility,
-              //                 color: onSurface.withOpacity(0.7),
-              //               ),
-              //             )
-              //           : null),
               suffixIcon: suffixIcon,
 
               border: OutlineInputBorder(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/icon_scale_helper.dart';
@@ -508,33 +509,29 @@ class _SidebarState extends ConsumerState<Sidebar>
 
     // ── Collapsed: icon-only with tooltip ──
     if (_isCollapsed) {
-      return Tooltip(
-        message: label,
-        preferBelow: false,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: isActive
-                ? (isDark
-                      ? AppColors.favColour.withOpacity(0.3)
-                      : AppColors.favColourDark.withOpacity(0.3))
-                : (isDark
-                      ? Theme.of(context).colorScheme.background
-                      : Colors.white10),
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isActive
+              ? (isDark
+                    ? AppColors.favColour.withOpacity(0.3)
+                    : AppColors.favColourDark.withOpacity(0.3))
+              : (isDark
+                    ? Theme.of(context).colorScheme.background
+                    : Colors.white10),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(12),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => context.go(route),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Icon(
-                  icon,
-                  size: responsiveIconSize(context),
-                  color: iconColor,
-                ),
+            onTap: () => context.go(route),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Icon(
+                icon,
+                size: responsiveIconSize(context),
+                color: iconColor,
               ),
             ),
           ),
@@ -566,86 +563,80 @@ class _SidebarState extends ConsumerState<Sidebar>
               )
             : null,
       ),
-      child: Tooltip(
-        message: label,
-        preferBelow: false,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => context.go(route),
-            // splashColor: AppColors.favColourDark.withOpacity(0.12),
-            // highlightColor: AppColors.favColourDark.withOpacity(0.06),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 3,
-                    height: isActive ? 20 : 0,
-                    margin: EdgeInsets.only(right: isActive ? 10 : 0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      gradient: _SidebarTokens.brandGradientVertical,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.favColourDark.withOpacity(0.5),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => context.go(route),
+          // splashColor: AppColors.favColourDark.withOpacity(0.12),
+          // highlightColor: AppColors.favColourDark.withOpacity(0.06),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 3,
+                  height: isActive ? 20 : 0,
+                  margin: EdgeInsets.only(right: isActive ? 10 : 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    gradient: _SidebarTokens.brandGradientVertical,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.favColourDark.withOpacity(0.5),
+                        blurRadius: 8,
+                      ),
+                    ],
                   ),
-                  isActive
-                      ? ShaderMask(
-                          shaderCallback: (bounds) =>
-                              _SidebarTokens.brandGradient.createShader(bounds),
-                          blendMode: BlendMode.srcIn,
-                          child: Icon(
-                            icon,
-                            size: responsiveIconSize(context),
-                            color: Colors.white,
-                          ),
-                        )
-                      : Icon(
+                ),
+                isActive
+                    ? ShaderMask(
+                        shaderCallback: (bounds) =>
+                            _SidebarTokens.brandGradient.createShader(bounds),
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
                           icon,
                           size: responsiveIconSize(context),
-                          color: iconColor,
+                          color: Colors.white,
                         ),
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        color: isActive ? textPri : textMuted,
-                        //   color: iconColor,
-                        // fontSize: 13.5,
-                        fontWeight: isActive
-                            ? FontWeight.w400
-                            : FontWeight.w300,
-                        letterSpacing: 0.1,
+                      )
+                    : Icon(
+                        icon,
+                        size: responsiveIconSize(context),
+                        color: iconColor,
                       ),
-                      maxLines: 1,
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Text(
+                    label,
+                    // style: TextStyle(
+                    style: GoogleFonts.inter(
+                      color: isActive ? textPri : textMuted,
+                      //   color: iconColor,
+                      fontSize: isActive ? 16 : 16,
+                      fontWeight: isActive ? FontWeight.w500 : FontWeight.w500,
+                      letterSpacing: 0.1,
+                      // style: GoogleFonts.inter,
+                      // fontFamily: 'Inter',
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                if (isActive)
+                  Container(
+                    width: 6,
+                    height: 6,
+                    margin: const EdgeInsets.only(right: 4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [AppColors.favColourDark, AppColors.favColour],
+                      ),
                     ),
                   ),
-                  if (isActive)
-                    Container(
-                      width: 6,
-                      height: 6,
-                      margin: const EdgeInsets.only(right: 4),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColors.favColourDark,
-                            AppColors.favColour,
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
           ),
         ),
@@ -662,25 +653,21 @@ class _SidebarState extends ConsumerState<Sidebar>
   ) {
     // ── Collapsed: just the icon with tooltip ──
     if (_isCollapsed) {
-      return Tooltip(
-        message: label,
-        preferBelow: false,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isActive
+              ? AppColors.favColour.withOpacity(0.2)
+              : Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Icon(
+            icon,
             color: isActive
-                ? AppColors.favColour.withOpacity(0.2)
-                : Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Icon(
-              icon,
-              color: isActive
-                  ? AppColors.favColour
-                  : Theme.of(context).colorScheme.onSurface,
-            ),
+                ? AppColors.favColour
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       );

@@ -513,34 +513,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       //   const Center(
                                       //     child: CircularProgressIndicator(),
                                       //   ),
-                                      TextButton(
-                                        onPressed: () {
-                                          context.go(
-                                            '/register',
-                                          ); // Navigate on tap
-                                        },
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: "Don't have an account? ",
-                                                style: TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              TextSpan(text: "  "),
-                                              TextSpan(
-                                                text: "Create Account",
-                                                style: TextStyle(
-                                                  color: AppColors.favColour,
-                                                  // fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                      CustomAdvancedButton(
+                                        variant: ButtonVariant.text,
+                                        prefixText: "Don't have an account? ",
+                                        label: "Create Account",
+                                        onPressed: () =>
+                                            context.go('/register'),
                                       ),
                                     ],
                                   ),

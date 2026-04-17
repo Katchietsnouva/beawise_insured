@@ -864,29 +864,11 @@ class GoToLogInRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return CustomAdvancedButton(
+      variant: ButtonVariant.text,
+      prefixText: "Already have an account? ",
+      label: "Login",
       onPressed: () => context.go('/login', extra: email),
-      child: RichText(
-        text: const TextSpan(
-          children: [
-            TextSpan(
-              text: "Already have an account? ",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-            TextSpan(text: "  "),
-            TextSpan(
-              text: "Login",
-              style: TextStyle(
-                // color: Colors.greenAccent,
-                color: AppColors.favColour,
-
-                // fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

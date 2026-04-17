@@ -274,7 +274,7 @@ class _QuoteDetailsModalState extends ConsumerState<QuoteDetailsModal> {
               //     ),
               //   ],
               // ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 4),
 
               // if (!isTuktuk && !isMotorcycle) ...[
               if (!option.benefits.isEmpty) ...{
@@ -282,26 +282,27 @@ class _QuoteDetailsModalState extends ConsumerState<QuoteDetailsModal> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      'Optional Benefits',
+                      'Optional Benefits:',
                       type: CustomTextType.paragraph,
                     ),
-                    const SizedBox(height: 12),
-                    !Responsive.isMobile(context)
-                        ? Row(
-                            children: [
-                              Expanded(child: excessProtector),
-                              const SizedBox(width: 12),
-                              Expanded(child: politicalViolence),
-                            ],
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              excessProtector,
-                              const SizedBox(height: 12),
-                              politicalViolence,
-                            ],
-                          ),
+                    const SizedBox(height: 4),
+
+                    // !Responsive.isMobile(context)
+                    //     ? Row(
+                    //         children: [
+                    //           Expanded(child: excessProtector),
+                    //           const SizedBox(width: 12),
+                    //           Expanded(child: politicalViolence),
+                    //         ],
+                    //       )
+                    //     : Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           excessProtector,
+                    //           const SizedBox(height: 12),
+                    //           politicalViolence,
+                    //         ],
+                    //       ),
                   ],
                 ),
               },
@@ -310,7 +311,6 @@ class _QuoteDetailsModalState extends ConsumerState<QuoteDetailsModal> {
               //   "Benefits Included:",
               //   type: CustomTextType.paragraph,
               // ),
-              const SizedBox(height: 12),
               const SizedBox(height: 12),
 
               option.benefits.isEmpty
