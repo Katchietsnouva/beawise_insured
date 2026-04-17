@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field.dart';
@@ -376,7 +377,9 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
             IconButton(
               icon: Icon(
                 effectiveIsDark ? Icons.dark_mode : Icons.light_mode,
-                color: effectiveIsDark ? const Color(0xFF00FFB2) : Colors.black,
+                color: effectiveIsDark
+                    ? AppColors.animatedOrbsGlow
+                    : Colors.black,
               ),
               onPressed: () {
                 final currentMode = ref.read(settingsProvider).themeMode;
@@ -661,7 +664,7 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
       // FloatingActionButton.extended(
       // floatingActionButton: FloatingActionButton.extended(
       floatingActionButton: Visibility(
-        visible: false,
+        visible: true,
         child: FloatingActionButton(
           onPressed: () => motorSaveScreen(context),
 

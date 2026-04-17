@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:insured/app_2/core/constants/app_colors.dart';
+
 import 'package:insured/app_2/core/constants/app_strings.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';

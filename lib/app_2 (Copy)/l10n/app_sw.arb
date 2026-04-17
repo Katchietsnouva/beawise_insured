@@ -1,0 +1,142 @@
+{
+  "@@locale": "sw",
+
+  "appTitle": "Insured",
+  "newPolicy": "Bima Mpya ya Gari",
+  "policy": "Bima",
+  "premium": "Ada ya Bima",
+  "claim": "Dai",
+  "addClient": "Ongeza Mteja Mpya",
+
+  "welcomeMessage": "Karibu tena, {name}",
+  "@welcomeMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "settings_appearanceTitle": "Mwonekano",
+  "settings_appearanceSubtitle": "Binafsisha jinsi programu inavyoonekana",
+  "settings_themeLabel": "Mandhari",
+  "settings_textSizeLabel": "Ukubwa wa Maandishi",
+
+  "settings_DisplayTitle": "Onyesho",
+  "settings_DisplaySubtitle": "Sanidi chaguo-msingi za onyesho",
+  "settings_DefaultViewLabel": "Mwonekano wa Msingi",
+  "settings_CompactModeTitle": "Hali Fupi",
+  "settings_CompactModeDescription": "Punguza nafasi kati ya vipengele",
+
+  "settings_NotificationsTitle": "Arifa",
+  "settings_NotificationsSubtitle": "Dhibiti mapendeleo ya arifa",
+  "settings_EnableNotificationsTitle": "Washa Arifa",
+  "settings_EnableNotificationsDescription": "Pokea arifa ndani ya programu",
+  "settings_EmailNotificationsTitle": "Arifa za Barua Pepe",
+  "settings_EmailNotificationsDescription": "Pokea masasisho kupitia barua pepe",
+  "settings_RenewalRemindersTitle": "Vikumbusho vya Uhuishaji",
+  "settings_RenewalRemindersDescription": "Pata arifa kuhusu uhuishaji unaokuja",
+
+  "settings_LanguageTitle": "Lugha na Eneo",
+  "settings_LanguageSubtitle": "Weka mapendeleo ya lugha",
+  "settings_LanguageLabel": "Lugha",
+
+  "settings_PrivacyTitle": "Faragha na Usalama",
+  "settings_PrivacySubtitle": "Dhibiti mipangilio ya faragha na usalama",
+  "settings_TwoFactorTitle": "Uthibitishaji wa Hatua Mbili",
+  "settings_TwoFactorDescription": "Ongeza safu ya ziada ya usalama",
+  "settings_ActivityLoggingTitle": "Rekodi ya Shughuli",
+  "settings_ActivityLoggingDescription": "Fuatilia shughuli za akaunti",
+  "settings_ShowSensitiveTitle": "Onyesha Data Nyeti",
+  "settings_ShowSensitiveDescription": "Onyesha nambari za kitambulisho na data za kifedha",
+  "settings_ChangePassword": "Badilisha Nenosiri",
+
+  "settings_DataTitle": "Usimamizi wa Data",
+  "settings_DataSubtitle": "Hamisha, leta, na simamia data yako",
+  "settings_ExportSettings": "Hamisha Mipangilio",
+  "settings_ImportSettings": "Leta Mipangilio",
+  "settings_DownloadAllData": "Pakua Data Zote",
+  "settings_ClearCache": "Futa Akiba",
+
+  "settings_AccessibilityTitle": "Ufikiaji",
+  "settings_AccessibilitySubtitle": "Boresha vipengele vya ufikiaji",
+  "settings_HighContrastTitle": "Hali ya Tofauti Kubwa",
+  "settings_HighContrastDescription": "Ongeza utofauti kwa mwonekano bora",
+  "settings_ReduceMotionTitle": "Punguza Mwendo",
+  "settings_ReduceMotionDescription": "Punguza uhuishaji na mabadiliko",
+  "settings_ScreenReaderTitle": "Msaada wa Kisomaji Skrini",
+  "settings_ScreenReaderDescription": "Uoanifu bora wa kisomaji skrini",
+
+  "settings_PerformanceTitle": "Utendaji",
+  "settings_PerformanceSubtitle": "Boresha utendaji wa programu",
+  "settings_AutoSaveTitle": "Hifadhi Kiotomatiki",
+  "settings_AutoSaveDescription": "Hifadhi mabadiliko kiotomatiki",
+  "settings_LazyLoadingTitle": "Upakiaji Taratibu",
+  "settings_LazyLoadingDescription": "Pakia maudhui unapoteleza",
+  "settings_OfflineModeTitle": "Hali ya Nje ya Mtandao",
+  "settings_OfflineModeDescription": "Fanya kazi bila muunganisho wa intaneti",
+
+  "settings_AdvancedTitle": "Ya Juu",
+  "settings_AdvancedSubtitle": "Vipengele vya watumiaji mahiri na njia za mkato",
+  "settings_KeyboardShortcutsTitle": "Njia za Mkato za Kibodi",
+  "settings_KeyboardShortcutsDescription": "Washa urambazaji wa kibodi",
+  "settings_DeveloperModeTitle": "Hali ya Msanidi",
+  "settings_DeveloperModeDescription": "Onyesha chaguo za hali ya juu za urekebishaji",
+  "settings_BetaFeaturesTitle": "Vipengele vya Beta",
+  "settings_BetaFeaturesDescription": "Jaribu vipengele vya majaribio",
+  "settings_ViewKeyboardShortcuts": "Angalia Njia za Mkato za Kibodi",
+
+  "settings_DangerTitle": "Eneo Hatari",
+  "settings_DangerSubtitle": "Vitendo visivyoweza kurejeshwa",
+  "settings_ResetAllSettings": "Weka Upya Mipangilio Yote",
+  "settings_DeleteAllData": "Futa Data Zote",
+
+    "sidebar_dashboard": "Dashibodi",
+  "subtitle_dashboard": "Simamia wateja na nukuu zako",
+  "sidebar_clients": "Wateja",
+  "subtitle_clients": "Tazama na simamia wateja wote",
+
+  "sidebar_motorQuote": "Nukuu ya Gari",
+  "subtitle_motorQuote": "Simamia nukuu za bima ya gari",
+  "sidebar_policies": "Polisi",
+  "subtitle_policies": "Tazama na simamia polisi",
+
+  "sidebar_dmvic": "DMVIC",
+  "subtitle_dmvic": "Shughuli zinazohusiana na DMVIC",
+  "sidebar_dmvicDoubleInsurance": "Bima ya Mara Mbili DMVIC",
+  "subtitle_dmvicDoubleInsurance": "Simamia polisi za bima ya mara mbili za DMVIC",
+  "sidebar_dmvicStock": "Hisa za DMVIC",
+  "subtitle_dmvicStock": "Simamia polisi zinazohusiana na hisa za DMVIC",
+
+  "sidebar_statement": "Taarifa",
+  "subtitle_statement": "Tazama taarifa",
+  "sidebar_renewals": "Upyaishaji",
+  "subtitle_renewals": "Fuatilia upyaishaji wa polisi",
+
+  "sidebar_certificates": "Vyeti",
+  "subtitle_certificates": "Tazama vyeti vilivyotolewa",
+
+  "sidebar_production": "Uzalishaji",
+  "subtitle_production": "Fuatilia vipimo vya uzalishaji",
+  "sidebar_quotes": "Nukuu",
+  "subtitle_quotes": "Simamia nukuu za bima",
+
+  "sidebar_settings": "Mipangilio",
+  "subtitle_settings": "Mapendeleo ya programu",
+
+  "sidebar_profile": "Wasifu Wangu",
+  "subtitle_profile": "Simamia akaunti yako",
+
+  "sidebar_notifications": "Arifa",
+  "subtitle_notifications": "Tazama arifa zako zote",
+
+    "sidebar_offlineQueueScreen": "Skrini ya Foleni Isiyo Mtandao",
+  "subtitle_offlineQueueScreen": "Tazama hifadhi zako zote zisizo mtandaoni",
+
+  "sidebar_logout": "Toka",
+  "sidebar_loading": "Inapakia...",
+
+  "sidebar_add_client": "Ongeza Mteja",
+  "subtitle_add_client": "Ingiza maelezo ya mteja mpya",
+
+  "subtitle_default": "Daima umehakikishiwa"
+
+}

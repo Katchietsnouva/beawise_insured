@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insured/app_2/core/services/connectivity_service.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/utils/route_observer.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
@@ -206,7 +207,8 @@ class DashboardShell extends ConsumerWidget {
                 icon: Icon(
                   effectiveIsDark ? Icons.dark_mode : Icons.light_mode,
                   color: effectiveIsDark
-                      ? const Color(0xFF00FFB2)
+                      // ? const Color(0xFF00FFB2)
+                      ? AppColors.animatedOrbsGlow
                       : Colors.black,
                 ),
                 onPressed: () {
@@ -483,7 +485,8 @@ class DashboardShell extends ConsumerWidget {
                 icon: Icon(
                   effectiveIsDark ? Icons.dark_mode : Icons.light_mode,
                   color: effectiveIsDark
-                      ? const Color(0xFF00FFB2)
+                      // ? const Color(0xFF00FFB2)
+                      ? AppColors.animatedOrbsGlow
                       : Colors.black,
                 ),
                 onPressed: () {

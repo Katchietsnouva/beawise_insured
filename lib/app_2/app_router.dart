@@ -374,13 +374,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             name: 'offline-queue',
             builder: (context, state) => const OfflineQueueScreen(),
           ),
-          GoRoute(
-            // path: '/:any',
-            path: '/:pathMatch(.*)',
-            name: 'not-found',
-            builder: (context, state) =>
-                NotFoundScreen(path: state.uri.toString()),
-          ),
+          // GoRoute(
+          //   // path: '/:any',
+          //   path: '/:pathMatch(.*)',
+          //   name: 'not-found',
+          //   builder: (context, state) =>
+          //       NotFoundScreen(path: state.uri.toString()),
+          // ),
         ],
       ),
       GoRoute(

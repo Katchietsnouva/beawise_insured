@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/widgets/custom_otp.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastT.dart';
@@ -9,7 +10,7 @@ import 'package:insured/app_2/core/widgets/glass_card_auth.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/animated_orbs.dart';
 import 'package:insured/app_2/core/widgets/grain_overlay.dart';
-import 'package:insured/app_2/core/constants/app_colors.dart';
+
 import 'package:insured/app_2/core/widgets/response_display.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -50,16 +51,30 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
 
     return Scaffold(
       body: Container(
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //     colors: [Color(0xFF0D1F1C), Color(0xFF0F3D3E), Color(0xFF145A32)],
+        //   ),
+        // ),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0D1F1C), Color(0xFF0F3D3E), Color(0xFF145A32)],
+            colors: [
+              AppColors.nice_grad_1,
+              AppColors.nice_grad_3,
+              AppColors.nice_grad_2,
+            ],
           ),
         ),
         child: Stack(
           children: [
-            AnimatedOrbs(glowColor: AppColors.mint, shimmerCtrl: _shimmerCtrl),
+            AnimatedOrbs(
+              glowColor: AppColors.animatedOrbsGlow,
+              shimmerCtrl: _shimmerCtrl,
+            ),
             const GrainOverlay(),
             SafeArea(
               child: Center(

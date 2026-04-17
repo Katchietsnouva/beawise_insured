@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insured/app_2/core/constants/app_colors.dart';
+
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/animated_orbs.dart';
@@ -55,17 +55,28 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
 
       child: Scaffold(
         body: Container(
+          // decoration: const BoxDecoration(
+          //   gradient: LinearGradient(
+          //     begin: Alignment.topLeft,
+          //     end: Alignment.bottomRight,
+          //     colors: [Color(0xFF0D1F1C), Color(0xFF0F3D3E), Color(0xFF145A32)],
+          //   ),
+          // ),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0D1F1C), Color(0xFF0F3D3E), Color(0xFF145A32)],
+              colors: [
+                AppColors.nice_grad_1,
+                AppColors.nice_grad_3,
+                AppColors.nice_grad_2,
+              ],
             ),
           ),
           child: Stack(
             children: [
               AnimatedOrbs(
-                glowColor: AppColors.mint,
+                glowColor: AppColors.animatedOrbsGlow,
                 shimmerCtrl: _shimmerCtrl,
               ),
               const GrainOverlay(),

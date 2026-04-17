@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:insured/app_2/core/theme/app_theme.dart';
+
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -27,9 +29,10 @@ class GlassCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(24),
       // color: Theme.of(context).colorScheme.surface,
       // color: Colors.black.withOpacity(0.3),
-      color: isLight
-          ? Colors.white.withOpacity(0.05)
-          : Colors.black.withOpacity(0.05),
+      color: Colors.white.withOpacity(0.01),
+      // isLight
+      //     ? Colors.white.withOpacity(0.05)
+      //     : Colors.black.withOpacity(0.05),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
@@ -42,7 +45,9 @@ class GlassCard extends StatelessWidget {
 
               //best for dm
               // color: Theme.of(context).primaryColor.withOpacity(0.2),
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              // color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Colors.white.withOpacity(0.01),
+
               borderRadius: BorderRadius.circular(borderRadius),
               // border: Border.all(
               //   color: borderColor ?? Colors.white.withOpacity(0.2),
@@ -53,14 +58,17 @@ class GlassCard extends StatelessWidget {
                     //     ? Colors.greenAccent.withOpacity(0.9)
                     //     :
                     // Colors.white.withOpacity(0.1),
-                    Colors.greenAccent.withOpacity(0.5),
+                    AppColors.favColour.withOpacity(0.5),
+                // AppColors.nice_grad_2.withOpacity(0.5),
+                // Theme.of(context).colorScheme.secondary.withOpacity(0.5),
               ),
               boxShadow:
                   boxShadow ??
                   [
                     BoxShadow(
                       // color: Colors.black.withOpacity(0.1),
-                      color: Colors.black.withOpacity(isLight ? 0.05 : 0.2),
+                      // color: Colors.black.withOpacity(isLight ? 0.05 : 0.2),
+                      color: Colors.black.withOpacity(isLight ? 0.05 : 0.05),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),

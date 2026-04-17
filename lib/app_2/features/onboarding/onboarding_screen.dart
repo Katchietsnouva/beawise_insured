@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:insured/app_2/core/constants/app_strings.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/haptic_helper.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/features/onboarding/onboarding_page_model.dart';
-import 'package:insured/app_2/features/onboarding/widgets/three_d_model_viewer.dart';
 import 'package:insured/app_2/core/widgets/animated_orbs.dart';
 import 'package:insured/app_2/core/widgets/grain_overlay.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
@@ -28,7 +28,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   late final AnimationController _floatCtrl;
   late final Animation<double> _floatAnim;
   late final AnimationController _glowCtrl;
-  late final AnimationController _shimmerCtrl; // ← renamed
+  late final AnimationController _shimmerCtrl;
 
   double _pageOffset = 0.0;
   double _rotationY = 0.0;
@@ -40,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
     _shimmerCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 12), // ← slow shimmer
+      duration: const Duration(seconds: 12),
     )..repeat(); // ← infinite loop
 
     // _pageController = PageController()
@@ -48,7 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       ..addListener(() {
         setState(() {
           _pageOffset = _pageController.page ?? 0.0;
-          _rotationY = _pageOffset * (pi / 6); // 30° per page
+          _rotationY = _pageOffset * (pi / 6);
         });
       });
 
@@ -67,7 +67,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     )..repeat(reverse: true);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pageController.jumpToPage(0); // ← force reset to first page on mount
+      _pageController.jumpToPage(0);
     });
 
     _currentPage = 0;
@@ -374,12 +374,14 @@ class BackgroundGradients extends StatelessWidget {
 
     return Stack(
       children: [
-        Container(color: const Color(0xFF0D1F1C)), // Base Dark Green
+        Container(color: const Color(0xFF0D1F1C)),
         Positioned(
           top: -100,
           right: -50,
           child: _GlowCircle(
-            color: Colors.tealAccent.withOpacity(0.2),
+            // color: Colors.tealAccent.withOpacity(0.2),
+            color: AppColors.nice_grad_3.withOpacity(0.2),
+
             size: 400,
           ),
         ),
@@ -387,7 +389,8 @@ class BackgroundGradients extends StatelessWidget {
           bottom: -50,
           left: -50,
           child: _GlowCircle(
-            color: Colors.cyanAccent.withOpacity(0.15),
+            // color: Colors.cyanAccent.withOpacity(0.15),
+            color: AppColors.animatedOrbsGlow_2.withOpacity(0.15),
             size: 350,
           ),
         ),
@@ -414,8 +417,7 @@ class BackgroundGradients extends StatelessWidget {
             iosSrc:
                 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
             disableZoom: false,
-            cameraControls:
-                true, // Gestures like orbit (rotation), pan, or zoom require explicit permissions and can be blocked if cameraControls is false (as in your code).
+            cameraControls: true,
           ),
         ),
       ],

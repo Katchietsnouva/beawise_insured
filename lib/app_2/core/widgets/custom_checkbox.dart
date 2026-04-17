@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 
 class CustomCheckbox extends StatefulWidget {
@@ -59,9 +60,10 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
     final activeColor =
         widget.activeColor ??
         (Theme.of(context).brightness == Brightness.dark
-            ? Colors.greenAccent
-            : Colors.green[900]!);
-
+            // ? Colors.greenAccent
+            // : Colors.green[900]!);
+            ? AppColors.favColour
+            : AppColors.favColourDark);
     return InkWell(
       borderRadius: BorderRadius.circular(8),
       onTap: () => _handleChange(!widget.value),

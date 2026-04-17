@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/theme/custom_text_styles.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -86,6 +87,11 @@ class _CardItemState extends State<_CardItem> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accentColor = AppColors.favColourDark;
+    // final surfaceColor = isDark
+    //     ? _CardTokens.darkSurface
+    //     : _CardTokens.lightSurface;
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -103,21 +109,21 @@ class _CardItemState extends State<_CardItem> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: widget.isSelected
-                    ? Colors.greenAccent.withOpacity(0.1)
-                    : Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                    ? accentColor.withOpacity(isDark ? 0.15 : 0.1)
+                    // : surfaceColor.withOpacity(0.9),
+                    : Theme.of(context).colorScheme.surface.withOpacity(0.2),
                 border: Border.all(
                   color: widget.isSelected
-                      ? Colors.greenAccent.withOpacity(0.8)
+                      ? accentColor.withOpacity(0.8)
                       : Theme.of(
                           context,
-                        ).colorScheme.onSurface.withOpacity(0.2),
-
+                        ).colorScheme.onSurface.withOpacity(0.1),
                   width: 2,
                 ),
                 boxShadow: [
                   if (widget.isSelected)
                     BoxShadow(
-                      color: Colors.greenAccent.withOpacity(0.2),
+                      color: accentColor.withOpacity(0.25),
                       blurRadius: 15,
                       spreadRadius: 2,
                     ),
@@ -130,8 +136,8 @@ class _CardItemState extends State<_CardItem> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: widget.type == 2
-                        ? _buildCenteredLayout()
-                        : _buildHorizontalLayout(),
+                        ? _buildCenteredLayout(accentColor, isDark)
+                        : _buildHorizontalLayout(accentColor, isDark),
                   ),
                 ),
               ),
@@ -142,7 +148,12 @@ class _CardItemState extends State<_CardItem> {
     );
   }
 
-  Widget _buildHorizontalLayout() {
+  // Widget _buildHorizontalLayout() {
+  Widget _buildHorizontalLayout(Color accentColor, bool isDark) {
+    final iconColor = widget.isSelected
+        ? accentColor
+        : (isDark ? Colors.white70 : Colors.black54);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -152,17 +163,24 @@ class _CardItemState extends State<_CardItem> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
+                  // color: widget.isSelected
+                  //     ? Colors.greenAccent.withOpacity(0.2)
+                  //     : Colors.white.withOpacity(0.1),
                   color: widget.isSelected
-                      ? Colors.greenAccent.withOpacity(0.2)
-                      : Colors.white.withOpacity(0.1),
+                      ? accentColor.withOpacity(0.2)
+                      : (isDark
+                            ? Colors.white10
+                            : Colors.black.withOpacity(0.05)),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   widget.option.icon,
                   size: 20,
-                  color: widget.isSelected
-                      ? Colors.greenAccent
-                      : Colors.white70,
+                  color:
+                      // widget.isSelected
+                      //     ? Colors.greenAccent
+                      //     : Colors.white70,
+                      iconColor,
                 ),
               ),
             const SizedBox(width: 12),
@@ -180,8 +198,13 @@ class _CardItemState extends State<_CardItem> {
     );
   }
 
-  Widget _buildCenteredLayout() {
+  // Widget _buildCenteredLayout() {
+  Widget _buildCenteredLayout(Color accentColor, bool isDark) {
     final isMobile = (Responsive.isMobile(context));
+    final iconColor = widget.isSelected
+        ? (isDark ? Colors.white : accentColor)
+        : Theme.of(context).colorScheme.onSurface;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -192,20 +215,25 @@ class _CardItemState extends State<_CardItem> {
                 ? Container(
                     padding: EdgeInsets.all((isMobile) ? 2 : 20),
                     decoration: BoxDecoration(
+                      // color: widget.isSelected
+                      //     ? Colors.greenAccent.withOpacity(0.4)
+                      //     : Colors.greenAccent.withOpacity(0.2),
                       color: widget.isSelected
-                          ? Colors.greenAccent.withOpacity(0.4)
-                          : Colors.greenAccent.withOpacity(0.2),
+                          ? accentColor.withOpacity(0.25)
+                          : accentColor.withOpacity(0.12),
 
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       widget.option.icon,
                       size: 54,
-                      color: widget.isSelected
-                          ? Theme.of(context).brightness == Brightness.dark
-                                ? Colors.green[900]
-                                : Colors.green
-                          : Theme.of(context).colorScheme.onSurface,
+                      color:
+                          // widget.isSelected
+                          //     ? Theme.of(context).brightness == Brightness.dark
+                          //           ? Colors.green[900]
+                          //           : Colors.green
+                          //     : Theme.of(context).colorScheme.onSurface,
+                          iconColor,
                     ),
                   )
                 : const SizedBox(),
@@ -262,7 +290,7 @@ class _CardItemState extends State<_CardItem> {
         if (widget.isSelected)
           Icon(
             Icons.check_circle,
-            color: Colors.green,
+            color: AppColors.favColour,
             size: isMobile ? 16 : 24,
           ),
       ],

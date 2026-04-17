@@ -27,7 +27,10 @@ class GhostCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: baseColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor),
+        border: Border.all(
+          color: borderColor,
+          // Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        ),
       ),
       child: Row(
         children: [

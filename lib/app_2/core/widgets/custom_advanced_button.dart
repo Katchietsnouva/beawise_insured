@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:insured/app_2/core/constants/app_colors.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
+
 import 'package:insured/app_2/core/utils/responsive.dart';
 
 enum ButtonVariant {
@@ -88,80 +89,86 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
   @override
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      // ignoring: widget.isDisabled || widget.loading,
-      ignoring: _isDisabled || (widget.loading ?? false),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovering = true),
-        onExit: (_) => setState(() => _isHovering = false),
-        child: GestureDetector(
-          onTapDown: _isDisabled ? null : (_) => _controller.forward(),
-          // onTapUp: widget.isDisabled
-          //     ? null
-          //     : (_) {
-          //         _controller.reverse();
-          //         HapticFeedback.lightImpact();
-          //         widget.onPressed();
-          //       },
-          onTapUp: _isDisabled
-              ? null
-              : (_) {
-                  _controller.reverse();
+    return MouseRegion(
+      cursor: _isDisabled
+          ? SystemMouseCursors.forbidden
+          : SystemMouseCursors.click,
+      child: IgnorePointer(
+        // ignoring: widget.isDisabled || widget.loading,
+        ignoring: _isDisabled || (widget.loading ?? false),
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _isHovering = true),
+          onExit: (_) => setState(() => _isHovering = false),
+          child: GestureDetector(
+            onTapDown: _isDisabled ? null : (_) => _controller.forward(),
+            // onTapUp: widget.isDisabled
+            //     ? null
+            //     : (_) {
+            //         _controller.reverse();
+            //         HapticFeedback.lightImpact();
+            //         widget.onPressed();
+            //       },
+            onTapUp: _isDisabled
+                ? null
+                : (_) {
+                    _controller.reverse();
 
-                  if (widget.validator != null && !widget.validator!()) {
-                    debugPrint(
-                      'CustomAdvancedButton: Validation failed – fields are required.',
-                    ); // 👈 add this
-                    print(widget.validator);
-                    print(widget.validator!());
-                    // debugPrint(widget.validator!());
-
-                    if (!widget.debugLogValidation) {
+                    if (widget.validator != null && !widget.validator!()) {
                       debugPrint(
-                        'CustomAdvancedButton: Validation failed for "${widget.label}"',
-                      );
+                        'CustomAdvancedButton: Validation failed – fields are required.',
+                      ); // 👈 add this
+                      print(widget.validator);
+                      print(widget.validator!());
+                      // debugPrint(widget.validator!());
+
+                      if (!widget.debugLogValidation) {
+                        debugPrint(
+                          'CustomAdvancedButton: Validation failed for "${widget.label}"',
+                        );
+                      }
+
+                      // if (widget.warnMode == WarnMode.vibrate) {
+                      //   HapticFeedback.heavyImpact();
+                      // }
+                      if (Theme.of(context).platform !=
+                              TargetPlatform.windows &&
+                          Theme.of(context).platform != TargetPlatform.macOS &&
+                          Theme.of(context).platform != TargetPlatform.linux) {
+                        HapticFeedback.vibrate();
+                      }
+
+                      // FuturisticToastT.show(
+                      //   context: context,
+                      //   message: "Fill fields for email and password",
+                      //   errors: {
+                      //     "Required Fields": [
+                      //       "Email is required",
+                      //       "Password is required",
+                      //     ],
+                      //   },
+                      //   icon: Icons.warning_amber_rounded,
+                      //   alignment: Alignment.topCenter,
+                      //   duration: const Duration(seconds: 6),
+                      // );
+
+                      // return;
                     }
 
-                    // if (widget.warnMode == WarnMode.vibrate) {
-                    //   HapticFeedback.heavyImpact();
-                    // }
-                    if (Theme.of(context).platform != TargetPlatform.windows &&
-                        Theme.of(context).platform != TargetPlatform.macOS &&
-                        Theme.of(context).platform != TargetPlatform.linux) {
-                      HapticFeedback.vibrate();
-                    }
+                    HapticFeedback.lightImpact();
+                    widget.onPressed();
+                  },
 
-                    // FuturisticToastT.show(
-                    //   context: context,
-                    //   message: "Fill fields for email and password",
-                    //   errors: {
-                    //     "Required Fields": [
-                    //       "Email is required",
-                    //       "Password is required",
-                    //     ],
-                    //   },
-                    //   icon: Icons.warning_amber_rounded,
-                    //   alignment: Alignment.topCenter,
-                    //   duration: const Duration(seconds: 6),
-                    // );
-
-                    // return;
-                  }
-
-                  HapticFeedback.lightImpact();
-                  widget.onPressed();
-                },
-
-          onTapCancel: _isDisabled ? null : () => _controller.reverse(),
-          child: AnimatedBuilder(
-            animation: _scale,
-            builder: (_, child) => Transform.scale(
-              scale: _isDisabled ? 1.0 : _scale.value,
-              child: child,
-            ),
-            child: Opacity(
-              opacity: _isDisabled ? 0.5 : 1.0,
-              child: _buildButton(),
+            onTapCancel: _isDisabled ? null : () => _controller.reverse(),
+            child: AnimatedBuilder(
+              animation: _scale,
+              builder: (_, child) => Transform.scale(
+                scale: _isDisabled ? 1.0 : _scale.value,
+                child: child,
+              ),
+              child: Opacity(
+                opacity: _isDisabled ? 0.5 : 1.0,
+                child: _buildButton(),
+              ),
             ),
           ),
         ),
@@ -231,8 +238,8 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isDisabled: _isDisabled,
           isloading: widget.loading,
           customFontSize: widget.customFontSize,
-          // glowColor: (widget as dynamic).glowColor ?? Colors.greenAccent,
-          glowColor: widget.glowColor ?? Colors.greenAccent,
+          // glowColor: (widget as dynamic).glowColor ?? AppColors.favColour,
+          glowColor: widget.glowColor ?? AppColors.favColour,
         );
       case ButtonVariant.circularPay:
         return _CircularPayButton(
@@ -272,6 +279,42 @@ class _PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    Gradient effectiveGradient;
+    final btnPrColor = AppColors.favColour;
+    // final btnSecColor = AppColors.favColour_sec;
+    final btnSecColor = AppColors.favColourDark;
+
+    final brandGradient = LinearGradient(
+      colors: [btnPrColor, btnSecColor],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    final darkGradientOverlay = LinearGradient(
+      colors: [btnPrColor.withOpacity(0.65), btnSecColor.withOpacity(0.65)],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    final lightHoverGradient = LinearGradient(
+      colors: [btnPrColor, btnSecColor],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    if (isDisabled) {
+      effectiveGradient = LinearGradient(
+        colors: isDark
+            ? [const Color(0xFF2A3A4A), const Color(0xFF1E2A38)]
+            : [const Color(0xFFD0D0D0), const Color(0xFFB0B0B0)],
+      );
+    } else if (isDark) {
+      effectiveGradient = isHovering ? darkGradientOverlay : brandGradient;
+    } else {
+      effectiveGradient = isHovering ? lightHoverGradient : brandGradient;
+    }
+
     return Container(
       // width: double.infinity,
       // height: height ?? 56,
@@ -280,51 +323,7 @@ class _PrimaryButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
 
-        // gradient: (isDisabled || (isloading ?? false))
-        //     ? const LinearGradient(
-        //         colors: [Color(0xFFBBBBBB), Color(0xFFAAAAAA)],
-        //       )
-        //     : const LinearGradient(colors: [Colors.white, Color(0xFFEEEEEE)]),
-        gradient: (isDisabled)
-            ? LinearGradient(
-                colors: isHovering
-                    ? [Color(0xFF223A36), Color(0xFF1A302E)]
-                    : [Color(0xFF1A2E2B), Color(0xFF132624)],
-              )
-            // : LinearGradient(
-            //     begin: Alignment.topLeft,
-            //     end: Alignment.bottomRight,
-            //     colors: isHovering
-            //         ? [Color(0xFF66E6C9), Color(0xFF66C6E6)]
-            //         : [Color(0xFF00FFB2), Color(0xFF00C2FF)],
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? (isHovering
-                          ? [
-                              Color(0xFF00E6A0).withOpacity(0.65),
-                              Color(0xFF0094CC).withOpacity(0.65),
-                            ] // richer hover
-                          : [
-                              Color(0xFF00FFB2).withOpacity(0.8),
-                              Color(0xFF00C2FF).withOpacity(0.8),
-                            ]) // deeper base
-                    : (isHovering
-                          ? [Color(0xFF66E6C9), Color(0xFF66C6E6)]
-                          : [Color(0xFF00FFB2), Color(0xFF00C2FF)]),
-              ),
-        // boxShadow: (isDisabled || (isloading ?? false))
-        //     ? []
-        //     : [
-        //         BoxShadow(
-        //           color: isHovering
-        //               ? Colors.white.withOpacity(0.3)
-        //               : Colors.white.withOpacity(0.2),
-        //           blurRadius: 20,
-        //           spreadRadius: 2,
-        //         ),
-        //       ],
+        gradient: effectiveGradient,
         boxShadow: (isDisabled || (isloading ?? false))
             ? []
             : [
@@ -336,9 +335,7 @@ class _PrimaryButton extends StatelessWidget {
                       : (isHovering
                             ? Colors.white.withOpacity(0.3)
                             : Colors.white.withOpacity(0.2)),
-
                   blurRadius: isDark ? (isHovering ? 12 : 8) : 20,
-
                   spreadRadius: isDark ? (isHovering ? 0.5 : 0.2) : 2,
                 ),
               ],
@@ -377,7 +374,7 @@ class _PrimaryButton extends StatelessWidget {
                   width: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.cyan,
+                    color: AppColors.animatedOrbsGlow_2,
                   ),
                 ),
               if (icon != null && iconRight) ...[
@@ -482,7 +479,7 @@ class _SecondaryButton extends StatelessWidget {
                       width: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.cyan,
+                        color: AppColors.animatedOrbsGlow_2,
                       ),
                     ),
                   ],
@@ -558,10 +555,10 @@ class _PayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     // final color = isDark
-    //     ? Colors.greenAccent.withOpacity(0.9)
-    //     : Colors.green[900]!.withOpacity(0.9);
+    //     ? AppColors.favColour.withOpacity(0.9)
+    //     : AppColors.favColourDark!.withOpacity(0.9);
 
-    final baseColor = isDark ? Colors.greenAccent : Colors.green[900]!;
+    final baseColor = isDark ? AppColors.favColour : AppColors.favColourDark!;
 
     final activeColor = baseColor.withOpacity(0.9);
     final disabledColor = isDark
@@ -581,19 +578,21 @@ class _PayButton extends StatelessWidget {
       // padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: isDark
-            ? Colors.greenAccent.withOpacity(isHovering ? 0.25 : 0.2)
-            : Colors.green[900]!.withOpacity(isHovering ? 0.25 : 0.2),
+            ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+            : AppColors.favColourDark!.withOpacity(isHovering ? 0.25 : 0.2),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
           color:
               // isDark
-              //     ? Colors.greenAccent.withOpacity(0.5)
-              //     : Colors.green[900]!.withOpacity(0.5),
+              //     ? AppColors.favColour.withOpacity(0.5)
+              //     : AppColors.favColourDark!.withOpacity(0.5),
               isDisabled
               ? effectiveColor.withOpacity(0.15) // very faint background
               : (isDark
-                    ? Colors.greenAccent.withOpacity(isHovering ? 0.25 : 0.2)
-                    : Colors.green[900]!.withOpacity(isHovering ? 0.25 : 0.2)),
+                    ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+                    : AppColors.favColourDark!.withOpacity(
+                        isHovering ? 0.25 : 0.2,
+                      )),
         ),
       ),
       child: Row(
@@ -649,21 +648,59 @@ class _CircularButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    Gradient effectiveGradient;
+    final btnPrColor = AppColors.favColour;
+    // final btnSecColor = AppColors.favColour_sec;
+    final btnSecColor = AppColors.favColourDark;
+
+    final brandGradient = LinearGradient(
+      colors: [btnPrColor, btnSecColor],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    final darkGradientOverlay = LinearGradient(
+      colors: [btnPrColor.withOpacity(0.65), btnSecColor.withOpacity(0.65)],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    final lightHoverGradient = LinearGradient(
+      colors: [btnPrColor, btnSecColor],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    if (isDisabled) {
+      effectiveGradient = LinearGradient(
+        colors: isDark
+            ? [const Color(0xFF2A3A4A), const Color(0xFF1E2A38)]
+            : [const Color(0xFFD0D0D0), const Color(0xFFB0B0B0)],
+      );
+    } else if (isDark) {
+      effectiveGradient = isHovering ? darkGradientOverlay : brandGradient;
+    } else {
+      effectiveGradient = isHovering ? lightHoverGradient : brandGradient;
+    }
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
       width: isHovering ? size * 1.1 : size,
       height: isHovering ? size * 1.1 : size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: isDisabled
-            ? LinearGradient(colors: [Color(0xFF1A2E2B), Color(0xFF132624)])
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isHovering
-                    ? [Color(0xFF66E6C9), Color(0xFF66C6E6)]
-                    : [Color(0xFF00FFB2), Color(0xFF00C2FF)],
-              ),
+        // gradient: isDisabled
+        //     ? LinearGradient(colors: [Color(0xFF1A2E2B), Color(0xFF132624)])
+        //     : LinearGradient(
+        //         begin: Alignment.topLeft,
+        //         end: Alignment.bottomRight,
+        //         colors: isHovering
+        //             ? [Color(0xFF66E6C9), Color(0xFF66C6E6)]
+        //             : [Color(0xFF00FFB2), Color(0xFF00C2FF)],
+        // ),
+        gradient: effectiveGradient,
+
         boxShadow: (isDisabled || (isloading ?? false))
             ? []
             : [
@@ -718,7 +755,7 @@ class _GlowButton extends StatelessWidget {
     this.isloading = false,
     this.isHovering = false,
     this.customFontSize,
-    this.glowColor = Colors.greenAccent,
+    this.glowColor = AppColors.favColour,
   });
 
   @override
@@ -817,8 +854,8 @@ class _CircularPayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final activeColor = isDark
-        ? Colors.greenAccent.withOpacity(0.9)
-        : Colors.green[900]!.withOpacity(0.9);
+        ? AppColors.favColour.withOpacity(0.9)
+        : AppColors.favColourDark!.withOpacity(0.9);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
@@ -827,12 +864,12 @@ class _CircularPayButton extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isDark
-            ? Colors.greenAccent.withOpacity(isHovering ? 0.25 : 0.2)
-            : Colors.green[900]!.withOpacity(isHovering ? 0.25 : 0.2),
+            ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+            : AppColors.favColourDark!.withOpacity(isHovering ? 0.25 : 0.2),
         border: Border.all(
           color: isDark
-              ? Colors.greenAccent.withOpacity(0.5)
-              : Colors.green[900]!.withOpacity(0.5),
+              ? AppColors.favColour.withOpacity(0.5)
+              : AppColors.favColourDark!.withOpacity(0.5),
         ),
         boxShadow: isHovering && !isDisabled
             ? [

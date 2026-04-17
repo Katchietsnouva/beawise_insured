@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/services/biometric_auth_service.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
 import 'package:insured/app_2/core/widgets/card_with_child.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -570,7 +571,9 @@ class SettingsScreen extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? (isDark ? theme.primaryColor : Colors.green[900])
+                            ? (isDark
+                                  ? theme.primaryColor
+                                  : AppColors.favColourDark)
                             : (isDark
                                   ? Colors.white10
                                   : Colors.black.withOpacity(0.05)),
@@ -628,7 +631,7 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: onChanged,
             activeColor: isDark
                 ? Theme.of(context).primaryColor
-                : Colors.green[900],
+                : AppColors.favColourDark,
           ),
         ],
       ),

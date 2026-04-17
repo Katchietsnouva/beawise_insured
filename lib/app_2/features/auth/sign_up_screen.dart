@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:insured/app_2/core/constants/app_colors.dart';
+
 import 'package:insured/app_2/core/services/memory_cache.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
@@ -663,16 +663,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF0D1F1C),
-                  Color(0xFF0F3D3E),
-                  Color(0xFF145A32),
+                  AppColors.nice_grad_1,
+                  AppColors.nice_grad_3,
+                  AppColors.nice_grad_2,
                 ],
               ),
             ),
             child: Stack(
               children: [
                 AnimatedOrbs(
-                  glowColor: AppColors.mint,
+                  glowColor: AppColors.animatedOrbsGlow,
                   shimmerCtrl: _shimmerCtrl,
                 ),
                 const GrainOverlay(),
@@ -873,12 +873,15 @@ class GoToLogInRow extends StatelessWidget {
               text: "Already have an account? ",
               style: TextStyle(color: Colors.white70, fontSize: 14),
             ),
+            TextSpan(text: "  "),
             TextSpan(
               text: "Login",
               style: TextStyle(
-                color: Colors.greenAccent,
+                // color: Colors.greenAccent,
+                color: AppColors.favColour,
+
                 // fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontSize: 16,
               ),
             ),
           ],

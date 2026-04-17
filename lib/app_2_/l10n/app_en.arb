@@ -1,0 +1,150 @@
+{
+
+  "@@locale": "en",
+  "appTitle": "Insured",
+  "newPolicy": "New Motor Policy",
+  "policy": "Policy",
+  "premium": "Premium",
+  "claim": "Claim",
+  "addClient": "Add New Client",
+  "welcomeMessage": "Welcome back, {name}",
+  "@welcomeMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+
+
+  "settings_appearanceTitle": "Appearance",
+  "settings_appearanceSubtitle": "Customize how the app looks",
+  "settings_themeLabel": "Theme",
+  "settings_textSizeLabel": "Text Size",
+
+
+  "settings_DisplayTitle": "Display",
+  "settings_DisplaySubtitle": "Configure default display options",
+  "settings_DefaultViewLabel": "Default View",
+  "settings_CompactModeTitle": "Compact Mode",
+  "settings_CompactModeDescription": "Reduce spacing between elements",
+
+  "settings_NotificationsTitle": "Notifications",
+  "settings_NotificationsSubtitle": "Manage notification preferences",
+  "settings_EnableNotificationsTitle": "Enable Notifications",
+  "settings_EnableNotificationsDescription": "Receive in-app notifications",
+  "settings_EmailNotificationsTitle": "Email Notifications",
+  "settings_EmailNotificationsDescription": "Receive updates via email",
+  "settings_RenewalRemindersTitle": "Renewal Reminders",
+  "settings_RenewalRemindersDescription": "Get notified about upcoming renewals",
+
+  "settings_LanguageTitle": "Language & Region",
+  "settings_LanguageSubtitle": "Set your language preferences",
+  "settings_LanguageLabel": "Language",
+
+  "settings_PrivacyTitle": "Privacy & Security",
+  "settings_PrivacySubtitle": "Control your privacy and security settings",
+  "settings_TwoFactorTitle": "Two-Factor Authentication",
+  "settings_TwoFactorDescription": "Add an extra layer of security",
+  "settings_ActivityLoggingTitle": "Activity Logging",
+  "settings_ActivityLoggingDescription": "Track account activity",
+  "settings_ShowSensitiveTitle": "Show Sensitive Data",
+  "settings_ShowSensitiveDescription": "Display ID numbers and financial data",
+  "settings_ChangePassword": "Change Password",
+
+  "settings_DataTitle": "Data Management",
+  "settings_DataSubtitle": "Export, import, and manage your data",
+  "settings_ExportSettings": "Export Settings",
+  "settings_ImportSettings": "Import Settings",
+  "settings_DownloadAllData": "Download All Data",
+  "settings_ClearCache": "Clear Cache",
+
+  "settings_AccessibilityTitle": "Accessibility",
+  "settings_AccessibilitySubtitle": "Enhance accessibility features",
+  "settings_HighContrastTitle": "High Contrast Mode",
+  "settings_HighContrastDescription": "Increase contrast for better visibility",
+  "settings_ReduceMotionTitle": "Reduce Motion",
+  "settings_ReduceMotionDescription": "Minimize animations and transitions",
+  "settings_ScreenReaderTitle": "Screen Reader Support",
+  "settings_ScreenReaderDescription": "Enhanced screen reader compatibility",
+
+  "settings_PerformanceTitle": "Performance",
+  "settings_PerformanceSubtitle": "Optimize app performance",
+  "settings_AutoSaveTitle": "Auto-Save",
+  "settings_AutoSaveDescription": "Automatically save changes",
+  "settings_LazyLoadingTitle": "Lazy Loading",
+  "settings_LazyLoadingDescription": "Load content as you scroll",
+  "settings_OfflineModeTitle": "Offline Mode",
+  "settings_OfflineModeDescription": "Work without internet connection",
+
+  "settings_AdvancedTitle": "Advanced",
+  "settings_AdvancedSubtitle": "Power user features and shortcuts",
+  "settings_KeyboardShortcutsTitle": "Keyboard Shortcuts",
+  "settings_KeyboardShortcutsDescription": "Enable keyboard navigation",
+  "settings_DeveloperModeTitle": "Developer Mode",
+  "settings_DeveloperModeDescription": "Show advanced debugging options",
+  "settings_BetaFeaturesTitle": "Beta Features",
+  "settings_BetaFeaturesDescription": "Try experimental features",
+  "settings_ViewKeyboardShortcuts": "View Keyboard Shortcuts",
+
+  "settings_DangerTitle": "Danger Zone",
+  "settings_DangerSubtitle": "Irreversible actions",
+  "settings_ResetAllSettings": "Reset All Settings",
+  "settings_DeleteAllData": "Delete All Data",
+
+
+  "sidebar_dashboard": "Dashboard",
+  "subtitle_dashboard": "Underwriting Dashboard",
+  "sidebar_clients": "Clients",
+  "subtitle_clients": "View and manage all clients",
+
+  "sidebar_motorQuote": "Generate Quote",
+  "subtitle_motorQuote": "Manage motor quotes",
+  "sidebar_policies": "Production",
+  "subtitle_policies": "View production Reports",
+
+  "sidebar_production": "Production",
+  "subtitle_production": "View production Reports",
+
+  "sidebar_dmvic": "DMVIC",
+  "subtitle_dmvic": "DMVIC-Express",
+  "sidebar_dmvicDoubleInsurance": "DMVIC Double Insurance",
+  "subtitle_dmvicDoubleInsurance": "Check double insurance",
+  "sidebar_dmvicStock": "Cerificate Stock",
+  "subtitle_dmvicStock": "Stock Check",
+
+  "sidebar_statement": "Statement",
+  "subtitle_statement": "View statements",
+  "sidebar_renewals": "Renewals",
+  "subtitle_renewals": "Monitor policy renewals",
+
+
+  "sidebar_certificates": "Cert Extension",
+  "subtitle_certificates": "View issued certificates",
+
+  "sidebar_quotes": "My Quotes",
+  "subtitle_quotes": "Manage insurance quotes",
+
+  "sidebar_settings": "Settings",
+  "subtitle_settings": "App preferences",
+
+  "sidebar_profile": "My Profile",
+  "subtitle_profile": "Manage your account",
+  
+  "sidebar_notifications": "Notifications",
+  "subtitle_notifications": "View all your notifications",
+
+  "sidebar_offlineQueueScreen": "Offline Queue Screen",
+  "subtitle_offlineQueueScreen": "View all your offline saves",
+  
+  
+  "sidebar_logout": "Logout",
+  "sidebar_loading": "Loading...",
+
+  "sidebar_add_client": "Add Client",
+  "subtitle_add_client": "Enter new client details",
+
+
+  "subtitle_default": "Always insured"
+
+ 
+}

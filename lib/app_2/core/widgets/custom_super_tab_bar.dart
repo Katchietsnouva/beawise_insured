@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 
@@ -153,8 +154,10 @@ class CustomSuperTabBar extends StatelessWidget {
     if (mode != null) {
       switch (mode!) {
         case SuperTabBarMode.ColorModeA:
-          selectedBg ??= isDark ? theme.colorScheme.surface : Colors.green[900];
-          selectedFg ??= isDark ? Colors.greenAccent : Colors.white;
+          selectedBg ??= isDark
+              ? theme.colorScheme.surface
+              : AppColors.favColourDark;
+          selectedFg ??= isDark ? AppColors.favColour : Colors.white;
           unselectedBg ??= Colors.transparent;
           unselectedFg ??= theme.colorScheme.onSurface;
           containerBg ??= theme.colorScheme.onSurface.withOpacity(0.1);
@@ -164,11 +167,11 @@ class CustomSuperTabBar extends StatelessWidget {
 
         case SuperTabBarMode.ColorModeB:
           selectedBg ??= isDark
-              ? const Color(0xFF00FFB2).withOpacity(0.25)
-              // : Colors.green[900]?.withOpacity(0.2);
-              : Colors.green[900]?.withOpacity(0.8);
+              ? theme.primaryColor.withOpacity(0.25)
+              // :  urDark?.withOpacity(0.2);
+              : AppColors.favColourDark?.withOpacity(0.8);
 
-          selectedFg ??= isDark ? const Color(0xFF00FFB2) : Colors.white;
+          selectedFg ??= isDark ? theme.primaryColor : Colors.white;
           unselectedBg ??= Colors.transparent;
           unselectedFg ??= theme.colorScheme.onSurface;
           containerBg ??= theme.colorScheme.onSurface.withOpacity(0.1);
@@ -178,8 +181,8 @@ class CustomSuperTabBar extends StatelessWidget {
       }
     }
 
-    selectedBg ??= const Color(0xFF00FFB2).withOpacity(0.25);
-    selectedFg ??= isDark ? const Color(0xFF00FFB2) : Colors.white;
+    selectedBg ??= theme.primaryColor.withOpacity(0.25);
+    selectedFg ??= isDark ? theme.primaryColor : Colors.white;
     unselectedBg ??= Colors.transparent;
     unselectedFg ??= theme.colorScheme.onSurface;
     containerBg ??= theme.colorScheme.onSurface.withOpacity(0.1);
@@ -268,7 +271,7 @@ class _ResolvedColors {
 //     final isDark = theme.brightness == Brightness.dark;
 
 //     // Smart defaults that work out-of-the-box
-//     final defaultSelectedBg = const Color(0xFF00FFB2).withOpacity(0.25);
+//     final defaultSelectedBg = theme.primaryColor.withOpacity(0.25);
 //     // final defaultSelectedFg = isDark ? Colors.black : Colors.white;
 //     final defaultSelectedFg = isDark ? Color(0xFF00FFB2) : Colors.white;
 //     final defaultUnselectedBg = Colors.transparent;

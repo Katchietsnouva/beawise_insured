@@ -53,8 +53,7 @@ final insurersProvider = FutureProvider<List<dynamic>>((ref) async {
   final token = authState.bearerToken;
   if (token == null) throw Exception('Not authenticated');
 
-  final response = await ApiService.getInsurers(
-    token: token);
+  final response = await ApiService.getInsurers(token: token);
   // Adjust based on actual API response structure
   final List<dynamic> insurers = response['data'] ?? response['insurers'] ?? [];
 

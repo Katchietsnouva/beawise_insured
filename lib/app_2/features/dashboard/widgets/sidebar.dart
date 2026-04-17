@@ -2,12 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/icon_scale_helper.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_circular_avatar.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
+
+// ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
+abstract class _SidebarTokens {
+  // Shared brand
+  static const blue = Color(0xFF3B6BFF);
+  static const purple = Color(0xFF8E5CCB);
+  static const indigo = Color(0xFF6C63FF);
+
+  // Gradient used for active pills, indicator, logo accent
+  static const brandGradient = LinearGradient(
+    colors: [blue, purple],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const brandGradientVertical = LinearGradient(
+    colors: [blue, purple],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  // ── DARK ──
+  static const darkBg = Color(0xFF0A0F1E);
+  static const darkSurface = Color(0xFF0F1629); // sidebar panel
+  static const darkBorder = Color(0xFF1A2340);
+  static const darkTextPri = Colors.white;
+  static const darkTextMuted = Color(0xFF6B7FA8);
+  static const darkActiveBg = Color(0x2A3B6BFF); // blue @ 17%
+  static const darkHoverBg = Color(0x103B6BFF);
+
+  // ── LIGHT ──
+  static const lightBg = Color(0xFFF0F2FF); // cool lavender-white
+  static const lightSurface = Color(0xFFFFFFFF);
+  static const lightBorder = Color(0xFFDDE2F5);
+  static const lightTextPri = Color(0xFF0F1629);
+  static const lightTextMuted = Color(0xFF7A85A8);
+  static const lightActiveBg = Color(0x1A3B6BFF); // blue @ 10%
+  static const lightHoverBg = Color(0x0D3B6BFF);
+}
 
 class Sidebar extends ConsumerStatefulWidget {
   const Sidebar({super.key});
@@ -56,6 +96,7 @@ class _SidebarState extends ConsumerState<Sidebar>
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final isAuthenticated = authState.isAuthenticated;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final userName = user != null
         ? toTitleCase(user.name)
@@ -70,7 +111,28 @@ class _SidebarState extends ConsumerState<Sidebar>
       builder: (context, child) {
         return Container(
           width: _widthAnim.value,
-          color: Theme.of(context).colorScheme.primary,
+          decoration: BoxDecoration(
+            // color: surface,
+            color: Theme.of(context).colorScheme.primary,
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            // Subtle gradient overlay on the sidebar background
+            gradient: isDark
+                ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [const Color(0xFF0F1629), const Color(0xFF0A0F1E)],
+                  )
+                : LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white, const Color(0xFFF4F0FF)],
+                  ),
+          ),
           child: Column(
             children: [
               const SizedBox(height: 60),
@@ -99,33 +161,72 @@ class _SidebarState extends ConsumerState<Sidebar>
                       ),
                     )
                   // //  DESKTOP
-                  : Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 2),
-                          child: Image(
-                            image: AssetImage(
-                              '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+                  // : Row(
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 5, right: 2),
+                  //         child: Image(
+                  //           image: AssetImage(
+                  //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+                  //           ),
+                  //           height: 38,
+                  //           // width: 150,
+                  //           fit: BoxFit.contain,
+                  //         ),
+                  //       ),
+                  //       const Spacer(),
+                  //       Visibility(
+                  //         visible: Responsive.isMobile(context) ? false : true,
+                  //         child: IconButton(
+                  //           tooltip: 'Collapse sidebar',
+                  //           icon: Icon(
+                  //             Icons.chevron_left,
+                  //             color: Theme.of(context).colorScheme.onSurface,
+                  //             size: 40,
+                  //           ),
+                  //           onPressed: _toggle,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //  DESKTOP
+                  : SizedBox(
+                      height: 50, // Gives enough room for the icon button
+                      child: Stack(
+                        children: [
+                          // 1. The Image perfectly centered in the available space
+                          Center(
+                            child: Image(
+                              image: AssetImage(
+                                '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+                              ),
+                              height: 50,
+                              fit: BoxFit.contain,
                             ),
-                            height: 38,
-                            // width: 150,
-                            fit: BoxFit.contain,
                           ),
-                        ),
-                        const Spacer(),
-                        Visibility(
-                          visible: Responsive.isMobile(context) ? false : true,
-                          child: IconButton(
-                            tooltip: 'Collapse sidebar',
-                            icon: Icon(
-                              Icons.chevron_left,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              size: 40,
+
+                          // 2. The button pinned to the right edge
+                          Positioned(
+                            right: 4, // Slight padding from the right edge
+                            top: 0,
+                            bottom: 0,
+                            child: Visibility(
+                              visible: !Responsive.isMobile(context),
+                              child: IconButton(
+                                tooltip: 'Collapse sidebar',
+                                icon: Icon(
+                                  Icons.chevron_left,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                  size: 40,
+                                ),
+                                onPressed: _toggle,
+                              ),
                             ),
-                            onPressed: _toggle,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
               const SizedBox(height: 20),
@@ -338,10 +439,20 @@ class _SidebarState extends ConsumerState<Sidebar>
     final bool isActive = location.startsWith(route);
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final Color activeColor = isDark ? Colors.greenAccent : Colors.white;
-    final Color iconColor = isActive
-        ? activeColor
-        : Theme.of(context).colorScheme.onSurface;
+    final Color activeColor = isDark ? AppColors.favColour : Colors.white;
+
+    final textPri = isDark
+        ? _SidebarTokens.darkTextPri
+        : _SidebarTokens.lightTextPri;
+    final textMuted = isDark
+        ? _SidebarTokens.darkTextMuted
+        : _SidebarTokens.lightTextMuted;
+
+    // final Color iconColor = isActive
+    //     ? activeColor
+    //     : Theme.of(context).colorScheme.onSurface;
+
+    final Color iconColor = isActive ? textPri : textMuted;
 
     // ── Collapsed: icon-only with tooltip ──
     if (_isCollapsed) {
@@ -353,8 +464,8 @@ class _SidebarState extends ConsumerState<Sidebar>
           decoration: BoxDecoration(
             color: isActive
                 ? (isDark
-                      ? Colors.greenAccent.withOpacity(0.2)
-                      : Colors.green[900])
+                      ? AppColors.favColour.withOpacity(0.3)
+                      : AppColors.favColourDark.withOpacity(0.3))
                 : (isDark
                       ? Theme.of(context).colorScheme.background
                       : Colors.white10),
@@ -379,7 +490,6 @@ class _SidebarState extends ConsumerState<Sidebar>
       );
     }
 
-    // ── Expanded: full list tile ──
     final isMobile = Responsive.isMobile(context);
     return Container(
       // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -389,29 +499,103 @@ class _SidebarState extends ConsumerState<Sidebar>
       ),
       decoration: BoxDecoration(
         color: isActive
-            ? (isDark ? Colors.greenAccent.withOpacity(0.2) : Colors.green[900])
-            : (isDark
-                  ? Theme.of(context).colorScheme.background
-                  : Colors.white10),
+            ? (isDark
+                  ? AppColors.favColour.withOpacity(0.2)
+                  : AppColors.favColourDark.withOpacity(0.2))
+            : null,
+        // (isDark
+        //       ? Theme.of(context).colorScheme.background.withOpacity(0.1)
+        //       : Colors.white10),
         borderRadius: BorderRadius.circular(12),
+        border: isActive
+            ? Border.all(
+                color: AppColors.favColour.withOpacity(0.8),
+                width: 1.0,
+              )
+            : null,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: ListTile(
-          leading: Icon(
-            icon,
-            size: responsiveIconSize(context),
-            color: iconColor,
-          ),
-          title: Text(
-            label,
-            style: TextStyle(
-              color: iconColor,
-              fontWeight: isActive ? FontWeight.w400 : FontWeight.w300,
+      child: Tooltip(
+        message: label,
+        preferBelow: false,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => context.go(route),
+            // splashColor: AppColors.favColourDark.withOpacity(0.12),
+            // highlightColor: AppColors.favColourDark.withOpacity(0.06),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 3,
+                    height: isActive ? 20 : 0,
+                    margin: EdgeInsets.only(right: isActive ? 10 : 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      gradient: _SidebarTokens.brandGradientVertical,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.favColourDark.withOpacity(0.5),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                  isActive
+                      ? ShaderMask(
+                          shaderCallback: (bounds) =>
+                              _SidebarTokens.brandGradient.createShader(bounds),
+                          blendMode: BlendMode.srcIn,
+                          child: Icon(
+                            icon,
+                            size: responsiveIconSize(context),
+                            color: Colors.white,
+                          ),
+                        )
+                      : Icon(
+                          icon,
+                          size: responsiveIconSize(context),
+                          color: iconColor,
+                        ),
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: isActive ? textPri : textMuted,
+                        //   color: iconColor,
+                        // fontSize: 13.5,
+                        fontWeight: isActive
+                            ? FontWeight.w400
+                            : FontWeight.w300,
+                        letterSpacing: 0.1,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  if (isActive)
+                    Container(
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.only(right: 4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            AppColors.favColourDark,
+                            AppColors.favColour,
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            maxLines: 1,
           ),
-          onTap: () => context.go(route),
         ),
       ),
     );
@@ -433,7 +617,7 @@ class _SidebarState extends ConsumerState<Sidebar>
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: isActive
-                ? Colors.greenAccent.withOpacity(0.2)
+                ? AppColors.favColour.withOpacity(0.2)
                 : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
           ),
@@ -442,7 +626,7 @@ class _SidebarState extends ConsumerState<Sidebar>
             child: Icon(
               icon,
               color: isActive
-                  ? Colors.greenAccent
+                  ? AppColors.favColour
                   : Theme.of(context).colorScheme.onSurface,
             ),
           ),
@@ -455,7 +639,7 @@ class _SidebarState extends ConsumerState<Sidebar>
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: isActive
-            ? Colors.greenAccent.withOpacity(0.2)
+            ? AppColors.favColour.withOpacity(0.2)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
@@ -465,14 +649,14 @@ class _SidebarState extends ConsumerState<Sidebar>
           leading: Icon(
             icon,
             color: isActive
-                ? Colors.greenAccent
+                ? AppColors.favColour
                 : Theme.of(context).colorScheme.onSurface,
           ),
           title: Text(
             label,
             style: TextStyle(
               color: isActive
-                  ? Colors.greenAccent
+                  ? AppColors.favColour
                   : Theme.of(context).colorScheme.onSurface,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
             ),
@@ -789,13 +973,13 @@ class _SidebarState extends ConsumerState<Sidebar>
 //       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
 //       decoration: BoxDecoration(
 //         // color: isActive
-//         //     ? Colors.greenAccent.withOpacity(0.2)
+//         //     ? AppColors.favColour.withOpacity(0.2)
 //         //     : Colors.transparent,
 //         color: isActive
-//             // ? Colors.greenAccent
+//             // ? AppColors.favColour
 //             ? Theme.of(context).brightness == Brightness.dark
-//                   ? Colors.greenAccent.withOpacity(0.2)
-//                   : Colors.green[900]
+//                   ? AppColors.favColour.withOpacity(0.2)
+//                   : AppColors.favColourDark
 //             : Theme.of(context).colorScheme.surface,
 //         borderRadius: BorderRadius.circular(12),
 //       ),
@@ -806,9 +990,9 @@ class _SidebarState extends ConsumerState<Sidebar>
 //             icon,
 //             size: responsiveIconSize(context),
 //             color: isActive
-//                 // ? Colors.greenAccent
+//                 // ? AppColors.favColour
 //                 ? Theme.of(context).brightness == Brightness.dark
-//                       ? Colors.greenAccent
+//                       ? AppColors.favColour
 //                       : Colors.white
 //                 : Theme.of(context).colorScheme.onSurface,
 //           ),
@@ -816,12 +1000,12 @@ class _SidebarState extends ConsumerState<Sidebar>
 //             label,
 //             style: TextStyle(
 //               // color: isActive
-//               //     ? Colors.greenAccent
+//               //     ? AppColors.favColour
 //               //     : Theme.of(context).colorScheme.onSurface,
 //               color: isActive
-//                   // ? Colors.greenAccent
+//                   // ? AppColors.favColour
 //                   ? Theme.of(context).brightness == Brightness.dark
-//                         ? Colors.greenAccent
+//                         ? AppColors.favColour
 //                         : Colors.white
 //                   : Theme.of(context).colorScheme.onSurface,
 //               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
@@ -847,7 +1031,7 @@ class _SidebarState extends ConsumerState<Sidebar>
 //       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
 //       decoration: BoxDecoration(
 //         color: isActive
-//             ? Colors.greenAccent.withOpacity(0.2)
+//             ? AppColors.favColour.withOpacity(0.2)
 //             : Colors.transparent,
 //         borderRadius: BorderRadius.circular(12),
 //       ),
@@ -857,14 +1041,14 @@ class _SidebarState extends ConsumerState<Sidebar>
 //           leading: Icon(
 //             icon,
 //             color: isActive
-//                 ? Colors.greenAccent
+//                 ? AppColors.favColour
 //                 : Theme.of(context).colorScheme.onSurface,
 //           ),
 //           title: Text(
 //             label,
 //             style: TextStyle(
 //               color: isActive
-//                   ? Colors.greenAccent
+//                   ? AppColors.favColour
 //                   : Theme.of(context).colorScheme.onSurface,
 
 //               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
@@ -889,7 +1073,7 @@ class _SidebarState extends ConsumerState<Sidebar>
 //   //     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
 //   //     decoration: BoxDecoration(
 //   //       color: isActive
-//   //           ? Colors.greenAccent.withOpacity(0.2)
+//   //           ? AppColors.favColour.withOpacity(0.2)
 //   //           : Colors.transparent,
 //   //       borderRadius: BorderRadius.circular(12),
 //   //     ),
@@ -899,14 +1083,14 @@ class _SidebarState extends ConsumerState<Sidebar>
 //   //         leading: Icon(
 //   //           icon,
 //   //           color: isActive
-//   //               ? Colors.greenAccent
+//   //               ? AppColors.favColour
 //   //               : Theme.of(context).colorScheme.onSurface,
 //   //         ),
 //   //         title: Text(
 //   //           label,
 //   //           style: TextStyle(
 //   //             color: isActive
-//   //                 ? Colors.greenAccent
+//   //                 ? AppColors.favColour
 //   //                 : Theme.of(context).colorScheme.onSurface,
 //   //             fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
 //   //           ),
@@ -915,7 +1099,7 @@ class _SidebarState extends ConsumerState<Sidebar>
 //   //         trailing: Icon(
 //   //           Icons.chevron_right, // Or any static icon
 //   //           color: isActive
-//   //               ? Colors.greenAccent
+//   //               ? AppColors.favColour
 //   //               : Theme.of(context).colorScheme.onSurface,
 //   //         ),
 //   //         children: subItems,

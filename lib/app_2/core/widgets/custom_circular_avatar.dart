@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/data/models/user_model.dart';
 
 class CustomCircularAvatar extends StatelessWidget {
@@ -38,8 +39,8 @@ class CustomCircularAvatar extends StatelessWidget {
       radius: radius ?? 20,
 
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Colors.greenAccent.withOpacity(0.4)
-          : Colors.green[900],
+          ? AppColors.favColour.withOpacity(0.4)
+          : AppColors.favColourDark,
       child: Text(
         initials,
         //  user.email[ 0].toUpperCase() + user.email[1].toLowerCase(),

@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/theme/custom_text_styles.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 
@@ -116,6 +117,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final onSurface = theme.colorScheme.onSurface;
     final surface = theme.colorScheme.surface;
     bool _isMenuOpen = false;
@@ -224,8 +227,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 decoration: BoxDecoration(
                   // Light background highlight for the selected item
                   color: isSelected
-                      ? (Theme.of(context).brightness == Brightness.light
-                            ? Colors.green[700]!.withOpacity(0.3)
+                      ? (!isDark
+                            ? AppColors.favColourDark!.withOpacity(0.3)
                             : theme.primaryColor.withOpacity(0.1))
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
@@ -246,9 +249,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     // Bold text and primary color for the selected item
                     fontWeight: isSelected ? FontWeight.w400 : FontWeight.w300,
                     color: isSelected
-                        ? (Theme.of(context).brightness == Brightness.light
-                              ? Colors.green[900]
-                              : theme.primaryColor)
+                        ? (isDark ? AppColors.favColour : theme.primaryColor)
                         : onSurface,
                     fontSize: 12,
                   ),
@@ -285,8 +286,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? (Theme.of(context).brightness == Brightness.light
-                          ? Colors.green[700]!.withOpacity(0.3)
+                    // ? (Theme.of(context).brightness == Brightness.light
+                    //       ? Colors.green[700]!.withOpacity(0.3)
+                    //       : theme.primaryColor.withOpacity(0.1))
+                    ? (!isDark
+                          ? AppColors.favColourDark!.withOpacity(0.3)
                           : theme.primaryColor.withOpacity(0.1))
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
@@ -295,9 +299,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   color: isSelected
-                      ? (Theme.of(context).brightness == Brightness.light
-                            ? Colors.green[900]
-                            : theme.primaryColor)
+                      // ? (Theme.of(context).brightness == Brightness.light
+                      //       ? Colors.green[900]
+                      //       : theme.primaryColor)
+                      // ? (isDark ? Colors.white : _DropdownTokens.blue)
+                      ? (isDark ? AppColors.favColour : theme.primaryColor)
                       : onSurface,
                   fontSize: 12,
                 ),
@@ -399,6 +405,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: surface.withOpacity(0.95),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.favColour.withOpacity(isDark ? 0.15 : 0.08),
+                blurRadius: 12,
+                spreadRadius: 2,
+              ),
+            ],
           ),
           offset: const Offset(0, -8),
         ),
@@ -424,6 +437,14 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       hintText: 'Search...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(width: 0.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: AppColors.favColour.withOpacity(0.8),
+                          width: 0.9,
+                        ),
                       ),
                     ),
                   ),
@@ -477,8 +498,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 8),
 
-      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-      // ... keep your borders as they are in your code
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
@@ -501,9 +520,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
           color: theme.brightness == Brightness.light
-              ? onSurface.withOpacity(0.8)
-              : surface.withOpacity(0.8),
-          width: 2.0,
+              ? AppColors.favColourDark.withOpacity(0.6)
+              : AppColors.favColourDark.withOpacity(0.6),
+          width: 1.0,
         ),
       ),
       errorBorder: OutlineInputBorder(

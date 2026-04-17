@@ -175,6 +175,7 @@ class _AddClientModalState extends ConsumerState<AddClientModal> {
   }
 
   Future<void> _createClient() async {
+    if (_isLoading) return; // Immediate guard clause
     // if (!_formKey.currentState!.validate()) {
     if (!(_formKey.currentState?.validate() ?? false)) {
       HapticFeedback.heavyImpact();
@@ -266,7 +267,11 @@ class _AddClientModalState extends ConsumerState<AddClientModal> {
 
         // Navigator.pop(context, true);
         // Navigator.pop(context, clientDataToReturn);
-        Navigator.pop(context, (true, clientBody));
+        // Navigator.pop(context, (true, clientBody));
+        if (mounted) {
+          // Return the success state and data to the caller
+          Navigator.pop(context, (true, clientBody));
+        }
       } else {
         throw Exception(response['message'] ?? 'Failed to create client');
       }

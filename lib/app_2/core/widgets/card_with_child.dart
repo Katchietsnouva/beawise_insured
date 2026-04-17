@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/icon_scale_helper.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/glass_card.dart';
@@ -32,7 +33,9 @@ class cardWithChild extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: isLightMode ? Colors.green[900] : Colors.greenAccent,
+                color: isLightMode
+                    ? AppColors.favColourDark
+                    : AppColors.favColour,
                 // iconColor ??
                 size: responsiveIconSize(context),
               ),

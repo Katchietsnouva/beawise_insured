@@ -88,6 +88,7 @@ class _ClientCardState extends ConsumerState<ClientCard> {
             label: 'Edit',
             icon: Icon(Icons.edit),
             variant: ButtonVariant.primary,
+            isDisabled: false,
             onPressed: () async {
               final result =
                   await showModalBottomSheet<(bool, Map<String, dynamic>)>(

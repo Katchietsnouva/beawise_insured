@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart' show AppColors;
 import 'package:insured/app_2/core/theme/custom_text_styles.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -522,9 +523,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: onSurface.withOpacity(0.2)),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(16),
+              //   borderSide: BorderSide(color: onSurface.withOpacity(0.5)),
+              // ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: onSurface.withOpacity(0.5)),
+                borderSide: BorderSide(
+                  color: theme.brightness == Brightness.light
+                      ? AppColors.favColourDark.withOpacity(0.6)
+                      : AppColors.favColourDark.withOpacity(0.6),
+                  width: 1.0,
+                ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
