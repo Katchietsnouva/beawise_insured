@@ -101,12 +101,12 @@ flutter:
     - assets/3d/padlock_opened.glb 
     - assets/3d/Astronaut.glb    
     - assets/3d/monstera_plant.glb    
-    - assets/images/Insured.png
-    - assets/images/Insured_black.png
-    
+    - assets/images/logos/logo.png
+    - assets/images/logos/logo_black.png
+    - assets/images/logos/inscloud.png
+
     - assets/images/geminia_insurance.png
     - assets/images/apa_insurance.png 
-    - assets/images/inscloud.png 
 
 
     - assets/images/sanlam_insurance.png

@@ -14,40 +14,24 @@ import 'package:insured/app_2/providers/auth_provider.dart';
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 abstract class _SidebarTokens {
   // Shared brand
-  static const blue = Color(0xFF3B6BFF);
-  static const purple = Color.fromARGB(255, 123, 58, 33);
-  static const indigo = Color(0xFF6C63FF);
+  static const C1 = AppColors.favColour;
+  static final C2 = AppColors.favColourDark;
+
+  // static const C1 = AppColors.animatedOrbsGlow;
+  // static const C2 = AppColors.animatedOrbsGlow_2;
 
   // Gradient used for active pills, indicator, logo accent
-  static const brandGradient = LinearGradient(
-    colors: [blue, purple],
+  static final brandGradient = LinearGradient(
+    colors: [C1, C2],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
-  static const brandGradientVertical = LinearGradient(
-    colors: [blue, purple],
+  static final brandGradientVertical = LinearGradient(
+    colors: [C1, C2],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
-
-  // ── DARK ──
-  static const darkBg = Color(0xFF0A0F1E);
-  static const darkSurface = Color(0xFF0F1629); // sidebar panel
-  static const darkBorder = Color(0xFF1A2340);
-  static const darkTextPri = Colors.white;
-  static const darkTextMuted = Color(0xFF6B7FA8);
-  static const darkActiveBg = Color(0x2A3B6BFF); // blue @ 17%
-  static const darkHoverBg = Color(0x103B6BFF);
-
-  // ── LIGHT ──
-  static const lightBg = Color(0xFFF0F2FF); // cool lavender-white
-  static const lightSurface = Color(0xFFFFFFFF);
-  static const lightBorder = Color(0xFFDDE2F5);
-  static const lightTextPri = Color(0xFF0F1629);
-  static const lightTextMuted = Color(0xFF7A85A8);
-  static const lightActiveBg = Color(0x1A3B6BFF); // blue @ 10%
-  static const lightHoverBg = Color(0x0D3B6BFF);
 }
 
 class Sidebar extends ConsumerStatefulWidget {
@@ -126,7 +110,13 @@ class _SidebarState extends ConsumerState<Sidebar>
                 ? LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [const Color(0xFF0F1629), const Color(0xFF0A0F1E)],
+                    // colors: [const Color(0xFF0F1629), const Color(0xFF0A0F1E)],
+                    colors: [
+                      Theme.of(context).scaffoldBackgroundColor,
+                      Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor.withOpacity(0.99),
+                    ],
                   )
                 : LinearGradient(
                     begin: Alignment.topLeft,
@@ -155,7 +145,7 @@ class _SidebarState extends ConsumerState<Sidebar>
               //     ? Center(
               //         child: Image(
               //           image: AssetImage(
-              //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //             '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
               //           ),
               //           height: 38,
               //           fit: BoxFit.contain,
@@ -168,7 +158,7 @@ class _SidebarState extends ConsumerState<Sidebar>
               //     //         padding: const EdgeInsets.only(left: 5, right: 2),
               //     //         child: Image(
               //     //           image: AssetImage(
-              //     //             '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //     //             '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
               //     //           ),
               //     //           height: 38,
               //     //           // width: 150,
@@ -199,7 +189,7 @@ class _SidebarState extends ConsumerState<Sidebar>
               //             Center(
               //               child: Image(
               //                 image: AssetImage(
-              //                   '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+              //                   '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
               //                 ),
               //                 height: 50,
               //                 fit: BoxFit.contain,
@@ -246,7 +236,7 @@ class _SidebarState extends ConsumerState<Sidebar>
                   ? Center(
                       child: Image(
                         image: AssetImage(
-                          '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+                          '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
                         ),
                         height: 38,
                         fit: BoxFit.contain,
@@ -259,7 +249,7 @@ class _SidebarState extends ConsumerState<Sidebar>
                           padding: const EdgeInsets.only(left: 5, right: 2),
                           child: Image(
                             image: AssetImage(
-                              '$pathPrefix/images/${Theme.of(context).brightness == Brightness.dark ? 'Insured' : 'Insured_black'}.png',
+                              '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
                             ),
                             height: 38,
                             // width: 150,
@@ -443,7 +433,7 @@ class _SidebarState extends ConsumerState<Sidebar>
                                     padding: const EdgeInsets.all(4.0),
                                     child: Image(
                                       image: AssetImage(
-                                        '$pathPrefix/images/inscloud.png',
+                                        '$pathPrefix/images/logos/inscloud.png',
                                       ),
                                       width: 100,
                                       fit: BoxFit.contain,
@@ -495,11 +485,13 @@ class _SidebarState extends ConsumerState<Sidebar>
     final Color activeColor = isDark ? AppColors.favColour : Colors.white;
 
     final textPri = isDark
-        ? _SidebarTokens.darkTextPri
-        : _SidebarTokens.lightTextPri;
+        ? Theme.of(context).colorScheme.onSurface
+        // _SidebarTokens.darkTextPri
+        : Theme.of(context).colorScheme.onSurface;
     final textMuted = isDark
-        ? _SidebarTokens.darkTextMuted
-        : _SidebarTokens.lightTextMuted;
+        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.2)
+        //  _SidebarTokens.darkTextMuted
+        : Theme.of(context).colorScheme.onSurface.withOpacity(0.3);
 
     // final Color iconColor = isActive
     //     ? activeColor
