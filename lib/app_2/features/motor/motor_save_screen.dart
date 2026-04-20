@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/services/api_service.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
@@ -1045,12 +1046,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       key: const ValueKey('selected_client_card'),
       padding: EdgeInsets.all(Responsive.isMobile(context) ? 12 : 16),
       decoration: BoxDecoration(
-        // color: const Color(0xFF00FFB2).withOpacity(0.1),
         color: isDark
-            ? const Color(0xFF00FFB2).withOpacity(0.2)
+            ? AppColors.favColour.withOpacity(0.2)
             : Colors.grey.withOpacity(0.25),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF00FFB2).withOpacity(0.5)),
+        border: Border.all(color: AppColors.favColour.withOpacity(0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1815,8 +1815,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isOpen
-              // ? const Color(0xFF00FFB2).withOpacity(0.4)
-              ? Colors.green[900]!
+              ? AppColors.favColour.withOpacity(1.0)
               : Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           width: 1,
         ),
