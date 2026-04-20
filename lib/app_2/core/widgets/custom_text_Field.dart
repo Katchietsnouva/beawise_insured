@@ -505,19 +505,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: onSurface.withOpacity(0.2)),
               ),
-              // focusedBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(16),
-              //   borderSide: BorderSide(color: onSurface.withOpacity(0.5)),
-              // ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(
-                  color: theme.brightness == Brightness.light
-                      ? AppColors.favColourDark.withOpacity(0.6)
-                      : AppColors.favColourDark.withOpacity(0.6),
-                  width: 1.0,
-                ),
+                borderSide: BorderSide(color: onSurface.withOpacity(0.5)),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(16),
+              //   borderSide: BorderSide(
+              //     color: theme.brightness == Brightness.light
+              //         ? AppColors.favColourDark.withOpacity(0.6)
+              //         : AppColors.favColourDark.withOpacity(0.6),
+              //     width: 1.0,
+              //   ),
+              // ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: const BorderSide(
