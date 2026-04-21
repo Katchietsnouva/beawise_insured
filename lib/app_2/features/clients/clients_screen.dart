@@ -332,70 +332,67 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         ),
       ),
 
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 24.0, right: 24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              heroTag: "fab_top",
-              // mini: true,
-              onPressed: () {
-                if (_searchExpanded) {
-                  _searchBarKey.currentState?.collapse();
-                } else {
-                  setState(() => _searchExpanded = true);
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _searchBarKey.currentState?.expand();
-                  });
-                }
-              },
-              elevation: isLight ? 16 : 20,
-              backgroundColor: Theme.of(
-                context,
-              ).primaryColor.withOpacity(isLight ? 1 : 0.25),
-              child: Icon(
-                _searchExpanded ? Icons.close : Icons.search,
-                size: 40,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
-              ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: "fab_top",
+            // mini: true,
+            onPressed: () {
+              if (_searchExpanded) {
+                _searchBarKey.currentState?.collapse();
+              } else {
+                setState(() => _searchExpanded = true);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _searchBarKey.currentState?.expand();
+                });
+              }
+            },
+            elevation: isLight ? 16 : 20,
+            backgroundColor: Theme.of(
+              context,
+            ).primaryColor.withOpacity(isLight ? 1 : 0.25),
+            child: Icon(
+              _searchExpanded ? Icons.close : Icons.search,
+              size: 40,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
             ),
+          ),
 
-            const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-            FloatingActionButton(
-              onPressed: () async {
-                // final result = await showModalBottomSheet<bool>(
-                final result =
-                    await showModalBottomSheet<(bool, Map<String, dynamic>)>(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const AddClientModal(),
-                    );
+          FloatingActionButton(
+            onPressed: () async {
+              // final result = await showModalBottomSheet<bool>(
+              final result =
+                  await showModalBottomSheet<(bool, Map<String, dynamic>)>(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => const AddClientModal(),
+                  );
 
-                if (result != null) {
-                  final (success, data) = result;
-                  if (success) {
-                    ref
-                        .read(clientsPaginationProvider.notifier)
-                        .refreshAllAndReset();
-                  }
+              if (result != null) {
+                final (success, data) = result;
+                if (success) {
+                  ref
+                      .read(clientsPaginationProvider.notifier)
+                      .refreshAllAndReset();
                 }
-              },
-              elevation: isLight ? 16 : 20,
-              backgroundColor: Theme.of(
-                context,
-              ).primaryColor.withOpacity(isLight ? 1 : 0.25),
-              child: Icon(
-                Icons.add,
-                size: 40,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
-              ),
+              }
+            },
+            elevation: isLight ? 16 : 20,
+            backgroundColor: Theme.of(
+              context,
+            ).primaryColor.withOpacity(isLight ? 1 : 0.25),
+            child: Icon(
+              Icons.add,
+              size: 40,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
