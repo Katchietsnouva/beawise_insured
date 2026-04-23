@@ -238,7 +238,7 @@ class _SidebarState extends ConsumerState<Sidebar>
                         image: AssetImage(
                           '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
                         ),
-                        height: 38,
+                        height: 50,
                         fit: BoxFit.contain,
                       ),
                     )
@@ -251,7 +251,7 @@ class _SidebarState extends ConsumerState<Sidebar>
                             image: AssetImage(
                               '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
                             ),
-                            height: 38,
+                            height: 46,
                             // width: 150,
                             fit: BoxFit.contain,
                           ),
