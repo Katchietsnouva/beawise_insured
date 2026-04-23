@@ -221,29 +221,34 @@ class _FuturisticToastSContentState extends State<_FuturisticToastSContent>
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: Stack(
-        children: [
-          GestureDetector(
-            onTap: _close,
-            child: Container(color: Colors.black.withOpacity(0.001)),
-          ),
-
-          SafeArea(
-            child: Align(
-              alignment: widget.alignment,
-              child: Padding(
-                padding: widget.margin,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: _buildToastCard(),
+      child: IgnorePointer(
+        ignoring: true,
+        child: Stack(
+          children: [
+            // GestureDetector(
+            //   onTap: _close,
+            //   child: Container(color: Colors.black.withOpacity(0.001)),
+            // ),
+            SafeArea(
+              child: Align(
+                alignment: widget.alignment,
+                child: Padding(
+                  padding: widget.margin,
+                  child: IgnorePointer(
+                    ignoring: false,
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: _buildToastCard(),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
