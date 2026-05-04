@@ -664,7 +664,7 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
       // FloatingActionButton.extended(
       // floatingActionButton: FloatingActionButton.extended(
       floatingActionButton: Visibility(
-        visible: true,
+        visible: false,
         child: FloatingActionButton(
           onPressed: () => motorSaveScreen(context),
 

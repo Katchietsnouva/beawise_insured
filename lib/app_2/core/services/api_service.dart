@@ -358,6 +358,8 @@ class ApiService {
     required String agentCode,
     required String agentKey,
     required String token,
+    required Ref ref,
+
     int page = 1,
     int perPage = 10,
     int status = 1,
@@ -387,7 +389,7 @@ class ApiService {
       // body: jsonEncode({'page': page, 'per_page': perPage}),
     );
     print("YOooo received response body: ${response.body}");
-    return _handleResponse(response);
+    return _handleResponseProtected(response, ref);
   }
 
   static Future<Map<String, dynamic>> getPolicyById({
@@ -729,7 +731,7 @@ class ApiService {
         'X-Agent-Key': agentKey,
       },
     );
-    print("here is the getDashboard  response: ${response.body} ");
+    print("here is the getDashboard  response:$baseUrl ${response.body} ");
     return _handleResponseProtected(response, ref);
   }
 

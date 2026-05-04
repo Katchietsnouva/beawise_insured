@@ -219,7 +219,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 width: double.infinity,
                 // Match the padding of your headers
                 padding: EdgeInsets.only(
-                  left: isUngrouped ? 8 : 16,
+                  left: isUngrouped ? 8 : 30,
                   top: 8,
                   bottom: 8,
                   right: 8,
@@ -344,17 +344,20 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             // Since some items are headers (value == null), we handle them gracefully.
             return Container(
               alignment: Alignment.centerLeft,
-              child: Text(
-                // This finds the label text. If it's a header, it won't be shown anyway
-                // as headers are disabled and can't be selected.
-                _extractTextFromItem(item.child),
-                style: CustomTextStyles.style(
-                  context,
-                  type: CustomTextType.paragraph,
-                  fontSize: 12,
-                ).copyWith(color: onSurface),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  // This finds the label text. If it's a header, it won't be shown anyway
+                  // as headers are disabled and can't be selected.
+                  _extractTextFromItem(item.child),
+                  style: CustomTextStyles.style(
+                    context,
+                    type: CustomTextType.paragraph,
+                    fontSize: 12,
+                  ).copyWith(color: onSurface),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             );
           }).toList();
@@ -426,7 +429,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     controller: textEditingController,
                     style: CustomTextStyles.style(
                       context,
-                      type: CustomTextType.paragraph,
+                      type: CustomTextType.caption,
                     ),
                     decoration: InputDecoration(
                       isDense: true,
@@ -437,7 +440,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       hintText: 'Search...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(width: 0.5),
+                        // borderSide: BorderSide(width: 0.5),
+                      ),
+
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.onSurface.withOpacity(0.2),
+                          width: 0.5,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -467,11 +478,17 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     );
   }
 
-  _buildInputDecoration(ThemeData theme, Color onSurface, Color surface) {
+  InputDecoration _buildInputDecoration(
+    ThemeData theme,
+    Color onSurface,
+    Color surface,
+  ) {
     return InputDecoration(
       filled: true,
       fillColor: surface.withOpacity(0.7),
+
       // prefixIcon: Icon(widget.icon, color: onSurface.withOpacity(0.7)),
+      // prefixIcon: const SizedBox(width: 0),
       hintText: widget.hintLabel,
       hintStyle: CustomTextStyles.style(
         context,
@@ -496,7 +513,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           ],
         ),
       ),
-      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+      // contentPadding: const EdgeInsets.symmetric(vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
 
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
@@ -518,12 +536,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(
-          color: theme.brightness == Brightness.light
-              ? AppColors.favColourDark.withOpacity(0.6)
-              : AppColors.favColourDark.withOpacity(0.6),
-          width: 1.0,
-        ),
+        // borderSide: BorderSide(
+        //   color: theme.brightness == Brightness.light
+        //       // ? AppColors.favColourDark.withOpacity(0.6)
+        //       ? AppColors.favColourDark.withOpacity(0.6)
+        //       // : AppColors.favColourDark.withOpacity(0.6),
+        //       : AppColors.favColourDark.withOpacity(0.6),
+        //   width: 1.0,
+        // ),
+        borderSide: BorderSide(color: onSurface.withOpacity(0.3)),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

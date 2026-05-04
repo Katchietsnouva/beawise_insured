@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_checkbox.dart';
+import 'package:insured/app_2/core/widgets/custom_t_speed_dial_fab.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field_animated_search_bar.dart';
@@ -100,6 +101,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     final paginationNotifier = ref.read(clientsPaginationProvider.notifier);
 
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final GlobalKey<SpeedDialFABState> _speedDialKey = GlobalKey();
 
     Widget oldSearchField = CustomTextField(
       hint: 'Search clients...',
@@ -332,14 +334,81 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         ),
       ),
 
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: "fab_top",
-            // mini: true,
+      // floatingActionButton: Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   crossAxisAlignment: CrossAxisAlignment.end,
+      //   children: [
+      //     FloatingActionButton(
+      //       heroTag: "fab_top",
+      //       // mini: true,
+      //       onPressed: () {
+      //         if (_searchExpanded) {
+      //           _searchBarKey.currentState?.collapse();
+      //         } else {
+      //           setState(() => _searchExpanded = true);
+      //           WidgetsBinding.instance.addPostFrameCallback((_) {
+      //             _searchBarKey.currentState?.expand();
+      //           });
+      //         }
+      //       },
+      //       elevation: isLight ? 16 : 20,
+      //       backgroundColor: Theme.of(
+      //         context,
+      //       ).primaryColor.withOpacity(isLight ? 1 : 0.25),
+      //       child: Icon(
+      //         _searchExpanded ? Icons.close : Icons.search,
+      //         size: 32,
+      //         color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
+      //       ),
+      //     ),
+
+      //     const SizedBox(height: 12),
+
+      //     FloatingActionButton(
+      //       onPressed: () async {
+      //         // final result = await showModalBottomSheet<bool>(
+      //         final result =
+      //             await showModalBottomSheet<(bool, Map<String, dynamic>)>(
+      //               context: context,
+      //               isScrollControlled: true,
+      //               backgroundColor: Colors.transparent,
+      //               builder: (context) => const AddClientModal(),
+      //             );
+
+      //         if (result != null) {
+      //           final (success, data) = result;
+      //           if (success) {
+      //             ref
+      //                 .read(clientsPaginationProvider.notifier)
+      //                 .refreshAllAndReset();
+      //           }
+      //         }
+      //       },
+      //       elevation: isLight ? 16 : 20,
+      //       backgroundColor: Theme.of(
+      //         context,
+      //       ).primaryColor.withOpacity(isLight ? 1 : 0.25),
+      //       child: Icon(
+      //         Icons.add,
+      //         size: 40,
+      //         color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      floatingActionButton: SpeedDialFAB(
+        key: _speedDialKey,
+        isLight: isLight,
+        openIcon: Icons.menu,
+        closeIcon: Icons.close,
+        actions: [
+          // Search — wires into your existing AnimatedSearchBar logic
+          SpeedDialAction(
+            heroTag: "fab_search",
+            icon: _searchExpanded ? Icons.search_off : Icons.search,
+            tooltip: 'Search',
             onPressed: () {
+              _speedDialKey.currentState?.close();
               if (_searchExpanded) {
                 _searchBarKey.currentState?.collapse();
               } else {
@@ -349,22 +418,15 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                 });
               }
             },
-            elevation: isLight ? 16 : 20,
-            backgroundColor: Theme.of(
-              context,
-            ).primaryColor.withOpacity(isLight ? 1 : 0.25),
-            child: Icon(
-              _searchExpanded ? Icons.close : Icons.search,
-              size: 40,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
-            ),
           ),
 
-          const SizedBox(height: 12),
-
-          FloatingActionButton(
+          // Add client
+          SpeedDialAction(
+            heroTag: "fab_add",
+            icon: Icons.add,
+            tooltip: 'Add Client',
             onPressed: () async {
-              // final result = await showModalBottomSheet<bool>(
+              _speedDialKey.currentState?.close();
               final result =
                   await showModalBottomSheet<(bool, Map<String, dynamic>)>(
                     context: context,
@@ -372,9 +434,8 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                     backgroundColor: Colors.transparent,
                     builder: (context) => const AddClientModal(),
                   );
-
               if (result != null) {
-                final (success, data) = result;
+                final (success, _) = result;
                 if (success) {
                   ref
                       .read(clientsPaginationProvider.notifier)
@@ -382,15 +443,6 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                 }
               }
             },
-            elevation: isLight ? 16 : 20,
-            backgroundColor: Theme.of(
-              context,
-            ).primaryColor.withOpacity(isLight ? 1 : 0.25),
-            child: Icon(
-              Icons.add,
-              size: 40,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(1.0),
-            ),
           ),
         ],
       ),

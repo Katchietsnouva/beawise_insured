@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.1
+  sdk: ^3.11.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   model_viewer_plus: ^1.10.0
   flutter_animate: ^4.5.2
-  google_fonts: ^8.0.1
+  google_fonts: ^8.0.2
   flutter_riverpod: ^3.2.1
   go_router: ^17.1.0
   shared_preferences: ^2.5.4
@@ -105,21 +105,35 @@ flutter:
     - assets/images/logos/logo_black.png
     - assets/images/logos/inscloud.png
 
-    - assets/images/geminia_insurance.png
-    - assets/images/apa_insurance.png 
+    # insurer_assets
+    - assets/images/insurer_assets/geminia_insurance.png
+    - assets/images/insurer_assets/apa_insurance.png  
+    - assets/images/insurer_assets/sanlam_insurance.png
+    - assets/images/insurer_assets/jubilee_allianz_insurance.png
+    - assets/images/insurer_assets/fidelity_insurance.png
+    - assets/images/insurer_assets/prudential_life_insurance.png
+    - assets/images/insurer_assets/prudential_life_insurance.png
+    - assets/images/insurer_assets/monarch.png
+    - assets/images/insurer_assets/default_insurance.png
 
 
-    - assets/images/sanlam_insurance.png
-    - assets/images/jubilee_allianz_insurance.png
-    - assets/images/fidelity_insurance.png
-    - assets/images/prudential_life_insurance.png
-    - assets/images/prudential_life_insurance.png
-    - assets/images/monarch.png
-    - assets/images/default_insurance.png
-
-    # - assets/images/apa_medical_insurance.png
-
+    - assets/images/insurer_assets/first_assurance.png
+    - assets/images/insurer_assets/britam.png
+    - assets/images/insurer_assets/madison.png
+    - assets/images/insurer_assets/kenya_orient.png
+    - assets/images/insurer_assets/old_mutual.png
+    - assets/images/insurer_assets/heritage.png
+    - assets/images/insurer_assets/cic.png
+    - assets/images/insurer_assets/cannon.png
+    - assets/images/insurer_assets/pioneer.png
+    - assets/images/insurer_assets/star.png
+    - assets/images/insurer_assets/occidental.png
+    - assets/images/insurer_assets/direct.png
     
+    - assets/images/insurer_assets/ga_insurance.png
+    - assets/images/insurer_assets/icea_insurance.png
+    - assets/images/insurer_assets/pacis_insurance.png
+    - assets/images/insurer_assets/ncba_insurance.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

@@ -161,6 +161,7 @@ class PolicyNotifier extends StateNotifier<PolicyState> {
         page: page,
         perPage: state.perPage,
         status: state.currentStatus,
+        ref: ref,
       );
 
       final response = PoliciesResponse.fromJson(result);

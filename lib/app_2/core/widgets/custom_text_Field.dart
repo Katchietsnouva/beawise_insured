@@ -484,6 +484,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 context,
                 type: CustomTextType.caption,
               ),
+
               // prefixIcon: Padding(
               //   padding: const EdgeInsets.only(
               //     left: 12,
@@ -495,6 +496,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               //     size: Responsive.isMobile(context) ? 18 : 24,
               //   ),
               // ),
+              prefixIcon: const SizedBox(width: 0),
               suffixIcon: suffixIcon,
 
               border: OutlineInputBorder(

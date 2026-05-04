@@ -144,56 +144,85 @@ class _FuturisticToastTContentState extends State<_FuturisticToastTContent>
     );
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   // return Positioned.fill(
+  //   //   child: Material(
+  //   //     color: Colors.transparent,
+  //   //     child: Container(
+  //   //       alignment: widget.alignment,
+  //   //       padding: widget.margin,
+  //   //       child: FadeTransition(
+  //   //         opacity: _fadeAnimation,
+  //   //         child: SlideTransition(
+  //   //           position: _slideAnimation,
+  //   //           child: _buildToastCard(),
+  //   //         ),
+  //   //       ),
+  //   //     ),
+  //   //   ),
+  //   // );
+  //   return Positioned.fill(
+  //     child: IgnorePointer(
+  //       ignoring: true,
+  //       child: Material(
+  //         color: Colors.transparent,
+  //         child: Stack(
+  //           children: [
+  //             // GestureDetector(
+  //             //   onTap: widget.onClose,
+  //             //   child: Container(color: Colors.black.withOpacity(0.001)),
+  //             // ),
+  //             SafeArea(
+  //               child: Align(
+  //                 alignment: widget.alignment,
+  //                 child: Padding(
+  //                   padding: widget.margin,
+  //                   child: IgnorePointer(
+  //                     ignoring: false,
+  //                     child: FadeTransition(
+  //                       opacity: _fadeAnimation,
+  //                       child: SlideTransition(
+  //                         position: _slideAnimation,
+  //                         child: _buildToastCard(),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
-    // return Positioned.fill(
-    //   child: Material(
-    //     color: Colors.transparent,
-    //     child: Container(
-    //       alignment: widget.alignment,
-    //       padding: widget.margin,
-    //       child: FadeTransition(
-    //         opacity: _fadeAnimation,
-    //         child: SlideTransition(
-    //           position: _slideAnimation,
-    //           child: _buildToastCard(),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
     return Positioned.fill(
-      child: IgnorePointer(
-        ignoring: true,
-        child: Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              // GestureDetector(
-              //   onTap: widget.onClose,
-              //   child: Container(color: Colors.black.withOpacity(0.001)),
-              // ),
-              SafeArea(
-                child: Align(
-                  alignment: widget.alignment,
-                  child: Padding(
-                    padding: widget.margin,
-                    child: IgnorePointer(
-                      ignoring: false,
-                      child: FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: _buildToastCard(),
-                        ),
-                      ),
+      child: Stack(
+        children: [
+          // Toast card only — no full-screen Material eating touches
+          SafeArea(
+            child: Align(
+              alignment: widget.alignment,
+              child: Padding(
+                padding: widget.margin,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: _buildToastCard(),
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

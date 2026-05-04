@@ -453,10 +453,13 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
                       sliver: _buildGhostSliver(),
                     )
                   // : state.error != null && state.response == null
-                  : state.error != null && allLoadedPolicies.isEmpty
+                  // : state.error != null && allLoadedPolicies.isEmpty
+                  : state.error != null &&
+                        (state.response == null || !state.response!.isSuccess)
                   ? SliverFillRemaining(
                       hasScrollBody: false,
                       child: CustomErrorRefreshPlaceholder(
+                        // message: safgsfdfda',
                         details: state.error,
                         // onRetry: () => notifier.refreshCurrentPage(),
                         onRetry: () => notifier.refreshAllAndReset(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
+import 'package:insured/app_2/core/utils/insurer_assets_util.dart';
 import 'package:insured/app_2/core/utils/premium_calculator.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -26,47 +27,11 @@ class QuoteOptionCard extends ConsumerStatefulWidget {
   ConsumerState<QuoteOptionCard> createState() => _QuoteOptionCardState();
 }
 
+final String pathPrefix = (kIsWeb && kDebugMode) ? '' : 'assets';
+
 class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
   late final option = widget.option;
   late final onSelect = widget.onSelect;
-
-  final String pathPrefix = (kIsWeb && kDebugMode) ? '' : 'assets';
-
-  String getInsurerImage(String insurerName) {
-    if (insurerName.contains('Sanlam')) {
-      return '${pathPrefix}/images/sanlam_insurance.png';
-    }
-
-    if (insurerName.contains('Geminia')) {
-      return '${pathPrefix}/images/geminia_insurance.png';
-    }
-
-    if (insurerName.contains('APA')) {
-      return '${pathPrefix}/images/apa_insurance.png';
-    }
-
-    if (insurerName.contains('APA Medical')) {
-      return '${pathPrefix}/images/apa_medical_insurance.png';
-    }
-
-    if (insurerName.contains('Jubilee Allianz')) {
-      return '${pathPrefix}/images/jubilee_allianz_insurance.png';
-    }
-
-    if (insurerName.contains('Fidelity')) {
-      return '${pathPrefix}/images/fidelity_insurance.png';
-    }
-
-    if (insurerName.contains('Prudential Life')) {
-      return '${pathPrefix}/images/prudential_life_insurance.png';
-    }
-
-    if (insurerName.contains('Monarch')) {
-      return '${pathPrefix}/images/monarch.png';
-    }
-
-    return '${pathPrefix}/images/default_insurance.png';
-  }
 
   void _openDetails(BuildContext context, PremiumCalculationResult result) {
     showModalBottomSheet(

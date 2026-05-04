@@ -126,7 +126,7 @@ class _SidebarState extends ConsumerState<Sidebar>
           ),
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              SizedBox(height: Responsive.isMobile(context) ? 20 : 0),
 
               // _isCollapsed
               //     ? Visibility(
@@ -233,46 +233,78 @@ class _SidebarState extends ConsumerState<Sidebar>
                     )
                   : Responsive.isMobile(context)
                   // MOBILE
-                  ? Center(
-                      child: Image(
-                        image: AssetImage(
-                          '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                  ?
+                    // Center(
+                    //     child: Image(
+                    //       image: AssetImage(
+                    //         '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                    //       ),
+                    //       height: 50,
+                    //       fit: BoxFit.contain,
+                    //     ),
+                    //   )
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image(
+                          image: AssetImage(
+                            '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                          ),
+                          fit: BoxFit.contain,
                         ),
-                        height: 50,
-                        fit: BoxFit.contain,
                       ),
                     )
                   // //  DESKTOP
-                  : Row(
+                  : Column(
+                      // crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        Row(
+                          // crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Visibility(
+                              visible: Responsive.isMobile(context)
+                                  ? false
+                                  : true,
+                              child: IconButton(
+                                // tooltip: 'Collapse sidebar',
+                                icon: Icon(
+                                  Icons.chevron_left,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                  size: 40,
+                                ),
+                                onPressed: _toggle,
+                              ),
+                            ),
+                          ],
+                        ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 2),
-                          child: Image(
-                            image: AssetImage(
-                              '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image(
+                              image: AssetImage(
+                                '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                              ),
+                              fit: BoxFit.contain,
                             ),
-                            height: 46,
-                            // width: 150,
-                            fit: BoxFit.contain,
                           ),
                         ),
-                        const Spacer(),
-                        Visibility(
-                          visible: Responsive.isMobile(context) ? false : true,
-                          child: IconButton(
-                            tooltip: 'Collapse sidebar',
-                            icon: Icon(
-                              Icons.chevron_left,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              size: 40,
-                            ),
-                            onPressed: _toggle,
-                          ),
-                        ),
+
+                        // const Spacer(),
                       ],
                     ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               Expanded(
                 child: SingleChildScrollView(

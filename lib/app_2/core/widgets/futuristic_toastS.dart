@@ -218,36 +218,60 @@ class _FuturisticToastSContentState extends State<_FuturisticToastSContent>
   //   );
   // }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Positioned.fill(
+  //     child: IgnorePointer(
+  //       ignoring: true,
+  //       child: Stack(
+  //         children: [
+  //           // GestureDetector(
+  //           //   onTap: _close,
+  //           //   child: Container(color: Colors.black.withOpacity(0.001)),
+  //           // ),
+  //           SafeArea(
+  //             child: Align(
+  //               alignment: widget.alignment,
+  //               child: Padding(
+  //                 padding: widget.margin,
+  //                 child: IgnorePointer(
+  //                   ignoring: false,
+  //                   child: FadeTransition(
+  //                     opacity: _fadeAnimation,
+  //                     child: SlideTransition(
+  //                       position: _slideAnimation,
+  //                       child: _buildToastCard(),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: IgnorePointer(
-        ignoring: true,
-        child: Stack(
-          children: [
-            // GestureDetector(
-            //   onTap: _close,
-            //   child: Container(color: Colors.black.withOpacity(0.001)),
-            // ),
-            SafeArea(
-              child: Align(
-                alignment: widget.alignment,
-                child: Padding(
-                  padding: widget.margin,
-                  child: IgnorePointer(
-                    ignoring: false,
-                    child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: _buildToastCard(),
-                      ),
-                    ),
-                  ),
-                ),
+    // Remove the Positioned.fill and IgnorePointer wrapper entirely
+    // Let the toast only occupy the space it needs, not the full screen
+    return SafeArea(
+      child: Align(
+        alignment: widget.alignment,
+        child: Padding(
+          padding: widget.margin,
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Material(
+                color: Colors.transparent,
+                child: _buildToastCard(),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -360,7 +384,7 @@ class _FuturisticToastSContentState extends State<_FuturisticToastSContent>
                     _buildIconButton(
                       icon: Icons.copy,
                       onTap: _copyToClipboard,
-                      tooltip: 'Copy',
+                      // tooltip: 'Copy',
                     ),
                   ],
                   if (widget.showCloseButton) ...[
@@ -368,7 +392,7 @@ class _FuturisticToastSContentState extends State<_FuturisticToastSContent>
                     _buildIconButton(
                       icon: Icons.close,
                       onTap: _close,
-                      tooltip: 'Close',
+                      // tooltip: 'Close',
                     ),
                   ],
                 ],
@@ -383,22 +407,22 @@ class _FuturisticToastSContentState extends State<_FuturisticToastSContent>
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onTap,
-    required String tooltip,
+    // required String tooltip,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Tooltip(
-        message: tooltip,
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-          ),
-          child: Icon(icon, color: Colors.white70, size: 18),
+      // child: Tooltip(
+      // message: tooltip,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
         ),
+        child: Icon(icon, color: Colors.white70, size: 18),
       ),
+      // ),
     );
   }
 }
