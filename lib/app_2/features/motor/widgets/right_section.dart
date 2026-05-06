@@ -185,8 +185,14 @@ class _MotorFormRightSectionState extends ConsumerState<MotorFormRightSection> {
         isTuktuk ||
         (isMotor && isPrivate && isComprehensive) ||
         (isMotor && isPsvUberExact && isComprehensive) ||
-        isMotorcyclePsv ||
-        isMotorcyclePrivateComprehensive ||
+        // isMotorcyclePsv ||
+        // isMotorcyclePrivateComprehensive ||
+        (isMotorcycle &&
+            isPrivate) || // motorcycle private (any scope) → annual only
+        (isMotorcycle &&
+            isPSV &&
+            isComprehensive) || // motorcycle PSV comprehensive → annual only
+        // isMotorcyclePsv is removed — motorcycle PSV + TPO now gets TOR
         isAnyCommercialMotor;
 
     final List<dynamic> coverPeriodItems =
