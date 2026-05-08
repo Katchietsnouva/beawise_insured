@@ -316,6 +316,8 @@ class _PolicyCardState extends State<PolicyCard> {
           CustomAdvancedButton(
             label: 'Click To Pay',
             variant: ButtonVariant.payBtn,
+            color1: isDark ? Colors.greenAccent : Colors.green[900],
+            color2: Colors.teal,
             onPressed: () {
               if (policy != null && (policy.balance ?? 0) > 0) {
                 final paymentData = {

@@ -40,6 +40,9 @@ class CustomAdvancedButton extends StatefulWidget {
   final String? prefixText;
   final TextStyle? prefixStyle;
   final TextStyle? labelStyle;
+  final Color? color1;
+  final Color? color2;
+  final Color? textColor;
 
   const CustomAdvancedButton({
     super.key,
@@ -61,6 +64,9 @@ class CustomAdvancedButton extends StatefulWidget {
     this.prefixText,
     this.prefixStyle,
     this.labelStyle,
+    this.color1,
+    this.color2,
+    this.textColor,
   });
 
   @override
@@ -198,6 +204,9 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isDisabled: _isDisabled,
           isloading: widget.loading,
           customFontSize: widget.customFontSize,
+          color1: widget.color1,
+          color2: widget.color2,
+          textColor: widget.textColor,
         );
       case ButtonVariant.secondary:
         return _SecondaryButton(
@@ -211,6 +220,8 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isDisabled: _isDisabled,
           isloading: widget.loading,
           customFontSize: widget.customFontSize,
+          color1: widget.color1,
+          color2: widget.color2,
         );
       case ButtonVariant.apple:
         return _AppleButton(label: widget.label, isDisabled: _isDisabled);
@@ -226,6 +237,8 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isDisabled: _isDisabled,
           isloading: widget.loading,
           isHovering: _isHovering,
+          color1: widget.color1,
+          color2: widget.color2,
         );
       case ButtonVariant.circular:
         return _CircularButton(
@@ -247,7 +260,8 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
           isloading: widget.loading,
           customFontSize: widget.customFontSize,
           // glowColor: (widget as dynamic).glowColor ?? AppColors.favColour,
-          glowColor: widget.glowColor ?? AppColors.favColour,
+          // glowColor: widget.glowColor ?? AppColors.favColour,
+          glowColor: widget.glowColor ?? widget.color1 ?? AppColors.favColour,
         );
       case ButtonVariant.circularPay:
         return _CircularPayButton(
@@ -283,6 +297,9 @@ class _PrimaryButton extends StatelessWidget {
   final bool? isloading;
   final bool isHovering;
   final double? customFontSize;
+  final Color? color1;
+  final Color? color2;
+  final Color? textColor;
 
   const _PrimaryButton({
     required this.label,
@@ -294,6 +311,9 @@ class _PrimaryButton extends StatelessWidget {
     this.isloading = false,
     this.isHovering = false,
     this.customFontSize,
+    this.color1,
+    this.color2,
+    this.textColor,
   });
 
   @override
@@ -301,9 +321,12 @@ class _PrimaryButton extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     Gradient effectiveGradient;
-    final btnPrColor = AppColors.favColour;
+    // final btnPrColor = AppColors.favColour;
+    final btnPrColor = color1 ?? AppColors.favColour;
+
     // final btnSecColor = AppColors.favColour_sec;
-    final btnSecColor = AppColors.favColourDark;
+    // final btnSecColor = AppColors.favColourDark;
+    final btnSecColor = color2 ?? color1 ?? AppColors.favColourDark;
 
     final brandGradient = LinearGradient(
       colors: [btnPrColor, btnSecColor],
@@ -385,7 +408,10 @@ class _PrimaryButton extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   // color: (isDisabled || (isloading ?? false))
                   // color: (isDisabled) ? Colors.white70 : Colors.black87,
-                  color: (isDisabled) ? Colors.white70 : Colors.white70,
+                  // color: (isDisabled) ? Colors.white70 : Colors.white70,
+                  color: isDisabled
+                      ? Colors.white70
+                      : (textColor ?? Colors.white70),
                 ),
               ),
               SizedBox(width: 6),
@@ -421,6 +447,8 @@ class _SecondaryButton extends StatelessWidget {
   final bool? isloading;
   final bool isHovering;
   final double? customFontSize;
+  final Color? color1;
+  final Color? color2;
 
   const _SecondaryButton({
     required this.label,
@@ -432,6 +460,8 @@ class _SecondaryButton extends StatelessWidget {
     this.isloading = false,
     this.isHovering = false,
     this.customFontSize,
+    this.color1,
+    this.color2,
   });
 
   @override
@@ -561,6 +591,8 @@ class _PayButton extends StatelessWidget {
   final bool isDisabled;
   final bool? isloading;
   final bool isHovering;
+  final Color? color1;
+  final Color? color2;
 
   const _PayButton({
     required this.label,
@@ -570,6 +602,8 @@ class _PayButton extends StatelessWidget {
     this.isDisabled = false,
     this.isloading = false,
     this.isHovering = false,
+    this.color1,
+    this.color2,
   });
 
   @override
@@ -579,9 +613,14 @@ class _PayButton extends StatelessWidget {
     //     ? AppColors.favColour.withOpacity(0.9)
     //     : AppColors.favColourDark!.withOpacity(0.9);
 
-    final baseColor = isDark ? AppColors.favColour : AppColors.favColourDark!;
+    // final baseColor = isDark ? AppColors.favColour : AppColors.favColourDark!;
+    final resolvedColor1 =
+        color1 ?? (isDark ? AppColors.favColour : AppColors.favColourDark!);
+    final resolvedColor2 = color2 ?? resolvedColor1;
 
-    final activeColor = baseColor.withOpacity(0.9);
+    // final activeColor = baseColor.withOpacity(0.9);
+    final activeColor = resolvedColor1.withOpacity(0.9);
+
     final disabledColor = isDark
         ? Colors.grey[600]!.withOpacity(0.5)
         : Colors.grey[500]!.withOpacity(0.6);
@@ -598,9 +637,29 @@ class _PayButton extends StatelessWidget {
       height: height ?? (Responsive.isMobile(context) ? 40 : 48),
       // padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
-            : AppColors.favColourDark!.withOpacity(isHovering ? 0.25 : 0.2),
+        // color: isDark
+        //     ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+        //     : AppColors.favColourDark!.withOpacity(isHovering ? 0.25 : 0.2),
+        color: (color1 == null)
+            ? (isDark
+                  ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+                  : AppColors.favColourDark!.withOpacity(
+                      isHovering ? 0.25 : 0.2,
+                    ))
+            : null,
+        gradient: color1 != null && color2 != null
+            ? LinearGradient(
+                colors: isDisabled
+                    ? [color1!.withOpacity(0.25), color2!.withOpacity(0.25)]
+                    : [
+                        color1!.withOpacity(isHovering ? 0.30 : 0.22),
+                        color2!.withOpacity(isHovering ? 0.30 : 0.22),
+                      ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              )
+            : null,
+
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
           color:
@@ -609,11 +668,12 @@ class _PayButton extends StatelessWidget {
               //     : AppColors.favColourDark!.withOpacity(0.5),
               isDisabled
               ? effectiveColor.withOpacity(0.15) // very faint background
-              : (isDark
-                    ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
-                    : AppColors.favColourDark!.withOpacity(
-                        isHovering ? 0.25 : 0.2,
-                      )),
+              // : (isDark
+              //       ? AppColors.favColour.withOpacity(isHovering ? 0.25 : 0.2)
+              //       : AppColors.favColourDark!.withOpacity(
+              //           isHovering ? 0.25 : 0.2,
+              //         )),
+              : resolvedColor1.withOpacity(isHovering ? 0.55 : 0.40),
         ),
       ),
       child: Row(

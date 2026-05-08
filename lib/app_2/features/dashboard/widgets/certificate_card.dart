@@ -194,6 +194,8 @@ class _CertificateCardState extends State<CertificateCard> {
           CustomAdvancedButton(
             label: 'Click To Pay',
             variant: ButtonVariant.payBtn,
+            color1: isDark ? Colors.greenAccent : Colors.green[900],
+            color2: Colors.teal,
             onPressed: () {
               if (cert.policy != null && (cert.policy.balance ?? 0) > 0) {
                 final paymentData = {

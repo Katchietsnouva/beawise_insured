@@ -135,6 +135,9 @@ class _StkPaymentWidgetState extends State<_StkPaymentWidget> {
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (ctx) => PaymentConfirmationModal(
+            account: updatedData["account"].toString(),
+            amount: updatedData["amount"].toString(),
+
             onPaidSuccessfully: () {
               // Close confirmation modal
               // Navigator.pop(ctx);
@@ -414,6 +417,8 @@ class _StkPaymentWidgetState extends State<_StkPaymentWidget> {
               CustomAdvancedButton(
                 label: 'Click To Pay',
                 variant: ButtonVariant.payBtn,
+                color1: isDark ? Colors.greenAccent : Colors.green[900],
+                color2: Colors.teal,
                 loading: loading,
                 // isDisabled: true,
                 isDisabled: !isPhoneValid || loading,

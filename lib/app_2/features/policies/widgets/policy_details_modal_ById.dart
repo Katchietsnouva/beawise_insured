@@ -200,6 +200,8 @@ class PolicyDetailsModalFull extends ConsumerWidget {
                   CustomAdvancedButton(
                     label: 'Click To Pay',
                     variant: ButtonVariant.payBtn,
+                    color1: isDark ? Colors.greenAccent : Colors.green[900],
+                    color2: Colors.teal,
                     onPressed: () {
                       print(
                         "Pay btn clicked in PolicyDetailsModalFull... x onPaymentConfirmed: $onPaymentConfirmed",
