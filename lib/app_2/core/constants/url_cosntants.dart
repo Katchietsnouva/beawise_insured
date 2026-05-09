@@ -40,7 +40,9 @@
 
 // lib/app_2/core/constants/url_cosntants.dart
 class InscloudUrls {
-  static const
+  static const businessNo = '4060615',
+          ///
+          ///
           // inscloudkey =
           //         r'$2y$12$u3AAyPbm9drxDIgt3mMjeusJ/VpRJz75aed/TkEmpYrHwxdy3hEVq',
           //     inscloudpasskey = '24D6B5118AE2EEB07D36320B857367',
