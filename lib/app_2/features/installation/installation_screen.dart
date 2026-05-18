@@ -412,6 +412,7 @@ class _PlatformsGrid extends StatelessWidget {
         false,
         null,
         '/downloads/v1.0.0-armeabi-v7a-release.apk',
+        // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.0-arm64-v8a-release.apk',
       ),
       _PlatformData(
         'iOS / iPadOS',
@@ -602,7 +603,8 @@ class _PlatformCardState extends State<_PlatformCard> {
                 // onTap: () =>
                 // widget.onDownload('Downloading Insured for ${d.name}...'),
                 onTap: () async {
-                  final Uri url = Uri.parse(d.downloadUrl);
+                  // final Uri url = Uri.parse(d.downloadUrl);
+                  final Uri url = Uri.base.resolve(d.downloadUrl);
                   if (await canLaunchUrl(url)) {
                     widget.onDownload('Starting download...');
                     await launchUrl(url, mode: LaunchMode.externalApplication);
