@@ -323,7 +323,9 @@ class _PolicyCardState extends State<PolicyCard> {
                 final paymentData = {
                   // "account": "RKTQDM7W",
                   "account": policy?.risknote,
-                  "amount": '',
+                  // "amount": '',
+                  "amount":
+                      normalizeMoney(policy.issueCertData!.shortfall) ?? 0,
                   "phone": "07",
                 };
                 PesapalPaymentModalStk.show(

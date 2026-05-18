@@ -210,7 +210,12 @@ class PolicyDetailsModalFull extends ConsumerWidget {
                         final paymentData = {
                           // "account": "RKTQDM7W",
                           "account": policy?.riskNote,
-                          "amount": '',
+                          // "amount": '',
+                          "amount":
+                              normalizeMoney(
+                                policy!.issueCertData!.shortfall,
+                              ) ??
+                              0,
                           "phone": "07",
                         };
                         PesapalPaymentModalStk.show(

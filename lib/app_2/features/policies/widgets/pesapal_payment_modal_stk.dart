@@ -355,6 +355,7 @@ class _StkPaymentWidgetState extends State<_StkPaymentWidget> {
                     TextField(
                       controller: amountController,
                       keyboardType: TextInputType.number,
+                      readOnly: amountController.text.isNotEmpty,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,

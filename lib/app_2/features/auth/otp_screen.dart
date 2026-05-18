@@ -49,6 +49,98 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
     final authState = ref.watch(authProvider);
     final authNotifier = ref.read(authProvider.notifier);
 
+    Future<void> _verifyOtp() async {
+      setState(() => _isVerifying = true);
+      final result = await authNotifier.verifyOtp(_otpController.text.trim());
+      print('This is the result after logging in via otp success $result');
+
+      print('This is the json fprmat$jsonEncode($result)');
+
+      print('JSON format 2: $jsonEncode($result)');
+
+      if (!mounted) {
+        setState(() => _isVerifying = false);
+        return;
+      }
+
+      if (result.success) {
+        // FuturisticToastS.show(
+        //   context: context, message: result.message ?? 'Login successful!',
+        //   icon: Icons.check_circle, iconColor: Colors.greenAccent, duration: const Duration(seconds: 2),
+        // );
+        context.go('/dashboard');
+      } else {
+        // Show error toast using errorData
+        final errorState = ref.read(authProvider);
+        final errorData = errorState.errorData;
+        print("Printing errorState ${errorState}");
+        print("Printing errorData ${errorData}");
+
+        Widget toastContent;
+        if (errorData != null) {
+          toastContent = ResponseDisplay.error(
+            message: errorData['message'] ?? 'OTPP verification failed',
+            rawData: errorData,
+          );
+        } else {
+          toastContent = ResponseDisplay.error(
+            message: errorState.error ?? 'Verification failed',
+            rawData: {},
+          );
+        }
+        setState(() => _isVerifying = false);
+
+        String displayMessage = errorState.error ?? 'Verification failed';
+        Map<String, dynamic>? errorMap;
+        Map<String, dynamic>?
+        rawJson; // NEW: To hold the full parsed JSON for copying
+
+        if (errorData != null &&
+            errorData is Map<String, dynamic> &&
+            errorData.containsKey('error')) {
+          String errorString = errorData['error'].toString().trim();
+          if (errorString.startsWith('Exception: ')) {
+            errorString = errorString
+                .substring(11)
+                .trim(); // Strip "Exception: "
+          }
+
+          try {
+            final decoded = jsonDecode(errorString);
+            if (decoded is Map<String, dynamic>) {
+              displayMessage = decoded['message'] ?? 'OTP verification failed';
+              rawJson = decoded; // Store full JSON for copying
+
+              if (decoded['errors'] is Map) {
+                errorMap = (decoded['errors'] as Map).map(
+                  (key, value) =>
+                      MapEntry(key.toString(), List<String>.from(value ?? [])),
+                );
+              }
+            }
+          } catch (_) {
+            displayMessage = errorString; // Fallback if not JSON
+          }
+        }
+
+        // FuturisticToast.showWidget(
+        //   context: context,
+        //   child: toastContent,
+        //   duration: const Duration(seconds: 5),
+        //   alignment: Alignment.topCenter,
+        // );
+        FuturisticToastT.show(
+          context: context,
+          message: displayMessage,
+          // errors: errorMap,
+          errors: errorMap ?? rawJson,
+          icon: Icons.gpp_bad_outlined,
+          alignment: Alignment.topCenter,
+          duration: const Duration(seconds: 6),
+        );
+      }
+    }
+
     return Scaffold(
       body: Container(
         // decoration: const BoxDecoration(
@@ -113,9 +205,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                             length: 6,
                             controller: _otpController,
                             isRequired: true,
-                            onCompleted: (otp) {
+                            onCompleted: (otp) async {
                               print('Entered OTP: $otp');
                               // Use the OTP value, e.g., submit to API
+                              await _verifyOtp();
                             },
                           ),
                           const SizedBox(height: 16),
@@ -135,128 +228,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                             onPressed: _isVerifying
                                 ? () {}
                                 : () async {
-                                    setState(() => _isVerifying = true);
-                                    final result = await authNotifier.verifyOtp(
-                                      _otpController.text.trim(),
-                                    );
-                                    print(
-                                      'This is the result after logging in via otp success $result',
-                                    );
-
-                                    print(
-                                      'This is the json fprmat$jsonEncode($result)',
-                                    );
-
-                                    print(
-                                      'JSON format 2: $jsonEncode($result)',
-                                    );
-
-                                    if (!mounted) {
-                                      setState(() => _isVerifying = false);
-                                      return;
-                                    }
-
-                                    if (result.success) {
-                                      // FuturisticToastS.show(
-                                      //   context: context, message: result.message ?? 'Login successful!',
-                                      //   icon: Icons.check_circle, iconColor: Colors.greenAccent, duration: const Duration(seconds: 2),
-                                      // );
-                                      context.go('/dashboard');
-                                    } else {
-                                      // Show error toast using errorData
-                                      final errorState = ref.read(authProvider);
-                                      final errorData = errorState.errorData;
-                                      print(
-                                        "Printing errorState ${errorState}",
-                                      );
-                                      print("Printing errorData ${errorData}");
-
-                                      Widget toastContent;
-                                      if (errorData != null) {
-                                        toastContent = ResponseDisplay.error(
-                                          message:
-                                              errorData['message'] ??
-                                              'OTPP verification failed',
-                                          rawData: errorData,
-                                        );
-                                      } else {
-                                        toastContent = ResponseDisplay.error(
-                                          message:
-                                              errorState.error ??
-                                              'Verification failed',
-                                          rawData: {},
-                                        );
-                                      }
-                                      setState(() => _isVerifying = false);
-
-                                      String displayMessage =
-                                          errorState.error ??
-                                          'Verification failed';
-                                      Map<String, dynamic>? errorMap;
-                                      Map<String, dynamic>?
-                                      rawJson; // NEW: To hold the full parsed JSON for copying
-
-                                      if (errorData != null &&
-                                          errorData is Map<String, dynamic> &&
-                                          errorData.containsKey('error')) {
-                                        String errorString = errorData['error']
-                                            .toString()
-                                            .trim();
-                                        if (errorString.startsWith(
-                                          'Exception: ',
-                                        )) {
-                                          errorString = errorString
-                                              .substring(11)
-                                              .trim(); // Strip "Exception: "
-                                        }
-
-                                        try {
-                                          final decoded = jsonDecode(
-                                            errorString,
-                                          );
-                                          if (decoded is Map<String, dynamic>) {
-                                            displayMessage =
-                                                decoded['message'] ??
-                                                'OTP verification failed';
-                                            rawJson =
-                                                decoded; // Store full JSON for copying
-
-                                            if (decoded['errors'] is Map) {
-                                              errorMap =
-                                                  (decoded['errors'] as Map)
-                                                      .map(
-                                                        (key, value) =>
-                                                            MapEntry(
-                                                              key.toString(),
-                                                              List<String>.from(
-                                                                value ?? [],
-                                                              ),
-                                                            ),
-                                                      );
-                                            }
-                                          }
-                                        } catch (_) {
-                                          displayMessage =
-                                              errorString; // Fallback if not JSON
-                                        }
-                                      }
-
-                                      // FuturisticToast.showWidget(
-                                      //   context: context,
-                                      //   child: toastContent,
-                                      //   duration: const Duration(seconds: 5),
-                                      //   alignment: Alignment.topCenter,
-                                      // );
-                                      FuturisticToastT.show(
-                                        context: context,
-                                        message: displayMessage,
-                                        // errors: errorMap,
-                                        errors: errorMap ?? rawJson,
-                                        icon: Icons.gpp_bad_outlined,
-                                        alignment: Alignment.topCenter,
-                                        duration: const Duration(seconds: 6),
-                                      );
-                                    }
+                                    await _verifyOtp();
                                   },
                           ),
                           const SizedBox(height: 16),

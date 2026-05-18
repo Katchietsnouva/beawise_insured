@@ -201,7 +201,9 @@ class _CertificateCardState extends State<CertificateCard> {
                 final paymentData = {
                   // "account": "RKTQDM7W",
                   "account": cert.policy?.riskNote,
-                  "amount": '',
+                  // "amount": '',
+                  "amount":
+                      normalizeMoney(cert.policy.issueCertData!.shortfall) ?? 0,
                   "phone": "07",
                 };
                 PesapalPaymentModalStk.show(
