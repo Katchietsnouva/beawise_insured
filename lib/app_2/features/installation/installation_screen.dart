@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const _App());
 
@@ -410,6 +411,7 @@ class _PlatformsGrid extends StatelessWidget {
         'Android APK',
         false,
         null,
+        '/downloads/v1.0.0-armeabi-v7a-release.apk',
       ),
       _PlatformData(
         'iOS / iPadOS',
@@ -419,6 +421,7 @@ class _PlatformsGrid extends StatelessWidget {
         'iOS App Store',
         false,
         null,
+        'https://apps.apple.com/app/...insured-insurance-agent-app/id6441871234',
       ),
       _PlatformData(
         'Windows',
@@ -428,6 +431,7 @@ class _PlatformsGrid extends StatelessWidget {
         'Windows 2.4.1 .exe',
         false,
         null,
+        '/downloads/insured-windows-setup.exe',
       ),
       _PlatformData(
         'macOS',
@@ -437,6 +441,7 @@ class _PlatformsGrid extends StatelessWidget {
         'macOS 2.4.1 .dmg',
         false,
         null,
+        '/downloads/insured-macos.dmg',
       ),
 
       _PlatformData(
@@ -447,6 +452,7 @@ class _PlatformsGrid extends StatelessWidget {
         'Linux 2.4.1 .deb',
         false,
         null,
+        '/downloads/insured-linux-amd64.deb',
       ),
     ];
 
@@ -480,6 +486,7 @@ class _PlatformData {
   final IconData icon;
   final bool featured;
   final String? badge;
+  final String downloadUrl;
   const _PlatformData(
     this.name,
     this.subtitle,
@@ -488,6 +495,7 @@ class _PlatformData {
     this.toastMsg,
     this.featured,
     this.badge,
+    this.downloadUrl,
   );
 }
 
@@ -590,8 +598,17 @@ class _PlatformCardState extends State<_PlatformCard> {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () =>
-                    widget.onDownload('Downloading Insured for ${d.name}...'),
+                // onTap: () =>
+                // widget.onDownload('Downloading Insured for ${d.name}...'),
+                onTap: () async {
+                  final Uri url = Uri.parse(d.downloadUrl);
+                  if (await canLaunchUrl(url)) {
+                    widget.onDownload('Starting download...');
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else {
+                    widget.onDownload('Could not launch download link.');
+                  }
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: double.infinity,
