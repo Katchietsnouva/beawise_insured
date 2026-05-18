@@ -524,6 +524,106 @@ class _PlatformCardState extends State<_PlatformCard> {
     final d = widget.data;
     final active = _hovered || d.featured;
 
+    Widget _archOption(
+      BuildContext context,
+      String title,
+      String subtitle,
+      String url,
+      ColorScheme cs,
+    ) {
+      return InkWell(
+        onTap: () => Navigator.pop(context, url),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: cs.primary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: cs.primary.withOpacity(0.3)),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.memory, color: cs.primary, size: 28),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: cs.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: cs.onSurface.withOpacity(0.6),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios, color: cs.primary, size: 16),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Future<String?> _showAndroidArchDialog(BuildContext context) async {
+      final cs = widget.cs;
+      return showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: cs.surface,
+          title: Text(
+            'Choose your processor',
+            style: TextStyle(color: cs.onSurface, fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _archOption(
+                ctx,
+                'ARM64 (64‑bit)',
+                'Most modern phones (2020+)',
+                '/downloads/v1.0.0-arm64-v8a-release.apk',
+                cs,
+              ),
+              const SizedBox(height: 12),
+              _archOption(
+                ctx,
+                'ARMv7 (32‑bit)',
+                'Older devices (pre‑2020)',
+                '/downloads/v1.0.0-armeabi-v7a-release.apk',
+                cs,
+              ),
+              const SizedBox(height: 12),
+              _archOption(
+                ctx,
+                'x86_64 (64‑bit)',
+                'Emulators / very rare phones',
+                '/downloads/v1.0.0-x86_64-release.apk',
+                cs,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: cs.onSurface.withOpacity(0.7)),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -600,10 +700,38 @@ class _PlatformCardState extends State<_PlatformCard> {
               ),
               const Spacer(),
               GestureDetector(
-                // onTap: () =>
-                // widget.onDownload('Downloading Insured for ${d.name}...'),
+                // // onTap: () =>
+                // // widget.onDownload('Downloading Insured for ${d.name}...'),
+                // onTap: () async {
+                //   // final Uri url = Uri.parse(d.downloadUrl);
+                //   final Uri url = Uri.base.resolve(d.downloadUrl);
+                //   if (await canLaunchUrl(url)) {
+                //     widget.onDownload('Starting download...');
+                //     await launchUrl(url, mode: LaunchMode.externalApplication);
+                //   } else {
+                //     widget.onDownload('Could not launch download link.');
+                //   }
+                // },
                 onTap: () async {
-                  // final Uri url = Uri.parse(d.downloadUrl);
+                  // For Android, show a selection dialog with the three APK options
+                  if (d.name == 'Android') {
+                    final selectedUrl = await _showAndroidArchDialog(context);
+                    if (selectedUrl != null) {
+                      final Uri url = Uri.base.resolve(selectedUrl);
+                      if (await canLaunchUrl(url)) {
+                        widget.onDownload('Starting download...');
+                        await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        widget.onDownload('Could not launch download link.');
+                      }
+                    }
+                    return;
+                  }
+
+                  // For other platforms, use the single downloadUrl as before
                   final Uri url = Uri.base.resolve(d.downloadUrl);
                   if (await canLaunchUrl(url)) {
                     widget.onDownload('Starting download...');
