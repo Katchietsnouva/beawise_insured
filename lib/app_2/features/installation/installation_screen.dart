@@ -288,7 +288,7 @@ class _HeroSection extends StatelessWidget {
             ),
             _dot(cs),
             Text(
-              'Released March 2026',
+              'Released May 2026',
               style: TextStyle(
                 fontSize: 13,
                 color: cs.onSurface.withOpacity(.35),
@@ -1141,7 +1141,7 @@ class _Footer extends StatelessWidget {
       'Terms of Use',
       'Support',
       'Release Notes',
-      'GitHub',
+      // 'GitHub',
     ];
     return Column(
       children: [
