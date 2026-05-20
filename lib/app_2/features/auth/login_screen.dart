@@ -513,12 +513,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       //   const Center(
                                       //     child: CircularProgressIndicator(),
                                       //   ),
-                                      CustomAdvancedButton(
-                                        variant: ButtonVariant.text,
-                                        prefixText: "Don't have an account? ",
-                                        label: "Create Account",
-                                        onPressed: () =>
-                                            context.go('/register'),
+                                      Visibility(
+                                        visible: false,
+                                        child: CustomAdvancedButton(
+                                          variant: ButtonVariant.text,
+                                          prefixText: "Don't have an account? ",
+                                          label: "Create Account",
+                                          onPressed: () =>
+                                              context.go('/register'),
+                                        ),
                                       ),
                                     ],
                                   ),
