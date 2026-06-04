@@ -4,11 +4,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:insured/app_2/core/constants/url_cosntants.dart';
 
 import 'package:insured/app_2/core/services/memory_cache.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
+import 'package:insured/app_2/core/widgets/custom_checkbox.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
@@ -20,6 +22,7 @@ import 'package:insured/app_2/core/widgets/grain_overlay.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -33,6 +36,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   final _formKey = GlobalKey<FormState>();
   bool _showValidationErrors = false;
   bool _isHoveringLoginText = false;
+  // Add these with other controllers/fields
+  bool _termsAccepted = false;
+  List<dynamic> _agreements = [];
+  bool _isLoadingAgreements = false;
   late final AnimationController _floatCtrl;
   late final Animation<double> _floatAnim;
   late final AnimationController _shimmerCtrl;
@@ -65,6 +72,102 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   late final ValueNotifier<bool> _emailValid;
 
   // ... etc per required field
+
+  Future<void> _fetchAgreements() async {
+    setState(() => _isLoadingAgreements = true);
+
+    try {
+      final response = await http.get(
+        // Uri.parse('https://beawise.inscloud.net/api/agents/agreements'),
+        Uri.parse(InscloudUrls.agreements),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _agreements = data['data'] ?? [];
+        });
+      }
+    } catch (e) {
+      print('Failed to load agreements: $e');
+      FuturisticToastT.show(
+        context: context,
+        message: 'Failed to load terms. Please check your connection.',
+        icon: Icons.error,
+        iconColor: Colors.redAccent,
+      );
+    } finally {
+      setState(() => _isLoadingAgreements = false);
+    }
+  }
+
+  void _showTermsModal() async {
+    if (_agreements.isEmpty) {
+      await _fetchAgreements();
+    }
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF0C1328),
+        title: const Text(
+          'Terms & Agreements',
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 520,
+          child: _isLoadingAgreements
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Column(
+                    children: _agreements.map<Widget>((agreement) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            agreement['title'] ?? '',
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 12),
+                          CustomText(
+                            agreement['content'] ?? '',
+                            color: Colors.white70,
+                          ),
+                          const SizedBox(height: 20),
+                          const Divider(color: Colors.white24),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+        ),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: CustomAdvancedButton(
+                  onPressed: () => Navigator.pop(context),
+                  label: 'Cancel',
+                  variant: ButtonVariant.secondary,
+                ),
+              ),
+              SizedBox(width: 4),
+              Expanded(
+                child: CustomAdvancedButton(
+                  label: 'I Accept All',
+                  variant: ButtonVariant.primary,
+                  onPressed: () {
+                    setState(() => _termsAccepted = true);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   void _onStepContinue() async {
     // ()  {
@@ -116,6 +219,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
         "comm_calc": int.tryParse(_commCalcCtrl.text) ?? 1,
         "branch_id": int.tryParse(_branchIdCtrl.text) ?? 1,
         "password": _passwordCtrl.text,
+        "terms_accepted": _termsAccepted,
       };
       print('Sending registration data: $data');
       if (_isRegistering) return;
@@ -412,8 +516,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
 
       case 2:
         return _passwordCtrl.text.isNotEmpty &&
-            _confirmPasswordCtrl.text.isNotEmpty;
-
+            _confirmPasswordCtrl.text.isNotEmpty &&
+            _termsAccepted;
       default:
         return true;
     }
@@ -561,6 +665,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
           obscureText: true,
           controller: _confirmPasswordCtrl,
         ),
+        const SizedBox(height: 20),
+        // === NEW: Using CustomCheckbox ===
+        CustomCheckbox(
+          value: _termsAccepted,
+          onChanged: (val) {
+            if (val == true) {
+              _showTermsModal();
+            } else {
+              setState(() => _termsAccepted = false);
+            }
+          },
+          label: 'I agree to the Terms and Privacy Policy',
+          textColor: Colors.white70,
+          fontSize: 14,
+        ),
       ],
     );
 
@@ -568,7 +687,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     //   return Padding( padding: const EdgeInsets.only(top: 10),
     //     child: Row( children: [
     //         if (details.currentStep > 0)
-    //           Expanded( child: CustomAdvancedButton( height: 50, label: 'Back', variant: ButtonVariant.secondary, onPressed: details.onStepCancel! )),
+    //           Expanded( child: _showTermsModal( height: 50, label: 'Back', variant: ButtonVariant.secondary, onPressed: details.onStepCancel! )),
     //         if (details.currentStep > 0) const SizedBox(width: 8),
     //         Expanded(child: CustomAdvancedButton( height: 50, label: details.currentStep < 2 ? 'Next' : (_isRegistering ? 'Signing Up...' : 'Sign Up'), variant: ButtonVariant.primary, onPressed: details.onStepContinue!, loading: _isRegistering), ),
     //       ]));}
@@ -613,7 +732,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                   variant: ButtonVariant.primary,
                   loading: _isRegistering,
                   // isDisabled: !isEmailValid || !_validateCurrentStep(),
-                  isDisabled: !isEmailValid,
+                  isDisabled: _currentStep == 2
+                      ? (!_termsAccepted)
+                      : !isEmailValid,
                   onPressed: _onStepContinue,
                 );
               },

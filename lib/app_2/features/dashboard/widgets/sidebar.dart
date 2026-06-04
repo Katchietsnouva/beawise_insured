@@ -244,17 +244,31 @@ class _SidebarState extends ConsumerState<Sidebar>
                     //     ),
                     //   )
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: Responsive.isMobile(context) ? 30.0 : 8.0,
+                        bottom: 8,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image(
-                          image: AssetImage(
-                            '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.2),
+                            width: 1,
                           ),
-                          fit: BoxFit.contain,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image(
+                            image: AssetImage(
+                              '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                            ),
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     )
@@ -289,13 +303,24 @@ class _SidebarState extends ConsumerState<Sidebar>
                             horizontal: 10,
                             vertical: 4,
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image(
-                              image: AssetImage(
-                                '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.2),
+                                width: 1,
                               ),
-                              fit: BoxFit.contain,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image(
+                                image: AssetImage(
+                                  '$pathPrefix/images/logos/${Theme.of(context).brightness == Brightness.dark ? 'logo' : 'logo_black'}.png',
+                                ),
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),

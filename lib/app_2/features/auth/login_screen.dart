@@ -514,7 +514,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       //     child: CircularProgressIndicator(),
                                       //   ),
                                       Visibility(
-                                        visible: false,
+                                        visible: true,
                                         child: CustomAdvancedButton(
                                           variant: ButtonVariant.text,
                                           prefixText: "Don't have an account? ",

@@ -67,7 +67,8 @@ class InscloudUrls {
       resetOtpRequestInsuredUser = '$base/agent/password/request',
       resetOtpConfirmInsuredUser = '$base/agent/password/confirm',
       createClientInsuredUser = '$base/agent/client/create',
-      stkPush = '$base/payment/stk/push';
+      stkPush = '$base/payment/stk/push',
+      agreements = '$base/agents/agreements';
 }
 
 class PesapalUrls {
