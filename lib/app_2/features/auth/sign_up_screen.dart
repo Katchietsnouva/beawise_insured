@@ -74,6 +74,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   // ... etc per required field
 
   Future<void> _fetchAgreements() async {
+    if (_agreements.isNotEmpty || _isLoadingAgreements) return;
+
     setState(() => _isLoadingAgreements = true);
 
     try {
@@ -184,7 +186,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       _formKey.currentState!.validate();
       return;
     }
-
+    if (_currentStep == 1) {
+      _fetchAgreements(); // preload while user fills passwords
+    }
     if (_currentStep < 2) {
       // setState(() => _currentStep++);
       setState(() {
@@ -494,6 +498,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     // // step 3
     // _passwordValid = ValueNotifier(false);
     // _confirmPasswordValid = ValueNotifier(false);
+    // _fetchAgreements();
   }
 
   void _updateStepValidity() {
@@ -577,6 +582,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
           hintLabel: '07.../01...',
           maxNumberOfCharHL: 10,
           controller: _phoneCtrl,
+          isNumber: true,
           keyboardType: TextInputType.phone,
         ),
         const SizedBox(height: 12),
