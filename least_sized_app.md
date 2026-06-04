@@ -1,6 +1,6 @@
 flutter build web --no-tree-shake-icons
 
-sflutter gen-l10n
+flutter gen-l10n
 flutter build apk --release --split-per-abi --no-tree-shake-icons
 flutter build ipa --release --no-tree-shake-icons
 <!-- flutter build apk --release  --analyze-size --split-per-abi --no-tree-shake-icons --split-debug-info=build/debug-info -->
