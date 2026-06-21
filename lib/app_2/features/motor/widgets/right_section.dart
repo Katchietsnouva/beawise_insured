@@ -86,8 +86,8 @@ class _MotorFormRightSectionState extends ConsumerState<MotorFormRightSection> {
   }
 
   void _clearConditionalFields() {
-    // seatsController.clear();
-    // tonnageController.clear();
+    widget.seatsController.clear();
+    widget.tonnageController.clear();
     _cache.put('motor_seats', '');
     _cache.put('motor_tonnage', '');
   }
@@ -386,9 +386,7 @@ class _MotorFormRightSectionState extends ConsumerState<MotorFormRightSection> {
           //         .toList(),
           groupedItems: groupedCoverItems,
           onChanged: (val) {
-            // _clearConditionalFields();
-            _cache.put('motor_seats', '');
-            _cache.put('motor_tonnage', '');
+            _clearConditionalFields();
 
             if (val?.toUpperCase() != 'PSV') {
               widget.onPsvTypeChanged(null);
@@ -405,9 +403,9 @@ class _MotorFormRightSectionState extends ConsumerState<MotorFormRightSection> {
 
             if (val == 'Private') {
               widget.tonnageController.clear();
-              // _cache.put('motor_tonnage', '');
+              _cache.put('motor_tonnage', '');
               widget.valueController.clear();
-              // _cache.put('motor_vehicle_value', '');
+              _cache.put('motor_vehicle_value', '');
             }
             widget.onCoverageChanged(val);
           },

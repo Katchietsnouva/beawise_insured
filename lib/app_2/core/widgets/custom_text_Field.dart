@@ -127,6 +127,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
     }
   }
 
+  @override
+  void didUpdateWidget(CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onControllerChanged);
+      widget.controller.addListener(_onControllerChanged);
+    }
+  }
+
   String? _runValidation(String? value) {
     final trimmedValue = value?.trim() ?? '';
     final rawValue = value?.replaceAll(',', '') ?? '';

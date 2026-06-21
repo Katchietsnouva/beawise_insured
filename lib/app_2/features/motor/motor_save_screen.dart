@@ -587,8 +587,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
             yom: (widget.initialYom != null && widget.initialYom! >= 1900)
                 ? widget.initialYom!
                 : (int.tryParse(yomCtrl.text) ?? 1910),
-            seats: 0,
-            tonnage: 0,
+            seats: int.tryParse(_getQuotecache.get('motor_seats') ?? '0') ?? 0,
+            tonnage: double.tryParse(_getQuotecache.get('motor_tonnage') ?? '0') ?? 0,
 
             // tonnage: double.tryParse(tonnageCtrl.text) ?? 4,
             // value: double.tryParse(valueCtrl.text) ?? 100000,
