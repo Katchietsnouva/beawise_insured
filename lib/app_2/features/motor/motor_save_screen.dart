@@ -29,6 +29,7 @@ import 'package:insured/app_2/providers/client_provider.dart';
 import 'package:insured/app_2/providers/dmvic_provider.dart';
 import 'package:insured/app_2/providers/motor_provider.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
+import 'package:insured/app_2/features/motor/motor_document_upload_sheet.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -616,9 +617,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       print(encoder.convert(response?.toJson()));
 
       if (response != null && mounted) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar( content: Text('Policy created! Risknote ${response.risknote}'), ), );
-
         final policy = MotorSaveResponseToLocalStore(
           message: response.message,
           risknote: response.risknote,
@@ -632,9 +630,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
 
         ref.read(motorSaveCacheProvider).clear();
 
-        final content =
-            // '${response.message}  Risknote ${response.risknote} client No: ${response.clientNo}  ';
-            '${response.message}  Risknote: ${response.risknote}   ';
+        final content = '${response.message}  Risknote: ${response.risknote}   ';
         FuturisticToastS.show(
           context: context,
           message: content,
@@ -642,11 +638,24 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           alignment: Alignment.topCenter,
           duration: const Duration(seconds: 10),
         );
-        // // context.pop();
-        // // context.goNamed('policies');
 
-        // context.goNamed('production', extra: response.id);
-        context.goNamed('quotes', extra: response.id);
+        final isComprehensive =
+            (scopeSaved ?? widget.selectedScope ?? '').toLowerCase() ==
+            'comprehensive';
+
+        if (isComprehensive && mounted) {
+          await showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: Colors.black.withValues(alpha: 0.5),
+            builder: (_) => MotorDocumentUploadSheet(
+              risknote: response.risknote.toString(),
+            ),
+          );
+        }
+
+        if (mounted) context.goNamed('quotes', extra: response.id);
 
         // if (policyResponse != null && mounted) {
         //   showModalBottomSheet(

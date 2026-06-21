@@ -590,6 +590,39 @@ class ApiService {
   //   }
   // }
 
+  static Future<Map<String, dynamic>> uploadPolicyDocument({
+    required String token,
+    required String agentCode,
+    required String agentKey,
+    required String documentName,
+    required String risknote,
+    required String filePath,
+    required String fileName,
+  }) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/policy/file/upload'),
+    );
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+      'X-Agent-Code': agentCode,
+      'X-Agent-Key': agentKey,
+    });
+    request.fields['document_name'] = documentName;
+    request.fields['risknote'] = risknote;
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'document_file',
+        filePath,
+        filename: fileName,
+      ),
+    );
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    print('uploadPolicyDocument [$documentName] → ${response.body}');
+    return _handleResponse(response);
+  }
+
   static Future<Map<String, dynamic>> postDmvicDoubleInsurance({
     required String token,
     required String registration,
