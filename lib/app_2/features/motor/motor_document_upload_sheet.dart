@@ -122,7 +122,9 @@ class _MotorDocumentUploadSheetState
 
     try {
       final authState = ref.read(authProvider);
-      print('📤 UPLOAD [${doc.apiName}] file=${doc.fileName} bytes=${doc.bytes!.length} risknote=${widget.risknote} clientNo=${widget.clientNo}');
+      print(
+        '📤 UPLOAD [${doc.apiName}] file=${doc.fileName} bytes=${doc.bytes!.length} risknote=${widget.risknote} clientNo=${widget.clientNo}',
+      );
       await ApiService.uploadPolicyDocument(
         token: authState.bearerToken!,
         agentCode: authState.user!.agentCode,
@@ -175,18 +177,18 @@ class _MotorDocumentUploadSheetState
           color: doc.isDone
               ? Colors.green.withValues(alpha: 0.5)
               : doc.isError
-                  ? Colors.red.withValues(alpha: 0.4)
-                  : doc.hasPick
-                      ? AppColors.favColour.withValues(alpha: 0.4)
-                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+              ? Colors.red.withValues(alpha: 0.4)
+              : doc.hasPick
+              ? AppColors.favColour.withValues(alpha: 0.4)
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
         ),
         color: doc.isDone
             ? Colors.green.withValues(alpha: 0.05)
             : doc.isError
-                ? Colors.red.withValues(alpha: 0.03)
-                : doc.hasPick
-                    ? AppColors.favColour.withValues(alpha: 0.04)
-                    : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+            ? Colors.red.withValues(alpha: 0.03)
+            : doc.hasPick
+            ? AppColors.favColour.withValues(alpha: 0.04)
+            : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
       ),
       child: Row(
         children: [
@@ -215,7 +217,11 @@ class _MotorDocumentUploadSheetState
           ),
           const SizedBox(width: 8),
           if (doc.isDone)
-            const Icon(Icons.check_circle_rounded, color: Colors.green, size: 22)
+            const Icon(
+              Icons.check_circle_rounded,
+              color: Colors.green,
+              size: 22,
+            )
           else if (doc.isUploading)
             const SizedBox(
               width: 22,
@@ -226,11 +232,16 @@ class _MotorDocumentUploadSheetState
             GestureDetector(
               onTap: () => _pickFile(index),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.2),
                   ),
                 ),
                 child: CustomText(
@@ -250,7 +261,11 @@ class _MotorDocumentUploadSheetState
                     color: Colors.red.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.refresh_rounded, size: 18, color: Colors.red),
+                  child: const Icon(
+                    Icons.refresh_rounded,
+                    size: 18,
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ],
@@ -288,7 +303,9 @@ class _MotorDocumentUploadSheetState
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -296,7 +313,10 @@ class _MotorDocumentUploadSheetState
           Row(
             children: [
               const Expanded(
-                child: CustomText('Upload Documents', type: CustomTextType.subHeader),
+                child: CustomText(
+                  'Upload Documents',
+                  type: CustomTextType.subHeader,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -332,9 +352,17 @@ class _MotorDocumentUploadSheetState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5)),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  ),
                   SizedBox(width: 10),
-                  CustomText('Uploading...', type: CustomTextType.caption, color: Colors.grey),
+                  CustomText(
+                    'Uploading...',
+                    type: CustomTextType.caption,
+                    color: Colors.grey,
+                  ),
                 ],
               ),
             )
@@ -345,17 +373,26 @@ class _MotorDocumentUploadSheetState
               onPressed: _navigateToQuotes,
             )
           else ...[
-            CustomAdvancedButton(
-              label: 'Upload Documents',
-              variant: ButtonVariant.primary,
-              isDisabled: !anyPickedNotDone,
-              onPressed: _uploadAll,
-            ),
-            const SizedBox(height: 8),
-            CustomAdvancedButton(
-              label: noPicks ? 'Skip for Now' : 'Skip Upload',
-              variant: ButtonVariant.secondary,
-              onPressed: _navigateToQuotes,
+            Row(
+              children: [
+                Expanded(
+                  child: CustomAdvancedButton(
+                    label: noPicks ? 'Skip for Now' : 'Skip Upload',
+                    variant: ButtonVariant.primary,
+                    color1: Colors.redAccent,
+                    onPressed: _navigateToQuotes,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CustomAdvancedButton(
+                    label: 'Upload Documents',
+                    variant: ButtonVariant.primary,
+                    isDisabled: !anyPickedNotDone,
+                    onPressed: _uploadAll,
+                  ),
+                ),
+              ],
             ),
           ],
         ],
