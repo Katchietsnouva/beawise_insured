@@ -364,27 +364,7 @@ class _MotorDocumentUploadSheetState
           const SizedBox(height: 14),
           ...List.generate(_docs.length, _buildDocRow),
           const SizedBox(height: 8),
-          if (anyUploading)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  ),
-                  SizedBox(width: 10),
-                  CustomText(
-                    'Uploading...',
-                    type: CustomTextType.caption,
-                    color: Colors.grey,
-                  ),
-                ],
-              ),
-            )
-          else if (allDone)
+          if (allDone)
             CustomAdvancedButton(
               label: 'Continue to Quotes',
               variant: ButtonVariant.primary,
@@ -399,15 +379,17 @@ class _MotorDocumentUploadSheetState
                     variant: ButtonVariant.primary,
                     color1: Colors.redAccent,
                     onPressed: _navigateToQuotes,
+                    isDisabled: anyUploading,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: CustomAdvancedButton(
-                    label: 'Upload Documents',
+                    label: anyUploading ? 'Uploading...' : 'Upload Documents',
                     variant: ButtonVariant.primary,
                     isDisabled: !anyPickedNotDone,
                     onPressed: _uploadAll,
+                    loading: anyUploading,
                   ),
                 ),
               ],
