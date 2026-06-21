@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insured/app_2/core/services/api_service.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
+import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
+import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 
 enum _UploadStatus { idle, uploading, success, error }
@@ -125,7 +127,7 @@ class _MotorDocumentUploadSheetState
       print(
         '📤 UPLOAD [${doc.apiName}] file=${doc.fileName} bytes=${doc.bytes!.length} risknote=${widget.risknote} clientNo=${widget.clientNo}',
       );
-      await ApiService.uploadPolicyDocument(
+      final result = await ApiService.uploadPolicyDocument(
         token: authState.bearerToken!,
         agentCode: authState.user!.agentCode,
         agentKey: authState.user!.agentKey,
@@ -136,8 +138,24 @@ class _MotorDocumentUploadSheetState
         fileBytes: doc.bytes!,
         fileName: doc.fileName!,
       );
-      print('✅ UPLOAD [${doc.apiName}] success');
+      print('✅ UPLOAD [${doc.apiName}] success: $result');
       setState(() => doc.status = _UploadStatus.success);
+
+      if (mounted) {
+        final url = result['url'] as String?;
+        final expiresAt = result['expires_at'] as String?;
+        FuturisticToastS.show(
+          context: context,
+          message:
+              '${doc.label} uploaded${expiresAt != null ? '\n\nExpires on: ${formatHumanDate(expiresAt)}' : ''}',
+          icon: Icons.check_circle,
+          iconColor: Colors.greenAccent,
+          alignment: Alignment.topCenter,
+          duration: const Duration(seconds: 6),
+          showCopyButton: url != null,
+          showCloseButton: true,
+        );
+      }
     } catch (e, st) {
       print('❌ UPLOAD [${doc.apiName}] ERROR: $e');
       print('❌ STACKTRACE: $st');
