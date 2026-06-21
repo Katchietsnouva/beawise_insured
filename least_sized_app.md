@@ -1,3 +1,19 @@
+flutter pub add  firebase_core
+flutter pub add  firebase_messaging
+flutter pub add  flutter_local_notifications
+
+
+
+dart run flutter_launcher_icons:generate --override
+  image_path: "assets/images/app_logos/app_launcher_logo.png"
+flutter pub run flutter_launcher_icons
+
+
+adb tcpip 5555
+adb connect 192.168.100.8:5555
+flutter run
+flutter run -d chrome --web-port 5000
+
 flutter build web --no-tree-shake-icons
 
 flutter gen-l10n
@@ -17,6 +33,49 @@ flutter build apk --target-platform --analyze-size android-arm64
 least_sized_app.md
 flutter build apk --release --target-platform android-arm64
 flutter build apk --release --split-per-abi --no-tree-shake-icons
+
+
+
+
+
+
+------> update listeer bug fix
+
+There's still a bug. Let me look at the motor provider's clearQuote method and the _tryAutoFetch to understand what rebuilds happen after clearing.
+
+  Searched for 1 pattern, read 2 files
+
+Found the real root cause. When switching between Commercial Own Goods (shows tonnageField) and Commercial Institutional (shows seatsField), both widgets occupy the same tree position in the Row/Column. Flutter reuses the CustomTextField state instead of creating a new one — so the controller listener stays bound to the OLD controller (seatsController ↔ tonnageController). When the user types, the cache never gets updated.
+
+The fix: implement didUpdateWidget in CustomTextField to re-bind the listener when the controller changes.
+
+  Read 1 file
+
+● Update(lib/app_2/core/widgets/custom_text_Field.dart)
+Added 9 lines
+    }
+  }
+
+  @override
+  void didUpdateWidget(CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onControllerChanged);
+      widget.controller.addListener(_onControllerChanged);
+    }
+  }
+
+  String? _runValidation(String? value) {
+    final trimmedValue = value?.trim() ?? '';
+    final rawValue = value?.replaceAll(',', '') ?? '';
+
+The actual bug was a Flutter widget reconciliation issue: seatsField and tonnageField occupy the same slot in the Row/Column inside the if (isCommercial) block. When you switch between Commercial Own Goods (shows tonnage) and Commercial Institutional (shows seats), Flutter reuses the existing CustomTextField state instead of creating a new one — so the _onControllerChanged listener stayed bound to the old controller. The user's keystrokes never updated the cache.
+
+The didUpdateWidget override in CustomTextField fixes this: whenever the controller swaps out, it removes the old listener and attaches a fresh one to the new controller. From now on, typing in either field will always hit the cache regardless of what coverage was selected before.
+
+✻ Crunched for 3m 4s
+
+※ recap: Working on the motor policy quote-to-save flow to ensure seats (pll) and tonnage values pass correctly to the save API. All fixes are in place — next step is for you to run a full stress test across all coverage types. (disable recaps in /config)
 
 
 
