@@ -596,7 +596,9 @@ class ApiService {
     required String agentKey,
     required String documentName,
     required String risknote,
-    required String filePath,
+    required String clientNo,
+    required String clientKey,
+    required List<int> fileBytes,
     required String fileName,
   }) async {
     final request = http.MultipartRequest(
@@ -607,13 +609,15 @@ class ApiService {
       'Authorization': 'Bearer $token',
       'X-Agent-Code': agentCode,
       'X-Agent-Key': agentKey,
+      'X-Client-No': clientNo,
+      'X-Client-Key': clientKey,
     });
     request.fields['document_name'] = documentName;
     request.fields['risknote'] = risknote;
     request.files.add(
-      await http.MultipartFile.fromPath(
+      http.MultipartFile.fromBytes(
         'document_file',
-        filePath,
+        fileBytes,
         filename: fileName,
       ),
     );

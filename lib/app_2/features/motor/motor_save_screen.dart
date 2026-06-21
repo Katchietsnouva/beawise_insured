@@ -30,6 +30,7 @@ import 'package:insured/app_2/providers/dmvic_provider.dart';
 import 'package:insured/app_2/providers/motor_provider.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
 import 'package:insured/app_2/features/motor/motor_document_upload_sheet.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -246,6 +247,14 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   // Taxes – simplified; you can expand later
   List<TaxItem> taxesList = [];
 
+  // Document picks for Comprehensive cover (passed to upload sheet after save)
+  List<int>? _logbookBytes;
+  List<int>? _kraPinBytes;
+  List<int>? _idDocBytes;
+  String? _logbookName;
+  String? _kraPinName;
+  String? _idDocName;
+
   @override
   void initState() {
     super.initState();
@@ -337,6 +346,10 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   }
 
   bool get isTPO => (scopeSaved ?? '').toUpperCase() == 'TPO';
+  bool get isComprehensive =>
+      (scopeSaved ?? widget.selectedScope ?? '').toLowerCase() ==
+      'comprehensive';
+
   void putSaves(MemoryCacheService motorCache) {
     regnoCtrl.addListener(() {
       setState(() {});
@@ -589,7 +602,9 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                 ? widget.initialYom!
                 : (int.tryParse(yomCtrl.text) ?? 1910),
             seats: int.tryParse(_getQuotecache.get('motor_seats') ?? '0') ?? 0,
-            tonnage: double.tryParse(_getQuotecache.get('motor_tonnage') ?? '0') ?? 0,
+            tonnage:
+                double.tryParse(_getQuotecache.get('motor_tonnage') ?? '0') ??
+                0,
 
             // tonnage: double.tryParse(tonnageCtrl.text) ?? 4,
             // value: double.tryParse(valueCtrl.text) ?? 100000,
@@ -630,7 +645,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
 
         ref.read(motorSaveCacheProvider).clear();
 
-        final content = '${response.message}  Risknote: ${response.risknote}   ';
+        final content =
+            '${response.message}  Risknote: ${response.risknote}   ';
         FuturisticToastS.show(
           context: context,
           message: content,
@@ -639,20 +655,28 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           duration: const Duration(seconds: 10),
         );
 
-        final isComprehensive =
-            (scopeSaved ?? widget.selectedScope ?? '').toLowerCase() ==
-            'comprehensive';
-
         if (isComprehensive && mounted) {
           await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
+            isDismissible: false,
+            enableDrag: false,
             backgroundColor: Colors.transparent,
-            barrierColor: Colors.black.withValues(alpha: 0.5),
+            barrierColor: Colors.black.withValues(alpha: 0.82),
             builder: (_) => MotorDocumentUploadSheet(
               risknote: response.risknote.toString(),
+              clientNo: response.clientNo,
+              clientKey: response.clientKey,
+              policyId: response.id,
+              logbookBytes: _logbookBytes,
+              logbookName: _logbookName,
+              kraPinBytes: _kraPinBytes,
+              kraPinName: _kraPinName,
+              idDocBytes: _idDocBytes,
+              idDocName: _idDocName,
             ),
           );
+          return;
         }
 
         if (mounted) context.goNamed('quotes', extra: response.id);
@@ -1256,6 +1280,152 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     );
   }
 
+  Future<void> _pickDocFile(int index) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+      allowMultiple: false,
+    );
+    if (result == null || result.files.isEmpty) return;
+    final file = result.files.first;
+    final bytes = file.bytes;
+    if (bytes == null || bytes.isEmpty) return;
+    setState(() {
+      if (index == 0) {
+        _logbookBytes = bytes;
+        _logbookName = file.name;
+      } else if (index == 1) {
+        _kraPinBytes = bytes;
+        _kraPinName = file.name;
+      } else {
+        _idDocBytes = bytes;
+        _idDocName = file.name;
+      }
+    });
+  }
+
+  Widget _buildDocPickRow(
+    IconData icon,
+    String label,
+    List<int>? bytes,
+    String? fileName,
+    int index,
+  ) {
+    final hasPick = bytes != null;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: hasPick
+              ? AppColors.favColour.withValues(alpha: 0.4)
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
+        ),
+        color: hasPick
+            ? AppColors.favColour.withValues(alpha: 0.04)
+            : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: hasPick
+                ? AppColors.favColour
+                : Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(label, type: CustomTextType.paragraph),
+                if (fileName != null)
+                  CustomText(
+                    fileName,
+                    type: CustomTextType.caption,
+                    color: Colors.grey,
+                    maxLines: 1,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (hasPick)
+            const Icon(
+              Icons.attach_file_rounded,
+              color: AppColors.favColour,
+              size: 18,
+            ),
+          const SizedBox(width: 6),
+          GestureDetector(
+            onTap: () => _pickDocFile(index),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.2),
+                ),
+              ),
+              child: CustomText(
+                hasPick ? 'Change' : 'Pick',
+                type: CustomTextType.caption,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDocUploadSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(
+              Icons.upload_file_outlined,
+              size: 18,
+              color: AppColors.favColour,
+            ),
+            const SizedBox(width: 6),
+            // const CustomText('Documents', type: CustomTextType.subHeader),
+            // const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const CustomText(
+                'Optional',
+                type: CustomTextType.caption,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // const CustomText(
+        //   'Pick files here — you will upload them after saving',
+        //   type: CustomTextType.caption,
+        //   color: Colors.grey,
+        // ),
+        // const SizedBox(height: 12),
+        // _buildDocPickRow(Icons.book_outlined, 'Logbook', _logbookBytes, _logbookName, 0),
+        // _buildDocPickRow(Icons.pin_outlined, 'KRA PIN', _kraPinBytes, _kraPinName, 1),
+        // _buildDocPickRow(Icons.badge_outlined, 'Copy of ID', _idDocBytes, _idDocName, 2),
+      ],
+    );
+  }
+
   Widget _getStepContent() {
     // bool _showMore = false;
     if (_currentStep == 0) {
@@ -1290,6 +1460,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
               final isWide = constraints.maxWidth > 700;
               Widget leftColumn = Column(
                 children: [
+                  if (isComprehensive) ...[
+                    const SizedBox(height: 16),
+                    _buildDocUploadSection(),
+                    const Divider(),
+                  ],
                   const SizedBox(height: 16),
                   CustomTextField(
                     hint: 'Start Date',
@@ -1500,11 +1675,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                   const SizedBox(height: 16),
                 ],
               );
-              Widget rightColumn = Column(
-                children: [
-                  //
-                ],
-              );
+              Widget rightColumn = const SizedBox.shrink();
               return SingleChildScrollView(
                 child: isWide
                     ? Row(
