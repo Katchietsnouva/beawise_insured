@@ -14,10 +14,8 @@ import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_checkbox.dart';
 import 'package:insured/app_2/core/widgets/custom_label_value_text.dart';
 import 'package:insured/app_2/core/widgets/custom_super_tab_bar.dart';
-import 'package:insured/app_2/core/widgets/custom_super_tab_switcher.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field.dart';
-import 'package:insured/app_2/core/widgets/custom_dropdown.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastT.dart';
@@ -26,11 +24,9 @@ import 'package:insured/app_2/data/models/motor_quote_request_model.dart';
 import 'package:insured/app_2/features/motor/quoter_benefit_providers.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 import 'package:insured/app_2/providers/client_provider.dart';
-import 'package:insured/app_2/providers/dmvic_provider.dart';
 import 'package:insured/app_2/providers/motor_provider.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
 import 'package:insured/app_2/features/motor/motor_document_upload_sheet.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -395,7 +391,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       if (response['success'] == true) {
         HapticFeedback.vibrate();
       }
-      final result = ref.watch(dmvicDoubleInsuranceResultProvider);
 
       // FuturisticToastS.show(context: context, message: response., )
     } catch (e) {
@@ -418,7 +413,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     final excessProtectorSelected = ref.read(excessProtectorProvider);
     final politicalViolenceSelected = ref.read(politicalViolenceProvider);
 
-    final List<VehicleBenefit> benefitList = [];
+    // final List<VehicleBenefit> benefitList = [];
 
     for (var b in quote.benefits) {
       // // Assuming each benefit has 'id', 'rate', 'amount'
@@ -565,7 +560,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           endDate: endDateCtrl.text,
           // insurerId: int.tryParse(insurerIdCtrl.text) ?? 0,
           // insurerId: int.tryParse(quote.insurerId as String) ?? 2,
-          insurerId: quote.insurerId ?? 2,
+          insurerId: quote.insurerId,
 
           vehicleClass: classSaved ?? ' ',
 
@@ -579,8 +574,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           taxes: calc.totalTaxes,
           // premium: quote.basicPremium ?? 0,
           premium: calc.totalPremium,
-          markup: quote.markup ?? 0,
-          markupValue: quote.markupValue ?? 0,
+          markup: quote.markup,
+          markupValue: quote.markupValue,
           premiumInstalments: _selectedInstallment ?? 1,
         ),
         // taxes: computedTaxes,
@@ -1040,17 +1035,17 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                         CustomText(client.name, type: CustomTextType.paragraph),
                         CustomLabelValueText(
                           label: 'ID',
-                          value: client.client_no ?? '',
+                          value: client.client_no,
                         ),
 
                         CustomLabelValueText(
                           label: 'Email',
-                          value: client.email ?? '',
+                          value: client.email,
                         ),
 
                         CustomLabelValueText(
                           label: 'Phone',
-                          value: client.mobile ?? '',
+                          value: client.mobile,
                         ),
                       ],
                     ),
@@ -1152,28 +1147,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
         if (index == 1) motorCache.remove('selectedClientData');
       },
       // showSelectedShadow: true,
-    );
-  }
-
-  CustomSuperTabSwitcher _buildClientTabs_() {
-    return CustomSuperTabSwitcher(
-      selectedIndex: _clientMode,
-      tabs: const [
-        TabItem(label: 'Existing Client', index: 0),
-        TabItem(label: 'New Client', index: 1),
-      ],
-      onTabSelected: (index) {
-        setState(() {
-          _clientMode = index;
-          if (index == 1) {
-            _selectedClient = null;
-            _clearClientControllers();
-          }
-        });
-        final motorCache = ref.read(motorSaveCacheProvider);
-        motorCache.put('clientMode', index.toString());
-        if (index == 1) motorCache.remove('selectedClientData');
-      },
     );
   }
 
@@ -1280,152 +1253,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     );
   }
 
-  Future<void> _pickDocFile(int index) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-      allowMultiple: false,
-    );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.first;
-    final bytes = file.bytes;
-    if (bytes == null || bytes.isEmpty) return;
-    setState(() {
-      if (index == 0) {
-        _logbookBytes = bytes;
-        _logbookName = file.name;
-      } else if (index == 1) {
-        _kraPinBytes = bytes;
-        _kraPinName = file.name;
-      } else {
-        _idDocBytes = bytes;
-        _idDocName = file.name;
-      }
-    });
-  }
-
-  Widget _buildDocPickRow(
-    IconData icon,
-    String label,
-    List<int>? bytes,
-    String? fileName,
-    int index,
-  ) {
-    final hasPick = bytes != null;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: hasPick
-              ? AppColors.favColour.withValues(alpha: 0.4)
-              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
-        ),
-        color: hasPick
-            ? AppColors.favColour.withValues(alpha: 0.04)
-            : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: hasPick
-                ? AppColors.favColour
-                : Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.4),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(label, type: CustomTextType.paragraph),
-                if (fileName != null)
-                  CustomText(
-                    fileName,
-                    type: CustomTextType.caption,
-                    color: Colors.grey,
-                    maxLines: 1,
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (hasPick)
-            const Icon(
-              Icons.attach_file_rounded,
-              color: AppColors.favColour,
-              size: 18,
-            ),
-          const SizedBox(width: 6),
-          GestureDetector(
-            onTap: () => _pickDocFile(index),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.2),
-                ),
-              ),
-              child: CustomText(
-                hasPick ? 'Change' : 'Pick',
-                type: CustomTextType.caption,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDocUploadSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.upload_file_outlined,
-              size: 18,
-              color: AppColors.favColour,
-            ),
-            const SizedBox(width: 6),
-            // const CustomText('Documents', type: CustomTextType.subHeader),
-            // const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const CustomText(
-                'Optional',
-                type: CustomTextType.caption,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // const CustomText(
-        //   'Pick files here — you will upload them after saving',
-        //   type: CustomTextType.caption,
-        //   color: Colors.grey,
-        // ),
-        // const SizedBox(height: 12),
-        // _buildDocPickRow(Icons.book_outlined, 'Logbook', _logbookBytes, _logbookName, 0),
-        // _buildDocPickRow(Icons.pin_outlined, 'KRA PIN', _kraPinBytes, _kraPinName, 1),
-        // _buildDocPickRow(Icons.badge_outlined, 'Copy of ID', _idDocBytes, _idDocName, 2),
-      ],
-    );
-  }
-
   Widget _getStepContent() {
     // bool _showMore = false;
     if (_currentStep == 0) {
@@ -1460,11 +1287,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
               final isWide = constraints.maxWidth > 700;
               Widget leftColumn = Column(
                 children: [
-                  if (isComprehensive) ...[
-                    const SizedBox(height: 16),
-                    _buildDocUploadSection(),
-                    const Divider(),
-                  ],
                   const SizedBox(height: 16),
                   CustomTextField(
                     hint: 'Start Date',
@@ -1716,10 +1538,6 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                 // final maxInstallments =
                 //     widget.selectedQuote?.premiumInstalments ?? 1;
                 final totalPremium = double.tryParse(premiumCtrl.text) ?? 0;
-                final currency = NumberFormat.currency(
-                  locale: 'en_US',
-                  symbol: 'KES ',
-                );
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
