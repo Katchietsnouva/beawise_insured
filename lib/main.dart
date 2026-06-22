@@ -130,6 +130,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/app_router.dart';
+import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
 import 'package:insured/app_2/core/utils/theme_provider.dart';
@@ -250,7 +251,7 @@ class _InsuredAppState extends ConsumerState<InsuredApp> {
     if (settingsProviderState.themeMode == 'Dark') mode = ThemeMode.dark;
 
     return MaterialApp.router(
-      title: 'Insured',
+      title: InscloudUrls.appName,
       debugShowCheckedModeBanner: false,
       // theme: AppTheme.darkTheme,
       theme: AppTheme.lightTheme,

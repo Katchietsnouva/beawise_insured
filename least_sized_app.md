@@ -3,9 +3,10 @@ flutter pub add  firebase_messaging
 flutter pub add  flutter_local_notifications
 
 
-
+flutter pub add --dev flutter_launcher_icons
 dart run flutter_launcher_icons:generate --override
-  image_path: "assets/images/app_logos/app_launcher_logo.png"
+  <!-- image_path: "assets/images/app_logos/app_launcher_logo.png" -->
+  image_path: "assets/images/launcher/app_launcher_logo.png"
 flutter pub run flutter_launcher_icons
 
 
@@ -760,7 +761,7 @@ In your Flutter project directory (e.g., ~/Documents/linux_dev_sq/Flutter/insure
   adb install build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
   ```
   - Replace with your actual file name/ABI.
-  - If "Failure [INSTALL_FAILED_ALREADY_EXISTS]": Uninstall existing app first (`adb uninstall com.example.insured`—replace with your app's package name from `android/app/build.gradle`).
+  - If "Failure [INSTALL_FAILED_ALREADY_EXISTS]": Uninstall existing app first (`adb uninstall com.insured.beawise`—replace with your app's package name from `android/app/build.gradle`).
 
 ### Tips for Even Smaller Size
 - **Remove Unused Assets**: Your pubspec has duplicates (e.g., `assets/3d/` and `assets/models/`)—consolidate to one folder, remove unused GLB files. Each GLB can add 1-5MB.

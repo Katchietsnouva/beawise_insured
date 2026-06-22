@@ -40,6 +40,8 @@
 
 // lib/app_2/core/constants/url_cosntants.dart
 class InscloudUrls {
+  static const appName = 'Beawise Insured';
+  static const applicationId = "com.insured.beawise";
   static const businessNo = '4060615',
           ///
           ///

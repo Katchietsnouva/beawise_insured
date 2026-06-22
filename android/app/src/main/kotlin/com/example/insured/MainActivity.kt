@@ -1,4 +1,4 @@
-package com.example.insured
+package com.insured.beawise
 
 import io.flutter.embedding.android.FlutterActivity
 

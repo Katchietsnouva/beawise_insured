@@ -8,7 +8,7 @@
 PRODUCT_NAME = insured
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.insured
+PRODUCT_BUNDLE_IDENTIFIER = com.insured.beawise
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
