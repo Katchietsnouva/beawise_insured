@@ -412,8 +412,10 @@ class _PlatformsGrid extends StatelessWidget {
         false,
         null,
         '/downloads/v1.0.2-armeabi-v7a-release.apk',
+        //.
         // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.2-arm64-v8a-release.apk',
       ),
+
       _PlatformData(
         'iOS / iPadOS',
         'iPhone & iPad\niOS 15 or later',
