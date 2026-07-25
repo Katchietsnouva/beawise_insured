@@ -609,8 +609,8 @@ class ApiService {
       'Authorization': 'Bearer $token',
       'X-Agent-Code': agentCode,
       'X-Agent-Key': agentKey,
-      'X-Client-No': clientNo,
-      'X-Client-Key': clientKey,
+      // 'X-Client-No': clientNo,
+      // 'X-Client-Key': clientKey,
     });
     request.fields['document_name'] = documentName;
     request.fields['risknote'] = risknote;
