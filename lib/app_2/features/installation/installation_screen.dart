@@ -411,9 +411,9 @@ class _PlatformsGrid extends StatelessWidget {
         'Android APK',
         false,
         null,
-        '/downloads/v1.0.2-armeabi-v7a-release.apk',
+        '/downloads/v1.0.4-armeabi-v7a-release.apk',
         //.
-        // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.2-arm64-v8a-release.apk',
+        // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.4-arm64-v8a-release.apk',
       ),
 
       _PlatformData(
@@ -592,7 +592,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'ARM64 (64‑bit)',
                 'Most modern phones (2020+)',
-                '/downloads/v1.0.2-arm64-v8a-release.apk',
+                '/downloads/v1.0.4-arm64-v8a-release.apk',
                 cs,
               ),
               const SizedBox(height: 12),
@@ -600,7 +600,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'ARMv7 (32‑bit)',
                 'Older devices (pre‑2020)',
-                '/downloads/v1.0.2-armeabi-v7a-release.apk',
+                '/downloads/v1.0.4-armeabi-v7a-release.apk',
                 cs,
               ),
               const SizedBox(height: 12),
@@ -608,7 +608,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'x86_64 (64‑bit)',
                 'Emulators / very rare phones',
-                '/downloads/v1.0.2-x86_64-release.apk',
+                '/downloads/v1.0.4-x86_64-release.apk',
                 cs,
               ),
             ],
