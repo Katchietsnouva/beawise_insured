@@ -98,5 +98,13 @@ String getInsurerImage(String insurerName) {
   if (insurerName.contains('NCBA')) {
     return '${pathPrefix}/images/insurer_assets/ncba_insurance.png';
   }
+
+  if (insurerName.contains('Definite')) {
+    return '${pathPrefix}/images/insurer_assets/definite_insurance.png';
+  }
+
+  if (insurerName.contains('Takaful')) {
+    return '${pathPrefix}/images/insurer_assets/takaful_insurance.png';
+  }
   return '${pathPrefix}/images/insurer_assets/default_insurance.png';
 }

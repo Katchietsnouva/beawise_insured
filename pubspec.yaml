@@ -136,6 +136,10 @@ flutter:
     - assets/images/insurer_assets/icea_insurance.png
     - assets/images/insurer_assets/pacis_insurance.png
     - assets/images/insurer_assets/ncba_insurance.png
+    - assets/images/insurer_assets/definite_insurance.png
+    - assets/images/insurer_assets/takaful_insurance.png
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
