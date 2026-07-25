@@ -136,9 +136,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     // // final newBasicPremium = quote.basicPremium + benefitAdd;
     // final newBasicPremium = quote.amount + benefitAdd;
 
-    final newBasicPremium = quote.benefits.isEmpty
-        ? quote.amount
-        : quote.amount + benefitAdd;
+    // final newBasicPremium = quote.benefits.isEmpty
+    //     ? quote.amount
+    //     : quote.amount + benefitAdd;
+
+    final newBasicPremium = quote.basicPremium + benefitAdd;
 
     double totalTaxes = 0;
     final List<TaxItem> computedTaxes = [];
