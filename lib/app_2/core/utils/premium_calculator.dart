@@ -65,7 +65,8 @@ class PremiumCalculator {
 
     final double totalPremium = basicPremium + markup + taxTotal;
 
-    return totalPremium.ceilToDouble();
+    // return totalPremium.ceilToDouble();
+    return totalPremium.roundToDouble();
   }
 
   static PremiumCalculationResult calculateTotalPremium(QuoteOption option) {
@@ -138,7 +139,8 @@ class PremiumCalculator {
     final double totalPremium = newBasic + taxTotal;
     // return  totalPremium.ceilToDouble();
     return PremiumCalculationResult(
-      totalPremium: totalPremium.ceilToDouble(),
+      // totalPremium: totalPremium.ceilToDouble(),
+      totalPremium: totalPremium.roundToDouble(),
       totalTaxes: taxTotal,
       newBasicPremium: newBasic,
       taxDetails: taxDetails,
