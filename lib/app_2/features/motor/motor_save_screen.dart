@@ -12,6 +12,7 @@ import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_checkbox.dart';
+import 'package:insured/app_2/core/widgets/custom_error_refresh_placeholder_adv.dart';
 import 'package:insured/app_2/core/widgets/custom_label_value_text.dart';
 import 'package:insured/app_2/core/widgets/custom_super_tab_bar.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -24,7 +25,9 @@ import 'package:insured/app_2/data/models/motor_quote_request_model.dart';
 import 'package:insured/app_2/features/motor/quoter_benefit_providers.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 import 'package:insured/app_2/providers/client_provider.dart';
+import 'package:insured/app_2/providers/client_search_provider.dart';
 import 'package:insured/app_2/providers/motor_provider.dart';
+import 'package:insured/app_2/providers/policy_provider.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
 import 'package:insured/app_2/features/motor/motor_document_upload_sheet.dart';
 import 'package:go_router/go_router.dart';
@@ -183,27 +186,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   int _clientMode = 0; // 0 = existing client, 1 = new client
 
   Client? _selectedClient;
-  List<Client> _allClients = [];
   late final MemoryCacheService _motorCache;
 
   int _currentStep = 0;
   bool _isLoading = false;
   final _searchController = TextEditingController();
-  List<Client> _filteredClients = [];
-  void _filterClients(String query, List<Client> allClients) {
-    if (query.isEmpty) {
-      _filteredClients = allClients;
-    } else {
-      _filteredClients = allClients.where((c) {
-        final q = query.toLowerCase();
-        return c.name.toLowerCase().contains(q) ||
-            c.client_no.toLowerCase().contains(q) ||
-            c.email.toLowerCase().contains(q) ||
-            c.mobile.toLowerCase().contains(q);
-      }).toList();
-    }
-    setState(() {});
-  }
 
   // Client controllers
   late var firstNameController = TextEditingController();
@@ -267,7 +254,13 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           _selectedClient = null;
         });
       }
-      _filterClients(query, _allClients);
+      // Server-side search (debounced inside the notifier)
+      ref.read(clientSearchProvider.notifier).search(query);
+    });
+
+    // Reset any stale search carried over from another screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(clientSearchProvider.notifier).clear();
     });
 
     startDateCtrl.addListener(_updateEndDate);
@@ -680,7 +673,13 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           return;
         }
 
-        if (mounted) context.goNamed('quotes', extra: response.id);
+        if (mounted) {
+          // Capture the notifier before navigating (this widget is disposed
+          // by the redirect), then refresh Quotes so the new policy shows.
+          final policyNotifier = ref.read(policyProvider.notifier);
+          context.goNamed('quotes', extra: response.id);
+          policyNotifier.reloadForStatus(0);
+        }
 
         // if (policyResponse != null && mounted) {
         //   showModalBottomSheet(
@@ -840,6 +839,23 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Surface client-search failures (e.g. 422 "q must be at least 2
+    // characters") as a parsed toast instead of raw JSON in the results area.
+    ref.listen<ClientSearchState>(clientSearchProvider, (prev, next) {
+      final prevIsError = prev?.results is AsyncError;
+      if (next.results is AsyncError && !prevIsError) {
+        final err = (next.results as AsyncError).error;
+        final parsed = ErrorParser.fromRaw(err);
+        FuturisticToastT.show(
+          context: context,
+          message: parsed.message,
+          errors: parsed.errors,
+          icon: Icons.warning_amber_rounded,
+          alignment: Alignment.topCenter,
+        );
+      }
+    });
+
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
 
@@ -984,15 +1000,64 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   Widget _buildSearchResultsList() {
     return Consumer(
       builder: (context, ref, child) {
+        final searchState = ref.watch(clientSearchProvider);
+
+        // Active query → server-side search results
+        if (searchState.isActive) {
+          return searchState.results.when(
+            data: (clients) => clients.isEmpty
+                ?
+                  // Center(
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(20.0),
+                  //       child: CustomText(
+                  //         'No clients found for "${searchState.query}"',
+                  //         type: CustomTextType.paragraph,
+                  //       ),
+                  //     ),
+                  //   )
+                  CustomErrorRefreshPlaceholder(
+                    message:
+                        activeClientFilterLabel(
+                              ref.watch(clientSearchFieldsProvider),
+                            ) ==
+                            null
+                        ? 'No clients found for "${searchState.query}"'
+                        : 'No clients found for "${searchState.query}" in ${activeClientFilterLabel(ref.watch(clientSearchFieldsProvider))}',
+                    icon: Icons.search_off,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    showIcon: true,
+                    showDetails: false,
+                    onRetry: () =>
+                        ref.read(clientSearchProvider.notifier).refresh(),
+                  )
+                : _buildClientResultsList(clients, ref),
+            loading: () => Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50.0),
+                child: CircularProgressIndicator(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.5),
+                ),
+              ),
+            ),
+            error: (err, _) => CustomErrorRefreshPlaceholder(
+              message: ErrorParser.fromRaw(err).message,
+              icon: Icons.error_outline,
+              color: Theme.of(context).colorScheme.onSurface,
+              showIcon: true,
+              showDetails: false,
+              onRetry: () => ref.read(clientSearchProvider.notifier).refresh(),
+            ),
+          );
+        }
+
+        // No query → show the default client list
         final clientsAsync = ref.watch(clientsProvider);
         return clientsAsync.when(
           data: (clients) {
-            _allClients = clients;
-            if (_filteredClients.isEmpty && _searchController.text.isEmpty) {
-              _filteredClients = clients;
-            }
-
-            if (_filteredClients.isEmpty) {
+            if (clients.isEmpty) {
               return const Center(
                 child: Padding(
                   padding: EdgeInsets.all(20.0),
@@ -1003,62 +1068,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                 ),
               );
             }
-
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _filteredClients.length,
-              itemBuilder: (context, index) {
-                final client = _filteredClients[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedClient = client;
-                      _populateClientData(client);
-                      final motorCache = ref.read(motorSaveCacheProvider);
-                      final clientJson = jsonEncode(client.toJson());
-                      motorCache.put('selectedClientData', clientJson);
-                      _searchController.clear();
-                    });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withOpacity(0.1),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(client.name, type: CustomTextType.paragraph),
-                        CustomLabelValueText(
-                          label: 'ID',
-                          value: client.client_no,
-                        ),
-
-                        CustomLabelValueText(
-                          label: 'Email',
-                          value: client.email,
-                        ),
-
-                        CustomLabelValueText(
-                          label: 'Phone',
-                          value: client.mobile,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
+            return _buildClientResultsList(clients, ref);
           },
           loading: () => Center(
             child: Padding(
@@ -1069,6 +1079,51 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
             ),
           ),
           error: (err, _) => Text('Error: $err'),
+        );
+      },
+    );
+  }
+
+  Widget _buildClientResultsList(List<Client> clients, WidgetRef ref) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: clients.length,
+      itemBuilder: (context, index) {
+        final client = clients[index];
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedClient = client;
+              _populateClientData(client);
+              final motorCache = ref.read(motorSaveCacheProvider);
+              final clientJson = jsonEncode(client.toJson());
+              motorCache.put('selectedClientData', clientJson);
+              _searchController.clear();
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(client.name, type: CustomTextType.paragraph),
+                CustomLabelValueText(label: 'ID', value: client.client_no),
+
+                CustomLabelValueText(label: 'Email', value: client.email),
+
+                CustomLabelValueText(label: 'Phone', value: client.mobile),
+              ],
+            ),
+          ),
         );
       },
     );

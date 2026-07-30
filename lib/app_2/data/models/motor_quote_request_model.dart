@@ -81,6 +81,32 @@ class Benefit {
   };
 }
 
+class LimitsOfLiability {
+  final int benefitId;
+  final String item;
+  final String limit;
+
+  LimitsOfLiability({
+    required this.benefitId,
+    required this.item,
+    required this.limit,
+  });
+
+  factory LimitsOfLiability.fromJson(Map<String, dynamic> json) {
+    return LimitsOfLiability(
+      benefitId: json['benefit_id'] ?? 0,
+      item: json['item'] ?? '',
+      limit: json['limit']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'benefit_id': benefitId,
+    'item': item,
+    'limit': limit,
+  };
+}
+
 // Individual option returned by the API
 class QuoteOption {
   final int premiumInstalments;
@@ -98,6 +124,7 @@ class QuoteOption {
   // final List<dynamic> benefits;
   final List<Benefit> benefits;
   final List<QuoteTax> taxes;
+  final List<LimitsOfLiability> limitsOfLiability;
 
   QuoteOption({
     required this.premiumInstalments,
@@ -114,6 +141,7 @@ class QuoteOption {
     required this.agentComRate,
     required this.benefits,
     required this.taxes,
+    required this.limitsOfLiability,
   });
 
   List<Benefit> get activeBenefits => benefits
@@ -149,6 +177,9 @@ class QuoteOption {
           .map((b) => Benefit.fromJson(b))
           .toList(),
       taxes: (json['taxes'] as List).map((t) => QuoteTax.fromJson(t)).toList(),
+      limitsOfLiability: (json['limits_of_liability'] as List? ?? [])
+          .map((l) => LimitsOfLiability.fromJson(l))
+          .toList(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -168,6 +199,7 @@ class QuoteOption {
       // 'benefits': benefits,
       'benefits': benefits.map((b) => b.toJson()).toList(),
       'taxes': taxes.map((t) => t.toJson()).toList(),
+      'limits_of_liability': limitsOfLiability.map((l) => l.toJson()).toList(),
     };
   }
 }

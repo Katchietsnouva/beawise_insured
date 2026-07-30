@@ -314,6 +314,38 @@ class ApiService {
     return _handleResponse(response);
   }
 
+  // Server-side client search: GET /agent/clients/search?q=<query>
+  // Backend matches against name, phone and email.
+  static Future<Map<String, dynamic>> searchClients({
+    required String agentCode,
+    required String agentKey,
+    required String token,
+    required String query,
+    int page = 1,
+    int perPage = 15,
+  }) async {
+    final uri = Uri.parse('$baseUrl/agent/clients/search').replace(
+      queryParameters: {
+        'q': query,
+        'page': page.toString(),
+        'per_page': perPage.toString(),
+      },
+    );
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-Agent-Code': agentCode,
+        'X-Agent-Key': agentKey,
+      },
+    );
+    print(
+      "In the searchClients Block ($uri) here is the response${response.body} ",
+    );
+    return _handleResponse(response);
+  }
+
   static Future<Map<String, dynamic>> updateClient({
     required String clientId,
     required Map<String, dynamic> clientData,
@@ -390,6 +422,43 @@ class ApiService {
     );
     print("YOooo received response body: ${response.body}");
     return _handleResponseProtected(response, ref);
+  }
+
+  /// Exports policies as a spreadsheet. Hits the same `/agent/policies`
+  /// endpoint with `export=excel`, which streams an .xlsx file (binary) rather
+  /// than JSON — so this returns the raw bytes instead of a decoded map.
+  static Future<List<int>> exportPolicies({
+    required String agentCode,
+    required String agentKey,
+    required String token,
+    int page = 1,
+    int perPage = 10,
+    int status = 1,
+    String export = 'excel',
+  }) async {
+    final uri = Uri.parse('$baseUrl/agent/policies').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'per_page': perPage.toString(),
+        'status': status.toString(),
+        'export': export,
+      },
+    );
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'X-Agent-Code': agentCode,
+        'X-Agent-Key': agentKey,
+      },
+    );
+    print("exportPolicies($uri) → status ${response.statusCode}");
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return response.bodyBytes;
+    }
+    // Error responses come back as JSON/text, not a spreadsheet.
+    throw Exception(utf8.decode(response.bodyBytes));
   }
 
   static Future<Map<String, dynamic>> getPolicyById({

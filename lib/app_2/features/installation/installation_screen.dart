@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const _App());
@@ -173,7 +174,7 @@ class _TopBar extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          'Insured',
+          InscloudUrls.appName,
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -189,7 +190,7 @@ class _TopBar extends StatelessWidget {
             border: Border.all(color: cs.primary.withOpacity(.6)),
           ),
           child: Text(
-            'v1.0',
+            'v${InscloudUrls.appVersion}',
             style: TextStyle(
               fontSize: 11,
               color: cs.primary,
@@ -280,7 +281,7 @@ class _HeroSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Version 1.0.0',
+              'Version ${InscloudUrls.appVersion}',
               style: TextStyle(
                 fontSize: 13,
                 color: cs.onSurface.withOpacity(.35),
@@ -411,9 +412,9 @@ class _PlatformsGrid extends StatelessWidget {
         'Android APK',
         false,
         null,
-        '/downloads/v1.0.5-armeabi-v7a-release.apk',
+        '/downloads/v${InscloudUrls.appVersion}-armeabi-v7a-release.apk',
         //.
-        // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.5-arm64-v8a-release.apk',
+        // 'https://github.com/Katchietsnouva/beawise_insured/blob/main/web/downloads/v1.0.6-arm64-v8a-release.apk',
       ),
 
       _PlatformData(
@@ -592,7 +593,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'ARM64 (64‑bit)',
                 'Most modern phones (2020+)',
-                '/downloads/v1.0.5-arm64-v8a-release.apk',
+                '/downloads/v${InscloudUrls.appVersion}-arm64-v8a-release.apk',
                 cs,
               ),
               const SizedBox(height: 12),
@@ -600,7 +601,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'ARMv7 (32‑bit)',
                 'Older devices (pre‑2020)',
-                '/downloads/v1.0.5-armeabi-v7a-release.apk',
+                '/downloads/v${InscloudUrls.appVersion}-armeabi-v7a-release.apk',
                 cs,
               ),
               const SizedBox(height: 12),
@@ -608,7 +609,7 @@ class _PlatformCardState extends State<_PlatformCard> {
                 ctx,
                 'x86_64 (64‑bit)',
                 'Emulators / very rare phones',
-                '/downloads/v1.0.5-x86_64-release.apk',
+                '/downloads/v${InscloudUrls.appVersion}-x86_64-release.apk',
                 cs,
               ),
             ],

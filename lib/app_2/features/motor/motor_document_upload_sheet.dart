@@ -9,6 +9,7 @@ import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
+import 'package:insured/app_2/providers/policy_provider.dart';
 
 enum _UploadStatus { idle, uploading, success, error }
 
@@ -173,8 +174,12 @@ class _MotorDocumentUploadSheetState
   }
 
   void _navigateToQuotes() {
+    // Capture the notifier before navigating away, then refresh Quotes so the
+    // newly created policy appears instead of stale cached data.
+    final policyNotifier = ref.read(policyProvider.notifier);
     Navigator.of(context).pop();
     context.goNamed('quotes', extra: widget.policyId);
+    policyNotifier.reloadForStatus(0);
   }
 
   Color _iconColor(_DocState doc) {

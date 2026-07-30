@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/utils/icon_scale_helper.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_circular_avatar.dart';
+import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 
@@ -434,6 +436,27 @@ class _SidebarState extends ConsumerState<Sidebar>
                         Icons.settings,
                         l10n.sidebar_settings,
                         '/settings',
+                      ),
+                      SizedBox(height: 40),
+                      // Faint app version at the bottom of the menu list
+                      Material(
+                        child: Opacity(
+                          opacity: 0.7,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            child: CustomText(
+                              _isCollapsed
+                                  ? 'V ${InscloudUrls.appVersion}'
+                                  : 'Version ${InscloudUrls.appVersion}',
+                              textAlign: TextAlign.center,
+                              fontSize: 10,
+                              type: CustomTextType.caption,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

@@ -42,6 +42,7 @@
 class InscloudUrls {
   static const appName = 'Beawise Insured';
   static const applicationId = "com.insured.beawise";
+  static const appVersion = '1.0.6';
   static const businessNo = '4060615',
           ///
           ///

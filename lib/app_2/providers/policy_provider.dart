@@ -257,6 +257,19 @@ class PolicyNotifier extends StateNotifier<PolicyState> {
     await fetchPage(state.currentPage, forceRefresh: true);
   }
 
+  /// Clears every cached page (all statuses) and loads [status] fresh from the
+  /// server. Use after creating/updating a policy so the list the user lands on
+  /// reflects the change instead of a stale cache.
+  Future<void> reloadForStatus(int status) async {
+    state = state.copyWith(
+      currentStatus: status,
+      currentPage: 1,
+      cachedPages: {},
+      response: null,
+    );
+    await fetchPage(1, forceRefresh: true);
+  }
+
   Future<void> refreshAllAndReset() async {
     // state = state.copyWith(cachedPages: {}, currentPage: 1, response: null);
     // await fetchPage(1, forceRefresh: true);
@@ -274,6 +287,53 @@ class PolicyNotifier extends StateNotifier<PolicyState> {
 
     // 4. Fetch Page 1 fresh from the server
     await fetchPage(1, forceRefresh: true);
+  }
+
+  /// Fetches the policies export spreadsheet (.xlsx) as raw bytes.
+  Future<List<int>> exportPolicies({
+    required int page,
+    required int perPage,
+    required int status,
+  }) async {
+    final stopwatch = Stopwatch()..start();
+    try {
+      final authState = ref.read(authProvider);
+      final user = authState.user;
+      final token = authState.bearerToken;
+
+      if (user == null || token == null) {
+        throw Exception('User not authenticated');
+      }
+
+      final bytes = await ApiService.exportPolicies(
+        agentCode: user.agentCode,
+        agentKey: user.agentKey,
+        token: token,
+        page: page,
+        perPage: perPage,
+        status: status,
+      );
+
+      stopwatch.stop();
+      NotificationService.addLog(
+        endpoint:
+            'Exporting policies (excel) for $perPage items in page $page with status $status',
+        status: 'success',
+        durationMs: stopwatch.elapsedMilliseconds,
+        message: 'Policies export successful',
+      );
+      return bytes;
+    } catch (e) {
+      stopwatch.stop();
+      NotificationService.addLog(
+        endpoint:
+            'Exporting policies (excel) for $perPage items in page $page with status $status',
+        status: 'error',
+        durationMs: stopwatch.elapsedMilliseconds,
+        message: 'Policies export failed',
+      );
+      rethrow;
+    }
   }
 
   // Future<Map<String, dynamic>?> fetchPolicyById(int policyId) async {

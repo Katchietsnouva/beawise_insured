@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/insurer_assets_util.dart';
 import 'package:insured/app_2/core/utils/premium_calculator.dart';
@@ -27,6 +28,9 @@ class QuoteOptionCard extends ConsumerStatefulWidget {
   ConsumerState<QuoteOptionCard> createState() => _QuoteOptionCardState();
 }
 
+const _kMotorAccent = Color(0xFF1B5E82);
+const _kMotorAccentLight = Color(0xFF2A7FAF);
+
 final String pathPrefix = (kIsWeb && kDebugMode) ? '' : 'assets';
 
 class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
@@ -43,6 +47,95 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
         result: result,
         onSelect: widget.onSelect,
       ),
+    );
+  }
+
+  void _showContextMenu(BuildContext context, PremiumCalculationResult result) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hasCoverageLimits = option.limitsOfLiability.isNotEmpty;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0F1629) : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 4),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isDark ? Colors.white24 : Colors.black12,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+              child: CustomText(
+                option.insurer,
+                color: isDark ? Colors.white70 : Colors.black54,
+                fontWeight: FontWeight.w600,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: Icon(
+                Icons.receipt_long_rounded,
+                color: isDark ? Colors.white70 : Colors.black54,
+                size: 20,
+              ),
+              title: CustomText(
+                'View Details & Benefits',
+                type: CustomTextType.paragraph,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _openDetails(context, result);
+              },
+            ),
+
+            Opacity(
+              opacity: hasCoverageLimits ? 1.0 : 0.4,
+              child: ListTile(
+                leading: Icon(
+                  Icons.shield_outlined,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                  size: 20,
+                ),
+                title: CustomText(
+                  'Coverage Limits',
+                  type: CustomTextType.paragraph,
+                ),
+                onTap: hasCoverageLimits
+                    ? () {
+                        Navigator.pop(context);
+                        _openLimits(context);
+                      }
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openLimits(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _LimitsSheet(option: option),
     );
   }
 
@@ -64,7 +157,7 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
     );
 
     return InkWell(
-      onTap: () => _openDetails(context, result),
+      onTap: () => _showContextMenu(context, result),
       child: Material(
         elevation: 10,
         borderRadius: BorderRadius.circular(16),
@@ -196,6 +289,162 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
             style: const TextStyle(color: Colors.white70, fontSize: 12),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LimitsSheet extends StatelessWidget {
+  final QuoteOption option;
+  const _LimitsSheet({required this.option});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0F1629) : Colors.white;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.55,
+      minChildSize: 0.35,
+      maxChildSize: 0.85,
+      builder: (_, ctrl) => Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            // Handle
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 4),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isDark ? Colors.white24 : Colors.black12,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.shield_outlined,
+                    color: _kMotorAccentLight,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Coverage Limits',
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        Text(
+                          option.insurer,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: isDark ? Colors.white38 : Colors.black45,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: isDark ? Colors.white38 : Colors.black26,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            if (option.limitsOfLiability.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'No limits of liability specified\nfor this option.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: isDark ? Colors.white38 : Colors.black38,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Expanded(
+                child: ListView.separated(
+                  controller: ctrl,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  itemCount: option.limitsOfLiability.length,
+                  separatorBuilder: (_, _) => Divider(
+                    height: 1,
+                    color: isDark
+                        ? Colors.white10
+                        : Colors.black.withValues(alpha: 0.06),
+                  ),
+                  itemBuilder: (_, i) {
+                    final l = option.limitsOfLiability[i];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: _kMotorAccent.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.verified_user_rounded,
+                              color: _kMotorAccentLight,
+                              size: 18,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l.item,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  'KES ${l.limit}',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: _kMotorAccentLight,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

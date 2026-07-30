@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/card_animation_layout.dart';
 import 'package:insured/app_2/core/widgets/custom_error_refresh_placeholder_adv.dart';
-import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/ghost_card.dart';
 import 'package:insured/app_2/data/models/list_client_model.dart';
 import 'package:insured/app_2/features/dashboard/widgets/client_card.dart';
@@ -21,6 +20,47 @@ class ClientsScreenApi extends ConsumerWidget {
     final searchState = ref.watch(clientSearchProvider);
     final viewMode = ref.watch(clientViewModeProvider);
 
+    // ── Search active: server-side results are the single source of truth ──
+    if (searchState.isActive) {
+      final filterLabel = activeClientFilterLabel(
+        ref.watch(clientSearchFieldsProvider),
+      );
+      return searchState.results.when(
+        data: (clients) {
+          if (clients.isEmpty) {
+            return CustomErrorRefreshPlaceholder(
+              message: filterLabel == null
+                  ? 'No clients found for "${searchState.query}"'
+                  : 'No clients found for "${searchState.query}" in $filterLabel',
+              icon: Icons.search_off,
+              color: Theme.of(context).colorScheme.onSurface,
+              showIcon: true,
+              showDetails: false,
+              onRetry: () => ref.read(clientSearchProvider.notifier).refresh(),
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (filterLabel != null)
+                _FilterBanner(
+                  query: searchState.query,
+                  filterLabel: filterLabel,
+                ),
+              _buildClientList(clients, viewMode, context, ref),
+            ],
+          );
+        },
+        loading: () => buildGhostList(viewMode, context),
+        error: (err, stack) => CustomErrorRefreshPlaceholder(
+          message: 'Search failed',
+          details: err.toString(),
+          onRetry: () => ref.read(clientSearchProvider.notifier).refresh(),
+        ),
+      );
+    }
+
+    // ── No search: show the paginated list ──
     List<Client> _getAllLoadedClients() {
       final sortedPages = paginationState.cachedPages.keys.toList()..sort();
       List<Client> combined = [];
@@ -32,44 +72,15 @@ class ClientsScreenApi extends ConsumerWidget {
 
     final allLoadedClients = _getAllLoadedClients();
 
-    if (
-    // paginationState.isLoading
-    paginationState.isLoading && allLoadedClients.isEmpty
-    // && paginationState.currentPageClients.isEmpty
-    ) {
+    if (paginationState.isLoading && allLoadedClients.isEmpty) {
       return buildGhostList(viewMode, context);
     }
-
-    // Filter current page clients locally
-    // final query = paginationState.searchQuery!.toLowerCase();
-    final query = (paginationState.searchQuery ?? '').toLowerCase();
-
-    // ── No search active: show current page normally ──
-    // if (query.isEmpty) {
-    // return _buildClientList( paginationState.currentPageClients, viewMode, context, ref, );
-    // }
-
-    // final currentPageFiltered = paginationState.searchQuery?.isNotEmpty == true
-    //     ? paginationState.currentPageClients.where((client) {
-    final currentPageFiltered = query.isNotEmpty
-        ? allLoadedClients.where((client) {
-            return client.name.toLowerCase().contains(query) ||
-                client.client_no.toLowerCase().contains(query) ||
-                client.email.toLowerCase().contains(query) ||
-                client.mobile.toLowerCase().contains(query);
-          }).toList()
-        // : paginationState.currentPageClients;
-        : allLoadedClients;
-
-    print(
-      "CurrentPageClients: ${paginationState.currentPageClients.length}, currentPageFiltered: ${currentPageFiltered.length} for query: '${paginationState.searchQuery}'",
-    );
 
     if (paginationState.loadingPages.contains(paginationState.currentPage) &&
-        currentPageFiltered.isEmpty) {
+        allLoadedClients.isEmpty) {
       return buildGhostList(viewMode, context);
     }
-    if (paginationState.error != null && currentPageFiltered.isEmpty) {
+    if (paginationState.error != null && allLoadedClients.isEmpty) {
       return CustomErrorRefreshPlaceholder(
         details: paginationState.error,
         onRetry: () =>
@@ -77,90 +88,7 @@ class ClientsScreenApi extends ConsumerWidget {
       );
     }
 
-    // Build combined list
-    return searchState.when(
-      data: (serverResults) {
-        // If no server search, just show current page
-        if (serverResults.isEmpty) {
-          return _buildClientList(currentPageFiltered, viewMode, context, ref);
-        }
-
-        // Remove duplicates (by client_no) from server results
-        final currentIds = currentPageFiltered.map((c) => c.client_no).toSet();
-        final otherResults = serverResults
-            .where((c) => !currentIds.contains(c.client_no))
-            .toList();
-
-        final combined = [...currentPageFiltered, ...otherResults];
-        // final combined = [...currentPageFiltered];
-        print(
-          " current page filtered: ${currentPageFiltered.length}, other results: ${otherResults.length} for query: '${paginationState.searchQuery}'",
-        );
-
-        if (combined.isEmpty) {
-          return CustomErrorRefreshPlaceholder(
-            message: 'No clients found',
-            icon: Icons.search_off,
-            color: Theme.of(context).colorScheme.onSurface,
-            showIcon: true,
-            showDetails: false,
-            onRetry: () => ref
-                .read(clientsPaginationProvider.notifier)
-                .refreshAllAndReset(),
-          );
-        }
-
-        // return ListView.separated(
-        //   shrinkWrap: true,
-        //   physics: const NeverScrollableScrollPhysics(),
-        //   padding: const EdgeInsets.symmetric(horizontal: 16),
-        //   itemCount: combined.length,
-        //   separatorBuilder: (_, __) => const SizedBox(height: 12),
-        //   itemBuilder: (ctx, i) {
-        //     final client = combined[i];
-        //     // Add a separator header before the first "other" result
-        //     if (i == currentPageFiltered.length &&
-        //         currentPageFiltered.isNotEmpty) {
-        //       return Column(
-        //         children: [
-        //           const Divider(
-        //             height: 32,
-        //             thickness: 1,
-        //             color: Colors.white24,
-        //           ),
-        //           const Padding(
-        //             padding: EdgeInsets.only(bottom: 12),
-        //             child: CustomText(
-        //               'More results from other pages',
-        //               type: CustomTextType.paragraph,
-        //             ),
-        //           ),
-        //           ClientCard(client: client, viewMode: viewMode),
-        //         ],
-        //       );
-        //     }
-        //     return ClientCard(client: client, viewMode: viewMode);
-        //   },
-        // );
-        return _buildGroupedResults(
-          matchesByPage: currentPageFiltered.isNotEmpty
-              ? {paginationState.currentPage: currentPageFiltered}
-              : {},
-          apiOnly: otherResults,
-          viewMode: viewMode,
-          context: context,
-          ref: ref,
-        );
-        // },
-      },
-      loading: () => buildGhostList(viewMode, context),
-      error: (err, stack) => Center(
-        child: Text(
-          'Search error: $err',
-          style: const TextStyle(color: Colors.red),
-        ),
-      ),
-    );
+    return _buildClientList(allLoadedClients, viewMode, context, ref);
   }
 
   Widget _buildClientList(
@@ -302,56 +230,47 @@ class ClientsScreenApi extends ConsumerWidget {
       );
     }
   }
-
-  Widget _buildGroupedResults({
-    required Map<int, List<Client>> matchesByPage,
-    required List<Client> apiOnly,
-    required ClientViewMode viewMode,
-    required BuildContext context,
-    required WidgetRef ref,
-  }) {
-    final sortedPageNums = matchesByPage.keys.toList()..sort();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ── Cached page groups ──
-        for (final pageNum in sortedPageNums) ...[
-          _SectionHeader(label: 'Page $pageNum'),
-          _buildClientList(matchesByPage[pageNum]!, viewMode, context, ref),
-        ],
-
-        // ── API-only results (not in any cached page) ──
-        if (apiOnly.isNotEmpty) ...[
-          _SectionHeader(
-            label: 'More results from database',
-            // sublabel: 'not yet loaded in your current view',
-          ),
-          _buildClientList(apiOnly, viewMode, context, ref),
-        ],
-      ],
-    );
-  }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String label;
-  final String? sublabel;
-  const _SectionHeader({required this.label, this.sublabel});
+/// Small banner shown above search results indicating which filter fields are
+/// currently narrowing the list.
+class _FilterBanner extends StatelessWidget {
+  final String query;
+  final String filterLabel;
+  const _FilterBanner({required this.query, required this.filterLabel});
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Divider(height: 1, color: Colors.white24),
-          const SizedBox(height: 8),
-          CustomText(label, type: CustomTextType.paragraph),
-          if (sublabel != null)
-            CustomText(sublabel!, type: CustomTextType.caption),
-        ],
+      padding: EdgeInsets.fromLTRB(
+        Responsive.isMobile(context) ? 12 : 22,
+        12,
+        Responsive.isMobile(context) ? 12 : 22,
+        0,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: onSurface.withOpacity(0.06),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: onSurface.withOpacity(0.12)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.filter_alt_outlined, size: 16, color: onSurface),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Filtered by $filterLabel',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: onSurface.withOpacity(0.85),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

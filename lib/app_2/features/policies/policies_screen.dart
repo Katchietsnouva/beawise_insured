@@ -12,6 +12,7 @@ class PoliciesScreen extends ConsumerWidget {
     return PolicyListScreen(
       initialStatus: 1,
       title: "Production",
+      enableExport: true,
       onCardTap: (entry) {
         context.push('/production-detail', extra: entry);
       },

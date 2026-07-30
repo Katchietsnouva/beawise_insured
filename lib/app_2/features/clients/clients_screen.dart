@@ -37,8 +37,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Initial fetch
+    // Initial fetch + reset any stale search from a previous visit
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _searchController.clear();
+      ref.read(clientSearchProvider.notifier).clear();
+      ref.read(clientsPaginationProvider.notifier).setSearchQuery('');
       ref.read(clientsPaginationProvider.notifier).fetchPage(1);
     });
   }
@@ -144,6 +147,20 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
       filterDialogTitle: 'Client Filters',
       filterDialogBuilder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) {
+          final fields = ref.read(clientSearchFieldsProvider);
+
+          void updateFields(Set<String> updated) {
+            ref.read(clientSearchFieldsProvider.notifier).state = updated;
+            ref.read(clientSearchProvider.notifier).refresh();
+            setDialogState(() {});
+          }
+
+          void toggleField(String field, bool checked) {
+            final updated = {...ref.read(clientSearchFieldsProvider)};
+            checked ? updated.add(field) : updated.remove(field);
+            updateFields(updated);
+          }
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,12 +168,19 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             children: [
               CustomCheckbox(
                 label: 'Name',
-                value: true,
-                onChanged: (val) {
-                  // plug your filter logic here
-                },
+                value: fields.contains('name'),
+                onChanged: (val) => toggleField('name', val),
               ),
-              CustomCheckbox(label: 'Email', value: true, onChanged: (val) {}),
+              CustomCheckbox(
+                label: 'Phone Number',
+                value: fields.contains('phone'),
+                onChanged: (val) => toggleField('phone', val),
+              ),
+              CustomCheckbox(
+                label: 'Email',
+                value: fields.contains('email'),
+                onChanged: (val) => toggleField('email', val),
+              ),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,12 +191,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                     customFontSize: 12,
                     label: 'Clear All',
                     variant: ButtonVariant.secondary,
-                    onPressed: () {
-                      setDialogState(() {
-                        // _filterByName = _filterByEmail = _filterByReg = false;
-                      });
-                      setState(() {});
-                    },
+                    onPressed: () => updateFields({}),
                   ),
                   CustomAdvancedButton(
                     height: 34,
@@ -180,12 +199,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                     customFontSize: 12,
                     label: 'Select All',
                     variant: ButtonVariant.primary,
-                    onPressed: () {
-                      setDialogState(() {
-                        // _filterByName = _filterByEmail = _filterByReg = true;
-                      });
-                      setState(() {});
-                    },
+                    onPressed: () => updateFields(kClientSearchFields.toSet()),
                   ),
                 ],
               ),

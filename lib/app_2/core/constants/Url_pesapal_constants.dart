@@ -1,3 +1,6 @@
+// Constant names intentionally mirror the Pesapal env-var names (SCREAMING_CAPS).
+// ignore_for_file: constant_identifier_names, file_names
+
 // export const PESAPAL_BASE_URL = "https://pay.pesapal.com/v3/api";
 
 // export const PESAPAL_URLS_CONST = {

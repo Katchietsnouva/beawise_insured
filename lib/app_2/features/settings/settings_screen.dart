@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:insured/app_2/core/services/biometric_auth_service.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
@@ -60,20 +61,28 @@ class SettingsScreen extends ConsumerWidget {
                           if (i != children.length - 1)
                             const SizedBox(height: 24),
                         ],
+                        const SizedBox(height: 24),
+                        _buildVersionLabel(context),
                       ],
                     );
                   }
-                  return Wrap(
-                    spacing: 24,
-                    runSpacing: 24,
-                    children: children
-                        .map(
-                          (card) => SizedBox(
-                            width: (constraints.maxWidth - 24) / 2,
-                            child: card,
-                          ),
-                        )
-                        .toList(),
+                  return Column(
+                    children: [
+                      Wrap(
+                        spacing: 24,
+                        runSpacing: 24,
+                        children: children
+                            .map(
+                              (card) => SizedBox(
+                                width: (constraints.maxWidth - 24) / 2,
+                                child: card,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildVersionLabel(context),
+                    ],
                   );
                 },
               ),
@@ -87,6 +96,25 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildLocationCard(BuildContext context) {
     return const LocationInfoCard();
+  }
+
+  Widget _buildVersionLabel(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return Column(
+      children: [
+        CustomText(
+          InscloudUrls.appName,
+          type: CustomTextType.caption,
+          color: onSurface.withOpacity(0.45),
+        ),
+        const SizedBox(height: 2),
+        CustomText(
+          'Version ${InscloudUrls.appVersion}',
+          type: CustomTextType.caption,
+          color: onSurface.withOpacity(0.35),
+        ),
+      ],
+    );
   }
 
   Widget _buildAppearanceCard(

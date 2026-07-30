@@ -15,6 +15,7 @@ import 'package:insured/app_2/core/widgets/custom_text_Field.dart';
 import 'package:insured/app_2/core/widgets/custom_text_Field_animated_search_bar.dart';
 import 'package:insured/app_2/core/widgets/ghost_card.dart';
 import 'package:insured/app_2/data/models/list_policy_response.dart';
+import 'package:insured/app_2/features/policies/widgets/export_policies_dialog.dart';
 import 'package:insured/app_2/features/policies/widgets/policy_card.dart';
 import 'package:insured/app_2/features/policies/widgets/policy_details_modal_ById.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
@@ -28,12 +29,16 @@ class PolicyListScreen extends ConsumerStatefulWidget {
   final Function(PolicyEntry)? onCardTap;
   final StateProvider<ClientViewMode> viewModeProvider;
 
+  /// Shows an "Export Excel" action that downloads the list as a spreadsheet.
+  final bool enableExport;
+
   const PolicyListScreen({
     super.key,
     this.initialStatus,
     required this.title,
     this.onCardTap,
     required this.viewModeProvider,
+    this.enableExport = false,
   });
 
   @override
@@ -135,6 +140,16 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
   }
 
   final TextEditingController _searchController = TextEditingController();
+
+  void _showExportDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => ExportPoliciesDialog(
+        fixedStatus: widget.initialStatus,
+        title: widget.title,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -391,6 +406,15 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
                     ),
                   ),
                   actions: [
+                    if (widget.enableExport)
+                      IconButton(
+                        icon: Icon(
+                          Icons.file_download_outlined,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        tooltip: 'Export to Excel',
+                        onPressed: _showExportDialog,
+                      ),
                     // Expanded(child: SearchWithFilter),
                     if (!Responsive.isMobile(context))
                       // SearchWithFilter,
@@ -508,50 +532,74 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
       //   },
       //   child: const Icon(Icons.add),
       // ),
-      floatingActionButton: FloatingActionButton(
-        // // // onPressed: () => _handleNewClient(context, ref),
-        // // onPressed: () {
-        // //   _searchBarCallerKey.currentState?.expand();
-        // // },
-        // onPressed: () {
-        //   final searchState = _searchBarCallerKey.currentState;
-        //   if (searchState == null) return;
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (widget.enableExport && Responsive.isMobile(context)) ...[
+            FloatingActionButton(
+              heroTag: 'fab_export',
+              mini: true,
+              onPressed: _showExportDialog,
+              elevation: 12,
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(
+                Theme.of(context).brightness == Brightness.light ? 1 : 0.25,
+              ),
+              tooltip: 'Export to Excel',
+              child: Icon(
+                Icons.file_download_outlined,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          FloatingActionButton(
+            heroTag: 'fab_search',
+            // // // onPressed: () => _handleNewClient(context, ref),
+            // // onPressed: () {
+            // //   _searchBarCallerKey.currentState?.expand();
+            // // },
+            // onPressed: () {
+            //   final searchState = _searchBarCallerKey.currentState;
+            //   if (searchState == null) return;
 
-        //   if (searchState.isExpanded) {
-        //     searchState.collapse();
-        //   } else {
-        //     searchState.expand();
-        //   }
-        //   // We don't strictly need setState here if onToggle is working,
-        //   // but it doesn't hurt for immediate UI feedback
-        // },
-        onPressed: () {
-          if (_searchExpanded) {
-            _searchBarCallerKey.currentState?.collapse();
-            // onToggle handles setState
-          } else {
-            setState(() => _searchExpanded = true);
-            // // give the SliverAppBar one frame to mount, then expand
-            // WidgetsBinding.instance.addPostFrameCallback((_) {
-            //   _searchBarCallerKey.currentState?.expand();
-            // });
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (_searchBarCallerKey.currentState != null) {
-                _searchBarCallerKey.currentState!.expand();
+            //   if (searchState.isExpanded) {
+            //     searchState.collapse();
+            //   } else {
+            //     searchState.expand();
+            //   }
+            //   // We don't strictly need setState here if onToggle is working,
+            //   // but it doesn't hurt for immediate UI feedback
+            // },
+            onPressed: () {
+              if (_searchExpanded) {
+                _searchBarCallerKey.currentState?.collapse();
+                // onToggle handles setState
+              } else {
+                setState(() => _searchExpanded = true);
+                // // give the SliverAppBar one frame to mount, then expand
+                // WidgetsBinding.instance.addPostFrameCallback((_) {
+                //   _searchBarCallerKey.currentState?.expand();
+                // });
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (_searchBarCallerKey.currentState != null) {
+                    _searchBarCallerKey.currentState!.expand();
+                  }
+                });
               }
-            });
-          }
-        },
-        elevation: 20,
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(
-          Theme.of(context).brightness == Brightness.light ? 1 : 0.25,
-        ),
-        child: Icon(
-          // _searchBarCallerKey.currentState?.isExpanded == true
-          _searchExpanded ? Icons.close : Icons.search,
-          size: 32,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+            },
+            elevation: 20,
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(
+              Theme.of(context).brightness == Brightness.light ? 1 : 0.25,
+            ),
+            child: Icon(
+              // _searchBarCallerKey.currentState?.isExpanded == true
+              _searchExpanded ? Icons.close : Icons.search,
+              size: 32,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ],
       ),
     );
   }
