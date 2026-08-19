@@ -244,7 +244,11 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
                   ),
 
                   CustomText(
-                    '${currency.format(result.totalPremium.round())}',
+                    // Original display kept for comparison:
+                    // '${currency.format(result.totalPremium.round())}',
+                    currency.format(
+                      (result.totalPremium + option.markupValue).round(),
+                    ),
                     type: CustomTextType.subHeader,
                   ),
 

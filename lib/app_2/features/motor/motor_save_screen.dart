@@ -514,6 +514,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     premiumCtrl.text = sharedCalculation.totalPremium.toStringAsFixed(0);
   }
 
+  double _displayTotalPremium() {
+    final calculated = double.tryParse(premiumCtrl.text) ?? 0;
+    return calculated + (widget.selectedQuote?.markupValue ?? 0);
+  }
+
   @override
   void dispose() {
     clientNameCtrl.dispose();
@@ -1638,7 +1643,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
 
                 // final maxInstallments =
                 //     widget.selectedQuote?.premiumInstalments ?? 1;
-                final totalPremium = double.tryParse(premiumCtrl.text) ?? 0;
+                final totalPremium = _displayTotalPremium();
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2098,7 +2103,9 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
         // _buildInfoItem("Total Premium", premiumCtrl.text),
         _buildInfoItem(
           "Total Premium",
-          ceilCurrency(double.tryParse(premiumCtrl.text) ?? 0),
+          // Original display kept for comparison:
+          // ceilCurrency(double.tryParse(premiumCtrl.text) ?? 0),
+          ceilCurrency(_displayTotalPremium()),
         ),
         _buildInfoItem(
           "Installments selected",
@@ -2109,8 +2116,10 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           "Per Installment Amount",
           _selectedInstallment != null && _selectedInstallment! > 0
               ? ceilCurrency(
-                  (double.tryParse(premiumCtrl.text) ?? 0) /
-                      _selectedInstallment!,
+                  // Original display kept for comparison:
+                  // (double.tryParse(premiumCtrl.text) ?? 0) /
+                  //     _selectedInstallment!,
+                  _displayTotalPremium() / _selectedInstallment!,
                 )
               : "Not set",
         ),
