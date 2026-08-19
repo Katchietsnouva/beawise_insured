@@ -107,6 +107,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     }
   }
 
+  void _onPrevious() {
+    if (_currentPage > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -224,6 +233,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ? Column(
                   children: [
                     CustomAdvancedButton(
+                      height: Responsive.isMobile(context) ? 44 : 40,
+                      width: Responsive.isMobile(context) ? null : 200,
+                      label: 'PREVIOUS',
+                      variant: ButtonVariant.secondary,
+                      icon: const Icon(Icons.keyboard_double_arrow_left_sharp),
+                      onPressed: _onPrevious,
+                    ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.2, end: 0),
+                    const SizedBox(height: 16),
+                    CustomAdvancedButton(
                           height: 44,
                           label: isLast
                               ? 'Get Started'
@@ -256,65 +274,78 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 )
               : Column(
                   children: [
-                    if (!Responsive.isMobile(context)) ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // GO TO PREVIOUS
-                          if (_currentPage > 0)
-                            CustomAdvancedButton(
-                                  height: 40,
-                                  width:
-                                      _currentPage == onboardingPages.length - 1
-                                      ? double.infinity
-                                      : 200,
-                                  label: 'PREVIOUS',
-                                  variant: ButtonVariant.secondary,
-                                  // icon: Icons.keyboard_double_arrow_left_sharp,
-                                  icon: Icon(
-                                    Icons.keyboard_double_arrow_left_sharp,
-                                  ),
-
-                                  onPressed: () {
-                                    _pageController.previousPage(
-                                      duration: const Duration(
-                                        milliseconds: 500,
-                                      ),
-                                      curve: Curves.easeInOutCubic,
-                                    );
-                                  },
-                                )
-                                .animate()
-                                .fadeIn(delay: 150.ms)
-                                .slideY(begin: 0.2, end: 0),
-
-                          if (_currentPage > 0) const SizedBox(width: 16),
-
-                          // GO TO NEXT
-                          CustomAdvancedButton(
-                                height: 40,
-                                // width: 200,
-                                width:
-                                    _currentPage == onboardingPages.length - 1
-                                    ? double.infinity
-                                    : 200,
-                                label:
-                                    _currentPage == onboardingPages.length - 1
-                                    ? 'GET STARTED'
-                                    : 'NEXT',
-                                iconRight: true,
-                                variant: ButtonVariant.primary,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // GO TO PREVIOUS
+                        if (_currentPage > 0) ...[
+                          if (Responsive.isMobile(context))
+                            Expanded(
+                              child: CustomAdvancedButton(
+                                height: 44,
+                                label: 'PREVIOUS',
+                                variant: ButtonVariant.secondary,
                                 icon: Icon(
-                                  Icons.keyboard_double_arrow_right_sharp,
+                                  Icons.keyboard_double_arrow_left_sharp,
                                 ),
-                                onPressed: _onContinue,
-                              )
-                              .animate()
-                              .fadeIn(delay: 200.ms)
-                              .slideY(begin: 0.2, end: 0),
+                                onPressed: _onPrevious,
+                              ).animate().fadeIn(delay: 150.ms).slideY(
+                                begin: 0.2,
+                                end: 0,
+                              ),
+                            )
+                          else
+                            CustomAdvancedButton(
+                              height: 40,
+                              width: 200,
+                              label: 'PREVIOUS',
+                              variant: ButtonVariant.secondary,
+                              // icon: Icons.keyboard_double_arrow_left_sharp,
+                              icon: Icon(
+                                Icons.keyboard_double_arrow_left_sharp,
+                              ),
+                              onPressed: _onPrevious,
+                            ).animate().fadeIn(delay: 150.ms).slideY(
+                              begin: 0.2,
+                              end: 0,
+                            ),
+                          const SizedBox(width: 16),
                         ],
-                      ),
-                    ],
+
+                        // GO TO NEXT
+                        if (Responsive.isMobile(context))
+                          Expanded(
+                            child: CustomAdvancedButton(
+                              height: 44,
+                              label: 'NEXT',
+                              iconRight: true,
+                              variant: ButtonVariant.primary,
+                              icon: Icon(
+                                Icons.keyboard_double_arrow_right_sharp,
+                              ),
+                              onPressed: _onContinue,
+                            ).animate().fadeIn(delay: 200.ms).slideY(
+                              begin: 0.2,
+                              end: 0,
+                            ),
+                          )
+                        else
+                          CustomAdvancedButton(
+                            height: 40,
+                            width: 200,
+                            label: 'NEXT',
+                            iconRight: true,
+                            variant: ButtonVariant.primary,
+                            icon: Icon(
+                              Icons.keyboard_double_arrow_right_sharp,
+                            ),
+                            onPressed: _onContinue,
+                          ).animate().fadeIn(delay: 200.ms).slideY(
+                            begin: 0.2,
+                            end: 0,
+                          ),
+                      ],
+                    ),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -36,7 +36,11 @@ class BottomNavBar extends StatelessWidget {
       showUnselectedLabels: true,
       onTap: (index) {
         final route = _items[index].route;
-        context.go(route);
+        if (route == '/motor/quote') {
+          context.push(route);
+        } else {
+          context.go(route);
+        }
       },
       items: _items.map((item) {
         return BottomNavigationBarItem(

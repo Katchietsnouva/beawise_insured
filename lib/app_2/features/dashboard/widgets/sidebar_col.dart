@@ -245,7 +245,9 @@ class Sidebar extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   )
                 : null,
-            onTap: () => context.go(route),
+            onTap: () => route == '/motor/quote'
+                ? context.push(route)
+                : context.go(route),
           ),
         ),
       ),

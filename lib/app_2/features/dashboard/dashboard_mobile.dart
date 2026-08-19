@@ -47,7 +47,7 @@ class DashboardMobile extends ConsumerWidget {
     //   context,
     //   MaterialPageRoute(builder: (_) => MotorQuoteScreen()),
     // );
-    context.go('/motor/quote');
+    context.push('/motor/quote');
   }
 
   @override

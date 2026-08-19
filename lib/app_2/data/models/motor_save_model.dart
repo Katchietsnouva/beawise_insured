@@ -127,6 +127,7 @@ class Vehicle {
   String make;
   String model;
   String body;
+  // String bodyType;
   String color;
   String chasis;
   String engine;
@@ -145,6 +146,7 @@ class Vehicle {
     required this.make,
     required this.model,
     required this.body,
+    // this.bodyType = '',
     required this.color,
     required this.chasis,
     required this.engine,
@@ -164,6 +166,7 @@ class Vehicle {
     'make': make,
     'model': model,
     'body': body,
+    // 'body_type': bodyType,
     'color': color,
     'chasis': chasis,
     'engine': engine,

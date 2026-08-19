@@ -51,9 +51,13 @@ final initialLocationProvider = Provider<String>((ref) => '/onboarding');
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final initial = ref.watch(initialLocationProvider);
-  // ref.watch(authProvider); // could cause eerrors
-  // ← Watch auth so router rebuilds on login/logout
-  // final auth = ref.watch(authProvider);
+
+  // Re-run GoRouter's redirect whenever auth state changes (login, logout, or
+  // once the async storage load finishes). Without this, opening a protected
+  // deep link like /#/motor/quote on an unauthenticated device stays on that
+  // route instead of bouncing the user to /login.
+  final authRefresh = ValueNotifier<int>(0);
+  ref.listen(authProvider, (_, _) => authRefresh.value++);
 
   final renewalsViewModeProvider = StateProvider<ClientViewMode>(
     (ref) => ClientViewMode.list,
@@ -79,6 +83,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     // navigatorKey: rootNavigatorKey, // 2. LINK THE KEY HERE
     initialLocation: initial,
+    refreshListenable: authRefresh,
     observers: [RouteLogger(ref)],
 
     redirect: (context, state) {

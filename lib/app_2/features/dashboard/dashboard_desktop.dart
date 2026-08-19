@@ -127,7 +127,7 @@ class _DashboardDesktopState extends ConsumerState<DashboardDesktop> {
                   QuickActionsRow(
                     onNewClient: () => _handleNewClient(context, ref),
                     // onViewQuotes: () => context.go('/motor/quote'),
-                    onViewQuotes: () => context.go('/motor/quote'),
+                    onViewQuotes: () => context.push('/motor/quote'),
                   ),
                   const SizedBox(height: 32),
 

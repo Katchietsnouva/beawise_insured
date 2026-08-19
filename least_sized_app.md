@@ -24,6 +24,43 @@ flutter build ipa --release --no-tree-shake-icons
 flutter build apk --release --target-platform android-arm64 --split-debug-info=build/debug-info
 flutter build apk --release --target-platform android-arm64
 
+
+
+
+
+No phone is attached right now. Here's exactly what I found:
+
+- flutter devices → only your Linux desktop and Chrome (both are this machine, not a separate device).
+- adb devices → empty list (no Android device authorized).
+- lsusb → only your built-in webcam and Bluetooth radio. No phone is physically plugged into any USB port.
+
+So there's nothing external to attach to yet. To get your phone showing up:
+
+Option A — USB (Android)
+
+1. Plug the phone in with a data-capable USB cable (not a charge-only one).
+2. On the phone: Settings → About phone → tap Build number 7× to unlock Developer options.
+3. Settings → Developer options → enable USB debugging.
+4. When the "Allow USB debugging?" prompt appears on the phone, tap Allow.
+5. Then I'll re-check with flutter devices / adb devices.
+
+Option B — Wireless (Android 11+, same Wi-Fi)
+
+1. Phone: Developer options → Wireless debugging → On → Pair device with pairing code.
+2. Give me the IP:port and the 6-digit pairing code it shows, and I'll run:
+adb pair <ip>:<port>      # with the code
+adb connect <ip>:<port>   # the debugging port
+
+Option C — no phone handy
+
+For OmniBridge you actually need two devices to transfer between. You can fake a second peer by running a second instance on this machine (e.g. flutter run -d linux and flutter run -d chrome), though same-machine peer discovery over mDNS can be hit-or-miss.
+
+Plug in the phone (or start wireless pairing) and tell me when it's ready — I'll detect it and launch OmniBridge on it. Which option do you want to go with?
+
+
+
+
+
 <!-- to analyse size --> 
 flutter build apk --release --analyze-size --no-tree-shake-icons --target-platform android-arm64
 dart devtools --appSizeBase=/home/nouvaneonsinc/.flutter-devtools/apk-code-size-analysis_01.json

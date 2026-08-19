@@ -12,6 +12,7 @@ import 'package:insured/app_2/core/widgets/custom_circular_avatar.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 abstract class _SidebarTokens {
@@ -46,6 +47,15 @@ class Sidebar extends ConsumerStatefulWidget {
 class _SidebarState extends ConsumerState<Sidebar>
     with SingleTickerProviderStateMixin {
   bool _isCollapsed = false;
+
+  Future<void> _shareApp() async {
+    await SharePlus.instance.share(
+      ShareParams(
+        text:
+            'Check out ${InscloudUrls.appName}. Download the app here: ${InscloudUrls.installationPage}',
+      ),
+    );
+  }
 
   late final AnimationController _animController;
   late final Animation<double> _widthAnim;
@@ -437,6 +447,13 @@ class _SidebarState extends ConsumerState<Sidebar>
                         l10n.sidebar_settings,
                         '/settings',
                       ),
+                      _buildMenuItem(
+                        context,
+                        Icons.share_rounded,
+                        'Share App',
+                        '/share-app',
+                        onTap: _shareApp,
+                      ),
                       SizedBox(height: 40),
                       // Faint app version at the bottom of the menu list
                       Material(
@@ -466,11 +483,11 @@ class _SidebarState extends ConsumerState<Sidebar>
               // ── Footer ──
               Material(
                 child: Container(
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                     left: 8,
                     right: 8,
                     top: 4,
-                    bottom: 10,
+                    bottom: MediaQuery.paddingOf(context).bottom + 10,
                   ),
                   decoration: BoxDecoration(
                     border: Border(
@@ -556,8 +573,9 @@ class _SidebarState extends ConsumerState<Sidebar>
     BuildContext context,
     IconData icon,
     String label,
-    String route,
-  ) {
+    String route, {
+    VoidCallback? onTap,
+  }) {
     final String location = GoRouterState.of(context).uri.path;
     final bool isActive = location.startsWith(route);
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
@@ -597,7 +615,11 @@ class _SidebarState extends ConsumerState<Sidebar>
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            onTap: () => context.go(route),
+            onTap:
+                onTap ??
+                () => route == '/motor/quote'
+                    ? context.push(route)
+                    : context.go(route),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Icon(
@@ -639,7 +661,11 @@ class _SidebarState extends ConsumerState<Sidebar>
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => context.go(route),
+          onTap:
+              onTap ??
+              () => route == '/motor/quote'
+                  ? context.push(route)
+                  : context.go(route),
           // splashColor: AppColors.favColourDark.withOpacity(0.12),
           // highlightColor: AppColors.favColourDark.withOpacity(0.06),
           child: Padding(

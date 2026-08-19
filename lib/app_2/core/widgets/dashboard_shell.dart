@@ -12,6 +12,7 @@ import 'package:insured/app_2/core/widgets/exit_confirmation_dialog.dart';
 import 'package:insured/app_2/core/widgets/futuristic_toastS.dart';
 import 'package:insured/app_2/core/widgets/notification_icon.dart';
 import 'package:insured/app_2/core/widgets/profile_avatar.dart';
+import 'package:insured/app_2/core/widgets/support_whatsapp_button.dart';
 import 'package:insured/app_2/core/widgets/two_factor_guard.dart';
 import 'package:insured/app_2/features/dashboard/widgets/sidebar.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
@@ -203,6 +204,7 @@ class DashboardShell extends ConsumerWidget {
                   ),
                 ),
               ),
+              const SupportWhatsappButton(compact: true),
               IconButton(
                 icon: Icon(
                   effectiveIsDark ? Icons.dark_mode : Icons.light_mode,
@@ -481,6 +483,7 @@ class DashboardShell extends ConsumerWidget {
                   ),
                 ),
               ),
+              const SupportWhatsappButton(compact: true),
               IconButton(
                 icon: Icon(
                   effectiveIsDark ? Icons.dark_mode : Icons.light_mode,

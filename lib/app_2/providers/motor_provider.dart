@@ -50,7 +50,8 @@ class MotorNotifier extends StateNotifier<MotorState> {
       final token = authState.bearerToken;
 
       if (user == null || token == null) {
-        throw Exception('User not authenticated');
+        ref.read(authProvider.notifier).logout();
+        throw AuthenticationException('User not authenticated');
       }
 
       final response = await ApiService.getMotorQuote(
@@ -82,6 +83,13 @@ class MotorNotifier extends StateNotifier<MotorState> {
         throw Exception(response['message'] ?? 'Failed to get quote');
       }
     } catch (e) {
+      if (e is AuthenticationException) {
+        // Session is gone — logout() was already triggered and the router
+        // redirects to /login. Don't record a state error that would pop a
+        // misleading toast.
+        state = state.copyWith(isLoading: false, error: null);
+        rethrow;
+      }
       state = state.copyWith(isLoading: false, error: e.toString());
       return null;
     }
@@ -100,7 +108,8 @@ class MotorNotifier extends StateNotifier<MotorState> {
       final token = authState.bearerToken;
 
       if (user == null || token == null) {
-        throw Exception('User not authenticated');
+        ref.read(authProvider.notifier).logout();
+        throw AuthenticationException('User not authenticated');
       }
 
       final response = await ApiService.saveMotorPolicy(
@@ -108,6 +117,7 @@ class MotorNotifier extends StateNotifier<MotorState> {
         agentKey: user.agentKey,
         token: token,
         request: request,
+        ref: ref,
       );
 
       debugPrint("📦 SAVE POLICY RESPONSE:");
@@ -125,13 +135,18 @@ class MotorNotifier extends StateNotifier<MotorState> {
         throw Exception(response['message'] ?? 'Failed to save policy');
       }
     } catch (e) {
+      if (e is AuthenticationException) {
+        // Session is gone — logout() was already triggered and the router
+        // redirects to /login. Don't record a state error.
+        state = state.copyWith(isLoading: false, error: null);
+        rethrow;
+      }
       debugPrint("❌ SAVE POLICY ERROR:");
       debugPrint(e.toString());
       debugPrint(state.toString());
       state = state.copyWith(isLoading: false, error: e.toString());
       print("❌ SAVE POLICY ERROR: ${e.toString()} ");
       throw Exception(e.toString());
-      return null;
     }
   }
 

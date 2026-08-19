@@ -6,10 +6,12 @@ import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
 import 'package:insured/app_2/core/widgets/card_with_child.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
+import 'package:insured/app_2/core/widgets/support_whatsapp_button.dart';
 import 'package:insured/app_2/features/settings/settings/widgets/location_info_card.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
 import 'package:insured/app_2/providers/client_view_provider.dart';
 import 'package:insured/app_2/providers/settings_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsScreen extends ConsumerWidget {
   SettingsScreen({super.key});
@@ -43,6 +45,8 @@ class SettingsScreen extends ConsumerWidget {
                   final children = [
                     _buildAppearanceCard(context, ref, settings, l10n),
                     _buildDisplayCard(context, ref, settings, l10n),
+                    _buildInviteAgentsCard(context),
+                    _buildSupportCard(context),
                     // _buildNotificationsCard(context, ref, settings, l10n),
                     // _buildLanguageCard(context, ref, settings, l10n),
                     // _buildPrivacyCard(context, ref, settings, l10n),
@@ -114,6 +118,41 @@ class SettingsScreen extends ConsumerWidget {
           color: onSurface.withOpacity(0.35),
         ),
       ],
+    );
+  }
+
+  Widget _buildInviteAgentsCard(BuildContext context) {
+    return cardWithChild(
+      icon: Icons.share_rounded,
+      title: 'Invite other agents',
+      subtitle: 'Share the installation page with your team',
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton.icon(
+          onPressed: () async {
+            await SharePlus.instance.share(
+              ShareParams(
+                text:
+                    'Check out ${InscloudUrls.appName}, Download the app here: ${InscloudUrls.installationPage}',
+              ),
+            );
+          },
+          icon: const Icon(Icons.share_rounded),
+          label: const Text('Share App'),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSupportCard(BuildContext context) {
+    return cardWithChild(
+      icon: Icons.support_agent_rounded,
+      title: 'Support',
+      subtitle: 'Need help? Contact Piragryn support on WhatsApp.',
+      child: const Align(
+        alignment: Alignment.centerLeft,
+        child: SupportWhatsappButton(),
+      ),
     );
   }
 

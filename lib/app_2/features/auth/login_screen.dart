@@ -20,6 +20,7 @@ import 'package:insured/app_2/features/onboarding/widgets/three_d_model_viewer.d
 import 'package:insured/app_2/core/widgets/animated_orbs.dart';
 import 'package:insured/app_2/core/widgets/grain_overlay.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
+import 'package:insured/app_2/core/widgets/support_whatsapp_button.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -523,6 +524,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                               context.go('/register'),
                                         ),
                                       ),
+                                      const SizedBox(height: 8),
+                                      const SupportWhatsappButton(),
                                     ],
                                   ),
                                 ),

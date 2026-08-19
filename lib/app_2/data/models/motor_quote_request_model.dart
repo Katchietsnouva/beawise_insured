@@ -112,6 +112,7 @@ class QuoteOption {
   final int premiumInstalments;
   final int insurerId;
   final String insurer;
+  final bool certificateAvailable;
   final String rateType;
   final double rate;
   final double calculated;
@@ -130,6 +131,7 @@ class QuoteOption {
     required this.premiumInstalments,
     required this.insurerId,
     required this.insurer,
+    required this.certificateAvailable,
     required this.rateType,
     required this.rate,
     required this.calculated,
@@ -153,6 +155,7 @@ class QuoteOption {
       premiumInstalments: json['premium_instalments'] ?? 1,
       insurerId: json['insurer_id'],
       insurer: json['insurer'],
+      certificateAvailable: json['certificate_available'] == true,
       rateType: json['rate_type'],
       // rate: (json['rate'] as num).toDouble(),
       rate: parseDouble(json['rate']),
@@ -187,6 +190,7 @@ class QuoteOption {
       'premium_instalments': premiumInstalments,
       'insurer_id': insurerId,
       'insurer': insurer,
+      'certificate_available': certificateAvailable,
       'rate_type': rateType,
       'rate': rate,
       'calculated': calculated,

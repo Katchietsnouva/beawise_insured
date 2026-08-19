@@ -34,8 +34,8 @@ const _kMotorAccentLight = Color(0xFF2A7FAF);
 final String pathPrefix = (kIsWeb && kDebugMode) ? '' : 'assets';
 
 class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
-  late final option = widget.option;
-  late final onSelect = widget.onSelect;
+  QuoteOption get option => widget.option;
+  VoidCallback get onSelect => widget.onSelect;
 
   void _openDetails(BuildContext context, PremiumCalculationResult result) {
     showModalBottomSheet(
@@ -225,7 +225,17 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      BadgePremium(text: currency.format(option.amount)),
+                      // BadgePremium(text: currency.format(option.amount)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _CertificateStatusPill(
+                            available: option.certificateAvailable,
+                          ),
+                          const SizedBox(height: 6),
+                          // BadgePremium(text: currency.format(option.amount)),
+                        ],
+                      ),
                     ],
                   ),
                   const Padding(
@@ -287,6 +297,45 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
           Text(
             label,
             style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CertificateStatusPill extends StatelessWidget {
+  final bool available;
+
+  const _CertificateStatusPill({required this.available});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = available ? const Color(0xFF25C88A) : Colors.orangeAccent;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            available ? Icons.verified_rounded : Icons.info_outline_rounded,
+            size: 13,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Cert Enabled · ${available ? 'TRUE' : 'FALSE'}',
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),

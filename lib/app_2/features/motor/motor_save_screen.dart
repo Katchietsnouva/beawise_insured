@@ -10,6 +10,7 @@ import 'package:insured/app_2/core/services/memory_cache.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
+import 'package:insured/app_2/core/utils/premium_calculator.dart';
 import 'package:insured/app_2/core/utils/responsive.dart';
 import 'package:insured/app_2/core/widgets/custom_checkbox.dart';
 import 'package:insured/app_2/core/widgets/custom_error_refresh_placeholder_adv.dart';
@@ -30,6 +31,7 @@ import 'package:insured/app_2/providers/motor_provider.dart';
 import 'package:insured/app_2/providers/policy_provider.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
 import 'package:insured/app_2/features/motor/motor_document_upload_sheet.dart';
+import 'package:insured/app_2/features/motor/widgets/body_type_dropdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -96,6 +98,12 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     List<VehicleBenefit> vehicleBenefits,
   })
   _calculatePremium(QuoteOption quote) {
+    final sharedCalculation =
+        PremiumCalculator.calculateTotalPremiumWithBenefits(
+          quote,
+          ref.read(excessProtectorProvider),
+          ref.read(politicalViolenceProvider),
+        );
     double benefitAdd = 0;
     final List<VehicleBenefit> vehicleBenefits = [];
 
@@ -143,9 +151,13 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     //     ? quote.amount
     //     : quote.amount + benefitAdd;
 
-    final newBasicPremium = quote.basicPremium + benefitAdd;
+    // Original calculation kept for comparison:
+    // final newBasicPremium = quote.basicPremium + benefitAdd;
+    final newBasicPremium = sharedCalculation.newBasicPremium;
 
-    double totalTaxes = 0;
+    // Original calculation kept for comparison:
+    // double totalTaxes = 0;
+    final totalTaxes = sharedCalculation.totalTaxes;
     final List<TaxItem> computedTaxes = [];
 
     for (final tax in quote.taxes) {
@@ -156,7 +168,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       } else if (tax.calculations == 'Duty') {
         amount = double.parse(tax.rate); // fixed amount
       }
-      totalTaxes += amount;
+      // Original calculation kept for comparison:
+      // totalTaxes += amount;
       computedTaxes.add(
         TaxItem(
           taxId: tax.id,
@@ -166,7 +179,9 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       );
     }
 
-    final totalPremium = newBasicPremium + totalTaxes;
+    // Original calculation kept for comparison:
+    // final totalPremium = newBasicPremium + totalTaxes;
+    final totalPremium = sharedCalculation.totalPremium;
 
     return (
       newBasicPremium: newBasicPremium,
@@ -223,6 +238,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   final makeCtrl = TextEditingController();
   final modelCtrl = TextEditingController();
   final bodyCtrl = TextEditingController();
+  final bodyTypeCtrl = TextEditingController();
   final colorCtrl = TextEditingController();
   final chasisCtrl = TextEditingController();
   final engineCtrl = TextEditingController();
@@ -310,6 +326,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
         // widget.selectedCoverPeriod ??
         motorCache.get('selectedCoverPeriod');
     classSaved = motorCache.get('selectedClass');
+    bodyTypeCtrl.text = motorCache.get('body_type') ?? '';
     scopeSaved = motorCache.get('scope');
     vehicelValueSaved = motorCache.get('scope');
 
@@ -405,8 +422,19 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     markupCtrl.text = quote.markup.toStringAsFixed(0);
     markupValueCtrl.text = quote.markupValue.toStringAsFixed(0);
 
-    basicPremiumCtrl.text = quote.basicPremium.toStringAsFixed(0);
+    final sharedCalculation =
+        PremiumCalculator.calculateTotalPremiumWithBenefits(
+          quote,
+          ref.read(excessProtectorProvider),
+          ref.read(politicalViolenceProvider),
+        );
+    // Original calculation kept for comparison:
+    // basicPremiumCtrl.text = quote.basicPremium.toStringAsFixed(0);
+    basicPremiumCtrl.text = sharedCalculation.newBasicPremium.toStringAsFixed(
+      0,
+    );
 
+    /* Legacy duplicate premium calculation kept for reference.
     // Compute total premium (basic + benefits + taxes)
     double totalBenefits = 0;
     final excessProtectorSelected = ref.read(excessProtectorProvider);
@@ -482,7 +510,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     }
 
     final totalPremium = newBasic + totalTaxes;
-    premiumCtrl.text = totalPremium.toStringAsFixed(0);
+    */
+    premiumCtrl.text = sharedCalculation.totalPremium.toStringAsFixed(0);
   }
 
   @override
@@ -507,6 +536,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     makeCtrl.dispose();
     modelCtrl.dispose();
     bodyCtrl.dispose();
+    bodyTypeCtrl.dispose();
     colorCtrl.dispose();
     chasisCtrl.dispose();
     engineCtrl.dispose();
@@ -588,6 +618,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
             make: makeCtrl.text.isNotEmpty ? makeCtrl.text : 'N/A',
             model: modelCtrl.text.isNotEmpty ? modelCtrl.text : ' ',
             body: bodyCtrl.text.isNotEmpty ? bodyCtrl.text : ' ',
+            // bodyType: bodyTypeCtrl.text,
             color: colorCtrl.text.isNotEmpty ? colorCtrl.text : ' ',
             chasis: chasisCtrl.text,
             engine: engineCtrl.text.isNotEmpty ? engineCtrl.text : '1',
@@ -690,6 +721,9 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
         //   );
         // }
       }
+    } on AuthenticationException {
+      // Session is gone — the provider already logged the user out, and the
+      // router redirects to /login. Nothing to toast here.
     } catch (e) {
       print('oyaaaa');
       // if (mounted) {
@@ -725,9 +759,12 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           start.day,
         ).subtract(const Duration(days: 1));
       } else if (selectedCoverPeriod == 'tor') {
+        final isMotorcycle =
+            classSaved?.toString().toLowerCase() == 'motorcycle';
+        final torMonths = isMotorcycle ? 6 : 1;
         end = DateTime(
           start.year,
-          start.month + 1,
+          start.month + torMonths,
           start.day,
         ).subtract(const Duration(days: 1));
       } else {
@@ -866,7 +903,10 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
             left: 16,
             right: 16,
             top: 10,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 6,
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom +
+                MediaQuery.paddingOf(context).bottom +
+                6,
           ),
           decoration: BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -1711,6 +1751,16 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
                     isRequired: true,
                   ),
                   const SizedBox(height: 12),
+                  // BodyTypeDropdown(
+                  //   value: bodyTypeCtrl.text.isEmpty ? null : bodyTypeCtrl.text,
+                  //   cache: _motorCache,
+                  //   onChanged: (value) {
+                  //     bodyTypeCtrl.text = value ?? '';
+                  //     _motorCache.put('body_type', value ?? '');
+                  //     setState(() {});
+                  //   },
+                  // ),
+                  // const SizedBox(height: 12),
                 ],
               );
               return SingleChildScrollView(
@@ -2007,6 +2057,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   Widget _buildVehicleSummaryGrid() {
     final _getQuotecache = ref.read(motorFormCacheProvider);
     final vehicleValue = _getQuotecache.get('motor_vehicle_value');
+    final seatsText = _getQuotecache.get('motor_seats')?.toString() ?? '';
+    final seats = int.tryParse(seatsText.replaceAll(',', '')) ?? 0;
 
     return GridView.count(
       shrinkWrap: true,
@@ -2022,6 +2074,8 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
           _buildInfoItem("Vehicle Value", vehicleValue ?? "-"),
         ],
         _buildInfoItem("Body", bodyCtrl.text),
+        // _buildInfoItem("Body Type", bodyTypeCtrl.text),
+        if (seats > 0) _buildInfoItem("PLL / Seats", seats.toString()),
         _buildInfoItem("Chassis", chasisCtrl.text),
       ],
     );

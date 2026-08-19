@@ -7,6 +7,7 @@ import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:insured/app_2/core/constants/api_responses.dart';
 import 'package:insured/app_2/data/models/motor_quote_request_model.dart';
 import 'package:insured/app_2/data/models/motor_save_model.dart';
+import 'package:insured/app_2/data/models/motor_class_model.dart';
 import 'package:insured/app_2/providers/auth_provider.dart';
 
 class AuthenticationException implements Exception {
@@ -40,6 +41,50 @@ class ApiService {
     print("This is the getAuthToken response ${response.body}");
 
     return data['token'];
+  }
+
+  static Future<String> getAppSupport() async {
+    final token = await getAuthToken();
+    final response = await http.get(
+      Uri.parse(InscloudUrls.appSupport),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final data = jsonDecode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(data['message'] ?? 'Unable to load support contact');
+    }
+    return data['app_support']?.toString() ?? 'Support number unavailable';
+  }
+
+  static Future<List<MotorClassOption>> getMotorClasses({
+    required String agentCode,
+    required String agentKey,
+    required String token,
+  }) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/motor/classes'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-Agent-Code': agentCode,
+        'X-Agent-Key': agentKey,
+      },
+    );
+    final data = jsonDecode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(data['message'] ?? 'Unable to load motor classes');
+    }
+    return (data['motor_classes'] as List? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(MotorClassOption.fromJson)
+        .where((value) => value.coverage.trim().isNotEmpty)
+        .toList();
   }
 
   static Future<Map<String, dynamic>> register(
@@ -544,6 +589,7 @@ class ApiService {
     required String agentKey,
     required String token,
     required MotorSaveRequest request,
+    required Ref ref,
   }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/motor/save'),
@@ -558,7 +604,7 @@ class ApiService {
     print(
       "This is the saveMotorPolicy(baseUrl/motor/save) response ${response.body}",
     );
-    return _handleResponse(response);
+    return _handleResponseProtected(response, ref);
   }
 
   //   PESAPAL_CONSUMER_KEY=GtcHUHbDf6leb7LUX+RXGAEdc1TDDAj2

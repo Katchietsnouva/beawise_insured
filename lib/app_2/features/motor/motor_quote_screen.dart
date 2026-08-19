@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/services/memory_cache.dart';
+import 'package:insured/app_2/core/services/api_service.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -13,9 +14,9 @@ import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/features/motor/motor_save_screen.dart';
 import 'package:insured/app_2/features/motor/section/motor_quote_result_screen.dart';
 // import 'package:insured/app_2/features/motor/section/motor_quote_result_screen.dart';
-import 'package:insured/app_2/features/motor/widgets/left_section.dart';
-import 'package:insured/app_2/features/motor/widgets/right_section.dart';
+import 'package:insured/app_2/features/motor/widgets/right_section_n_f_2.dart';
 import 'package:insured/app_2/providers/motor_provider.dart';
+import 'package:insured/app_2/providers/motor_classes_provider.dart';
 import 'package:insured/app_2/data/models/motor_quote_request_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insured/app_2/providers/settings_provider.dart';
@@ -210,6 +211,9 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
           iconColor: Colors.orange,
         );
       }
+    } on AuthenticationException {
+      // Session is gone — the provider already logged the user out, and the
+      // router redirects to /login. Nothing to toast here.
     } catch (e) {
       if (!mounted) return;
 
@@ -314,6 +318,25 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
     _clearQuote();
   }
 
+  void _handleBack() {
+    final state = ref.read(motorProvider);
+    final showingQuoteResults =
+        !_isFormExpanded &&
+        _currentQuoteCacheKey != null &&
+        state.quoteResponse != null;
+
+    if (showingQuoteResults) {
+      _regenerateQuote();
+      return;
+    }
+
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/dashboard');
+    }
+  }
+
   void _handleExcessProtectorChanged(bool? v) {
     setState(() {
       excessProtector = v ?? false;
@@ -363,9 +386,7 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
             size: 32,
           ),
-          onPressed: () {
-            context.go('/dashboard');
-          },
+          onPressed: _handleBack,
         ),
 
         // title: const CustomText('Generate Quote', type: CustomTextType.header),
@@ -404,95 +425,97 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 700;
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.all(isWide ? 16 : 12),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // if (state.quoteResponse == null
-                  // // && state.error == null
-                  // )
-                  Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: isWide
-                            ? constraints.maxWidth * 1.00
-                            : constraints.maxWidth,
-                      ),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => setState(
-                              () => _isFormExpanded = !_isFormExpanded,
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 16,
+          return RefreshIndicator(
+            onRefresh: () =>
+                ref.read(motorClassesProvider.notifier).fetch(force: true),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(isWide ? 16 : 12),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // if (state.quoteResponse == null
+                    // // && state.error == null
+                    // )
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: isWide
+                              ? constraints.maxWidth * 1.00
+                              : constraints.maxWidth,
+                        ),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () => setState(
+                                () => _isFormExpanded = !_isFormExpanded,
                               ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    'Quote Details',
-                                    type: CustomTextType.paragraph,
-                                  ),
-                                  AnimatedRotation(
-                                    turns: _isFormExpanded ? 0.5 : 0,
-                                    duration: const Duration(milliseconds: 300),
-                                    child: Icon(
-                                      Icons.expand_more,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurface,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 16,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomText(
+                                      'Quote Details',
+                                      type: CustomTextType.paragraph,
                                     ),
-                                  ),
-                                ],
+                                    AnimatedRotation(
+                                      turns: _isFormExpanded ? 0.5 : 0,
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
+                                      child: Icon(
+                                        Icons.expand_more,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
 
-                          // const CustomText(
-                          //   'Enter Vehicle Details',
-                          //   type: CustomTextType.header,
-                          // ),
-                          // const SizedBox(height: 20),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: _isFormExpanded
-                                ? Center(
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: isWide
-                                            ? constraints.maxWidth * 0.50
-                                            : constraints.maxWidth,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          MotorFormLeftSection(
-                                            selectedClass: selectedClass,
-                                            onClassSelected: (v) {
-                                              setState(() => selectedClass = v);
-                                              _clearQuote();
-                                            },
-                                          ),
-                                          const SizedBox(height: 24),
-
-                                          if (selectedClass != null)
+                            // const CustomText(
+                            //   'Enter Vehicle Details',
+                            //   type: CustomTextType.header,
+                            // ),
+                            // const SizedBox(height: 20),
+                            AnimatedSize(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: _isFormExpanded
+                                  ? Center(
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: isWide
+                                              ? constraints.maxWidth * 0.92
+                                              : constraints.maxWidth,
+                                        ),
+                                        child: Column(
+                                          children: [
                                             Column(
                                               children: [
                                                 MotorFormRightSection(
                                                   selectedClass: selectedClass,
+                                                  onClassChanged: (v) {
+                                                    setState(
+                                                      () => selectedClass = v,
+                                                    );
+                                                    _clearQuote();
+                                                  },
                                                   selectedCoverage:
                                                       selectedCoverage,
                                                   onCoverageChanged: (v) {
@@ -568,93 +591,95 @@ class _MotorQuoteScreenState extends ConsumerState<MotorQuoteScreen> {
                                                 ),
                                               ],
                                             ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // if (state.quoteResponse != null && !state.isLoading
-                  // // && state.error == null
-                  // )
-                  //   Padding(
-                  //     padding: const EdgeInsets.only(top: 16),
-                  //     child: MotorQuoteResultSection(
-                  //       options: state.quoteResponse!.options ?? [],
-                  //       selectedCoverage: selectedCoverage,
-                  //       selectedScope: selectedScope,
-                  //       selectedCoverPeriod: selectedCoverPeriod,
-                  //       vehicleValue:
-                  //           double.tryParse(valueController.text) ?? 0,
-                  //       yom: int.tryParse(yearController.text) ?? 0,
-                  //     ),
-                  //   ),
-                  if (state.quoteResponse != null &&
-                      !state.isLoading &&
-                      _currentQuoteCacheKey != null &&
-                      _currentQuoteCacheKey ==
-                          'motor_quote_${selectedClass}_${selectedCoverage}_${selectedScope}_${selectedCoverPeriod}_${valueController.text}_${yearController.text}_${tonnageController.text}_${makeController.text}_${modelController.text}')
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: MotorQuoteResultSection(
-                        options: state.quoteResponse!.options ?? [],
-                        selectedCoverage: selectedCoverage,
-                        selectedScope: selectedScope,
-                        selectedCoverPeriod: selectedCoverPeriod,
-                        vehicleValue:
-                            double.tryParse(valueController.text) ?? 0,
-                        yom: int.tryParse(yearController.text) ?? 0,
-                        excessProtectorSelected: excessProtector,
-                        politicalViolenceSelected: politicalViolence,
-                        onRegenerate: _regenerateQuote,
-                        onExcessProtectorChanged: _handleExcessProtectorChanged,
-                        onPoliticalViolenceChanged:
-                            _handlePoliticalViolenceChanged,
-                      ),
-                    )
-                  else if (state.isLoading)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            // CircularProgressIndicator(
-                            //   color: Theme.of(context).primaryColor,
-                            // ),
-                            const SizedBox(height: 12),
-                            CustomText(
-                              'Fetching quotes...',
-                              type: CustomTextType.paragraph,
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
-                            const SizedBox(height: 100),
+
+                            const SizedBox(height: 8),
                           ],
                         ),
                       ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100, bottom: 100),
-                      child: Center(
-                        child: Opacity(
-                          opacity: 0.05,
-                          child: CustomText(
-                            // 'No quotes yet — fill the form and get a quote!',
-                            'No quotes yet — fill the form and get a quote!',
-                            type: CustomTextType.paragraph,
-                            color: Colors.grey[600],
-                            textAlign: TextAlign.center,
+                    ),
+
+                    // if (state.quoteResponse != null && !state.isLoading
+                    // // && state.error == null
+                    // )
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(top: 16),
+                    //     child: MotorQuoteResultSection(
+                    //       options: state.quoteResponse!.options ?? [],
+                    //       selectedCoverage: selectedCoverage,
+                    //       selectedScope: selectedScope,
+                    //       selectedCoverPeriod: selectedCoverPeriod,
+                    //       vehicleValue:
+                    //           double.tryParse(valueController.text) ?? 0,
+                    //       yom: int.tryParse(yearController.text) ?? 0,
+                    //     ),
+                    //   ),
+                    if (state.quoteResponse != null &&
+                        !state.isLoading &&
+                        _currentQuoteCacheKey != null &&
+                        _currentQuoteCacheKey ==
+                            'motor_quote_${selectedClass}_${selectedCoverage}_${selectedScope}_${selectedCoverPeriod}_${valueController.text}_${yearController.text}_${tonnageController.text}_${makeController.text}_${modelController.text}')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: MotorQuoteResultSection(
+                          options: state.quoteResponse!.options ?? [],
+                          selectedCoverage: selectedCoverage,
+                          selectedScope: selectedScope,
+                          selectedCoverPeriod: selectedCoverPeriod,
+                          vehicleValue:
+                              double.tryParse(valueController.text) ?? 0,
+                          yom: int.tryParse(yearController.text) ?? 0,
+                          excessProtectorSelected: excessProtector,
+                          politicalViolenceSelected: politicalViolence,
+                          onRegenerate: _regenerateQuote,
+                          onExcessProtectorChanged:
+                              _handleExcessProtectorChanged,
+                          onPoliticalViolenceChanged:
+                              _handlePoliticalViolenceChanged,
+                        ),
+                      )
+                    else if (state.isLoading)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 32),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              // CircularProgressIndicator(
+                              //   color: Theme.of(context).primaryColor,
+                              // ),
+                              const SizedBox(height: 12),
+                              CustomText(
+                                'Fetching quotes...',
+                                type: CustomTextType.paragraph,
+                              ),
+                              const SizedBox(height: 100),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.only(top: 100, bottom: 100),
+                        child: Center(
+                          child: Opacity(
+                            opacity: 0.05,
+                            child: CustomText(
+                              // 'No quotes yet — fill the form and get a quote!',
+                              'No quotes yet — fill the form and get a quote!',
+                              type: CustomTextType.paragraph,
+                              color: Colors.grey[600],
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

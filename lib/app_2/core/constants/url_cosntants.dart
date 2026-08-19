@@ -39,8 +39,17 @@
 // ========
 
 // lib/app_2/core/constants/url_cosntants.dart
+import 'package:flutter/foundation.dart';
+
 class InscloudUrls {
   static const appName = 'Beawise Insured';
+  static String get installationPage {
+    if (kIsWeb) {
+      return Uri.base.resolve('#/installation').toString();
+    }
+    return 'https://beawise-insured.vercel.app/#/installation';
+  }
+
   static const applicationId = "com.insured.beawise";
   static const appVersion = '1.0.6';
   static const businessNo = '4060615',
@@ -69,6 +78,7 @@ class InscloudUrls {
       verifyOtpInsuredUser = '$base/agent/login/otp/verify',
       resetOtpRequestInsuredUser = '$base/agent/password/request',
       resetOtpConfirmInsuredUser = '$base/agent/password/confirm',
+      appSupport = '$base/app/support',
       createClientInsuredUser = '$base/agent/client/create',
       stkPush = '$base/payment/stk/push',
       agreements = '$base/agents/agreements';
