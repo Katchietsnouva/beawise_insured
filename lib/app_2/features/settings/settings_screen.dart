@@ -148,7 +148,8 @@ class SettingsScreen extends ConsumerWidget {
     return cardWithChild(
       icon: Icons.support_agent_rounded,
       title: 'Support',
-      subtitle: 'Need help? Contact Piragryn support on WhatsApp.',
+      subtitle:
+          'Need help? Contact  ${InscloudUrls.companyName} support on WhatsApp.',
       child: const Align(
         alignment: Alignment.centerLeft,
         child: SupportWhatsappButton(),

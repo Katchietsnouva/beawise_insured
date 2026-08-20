@@ -42,6 +42,7 @@
 import 'package:flutter/foundation.dart';
 
 class InscloudUrls {
+  static const companyName = 'Beawise';
   static const appName = 'Beawise Insured';
   static String get installationPage {
     if (kIsWeb) {
