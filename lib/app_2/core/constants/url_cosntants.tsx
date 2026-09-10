@@ -23,6 +23,7 @@ export const INSCLOUD_API_URLS_CONST = {
 
 
 
+//
 export const PESAPAL_BASE_URL = "https://pay.pesapal.com/v3/api";
 
 export const PESAPAL_URLS_CONST = {

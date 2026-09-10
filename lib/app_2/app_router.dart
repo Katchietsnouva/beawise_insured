@@ -81,7 +81,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   // );
 
   return GoRouter(
-    // navigatorKey: rootNavigatorKey, // 2. LINK THE KEY HERE
+    navigatorKey: rootNavigatorKey, // 2. LINK THE KEY HERE
     initialLocation: initial,
     refreshListenable: authRefresh,
     observers: [RouteLogger(ref)],

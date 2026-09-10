@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/constants/url_cosntants.dart';
 import 'package:insured/app_2/core/services/biometric_auth_service.dart';
+import 'package:insured/app_2/core/services/update_checker.dart';
+import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
 import 'package:insured/app_2/core/widgets/card_with_child.dart';
@@ -9,6 +11,7 @@ import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/core/widgets/support_whatsapp_button.dart';
 import 'package:insured/app_2/features/settings/settings/widgets/location_info_card.dart';
 import 'package:insured/app_2/l10n/app_localizations.dart';
+import 'package:insured/app_2/providers/auth_provider.dart';
 import 'package:insured/app_2/providers/client_view_provider.dart';
 import 'package:insured/app_2/providers/settings_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -47,6 +50,7 @@ class SettingsScreen extends ConsumerWidget {
                     _buildDisplayCard(context, ref, settings, l10n),
                     _buildInviteAgentsCard(context),
                     _buildSupportCard(context),
+                    _buildUpdateCard(context, ref),
                     // _buildNotificationsCard(context, ref, settings, l10n),
                     // _buildLanguageCard(context, ref, settings, l10n),
                     // _buildPrivacyCard(context, ref, settings, l10n),
@@ -118,6 +122,112 @@ class SettingsScreen extends ConsumerWidget {
           color: onSurface.withOpacity(0.35),
         ),
       ],
+    );
+  }
+
+  Widget _buildUpdateCard(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(updateInfoProvider);
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+
+    return async.when(
+      loading: () => cardWithChild(
+        icon: Icons.system_update_rounded,
+        title: 'App version',
+        subtitle: 'Version ${InscloudUrls.appVersion}',
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: CustomText(
+            'Checking for updates…',
+            type: CustomTextType.caption,
+          ),
+        ),
+      ),
+      error: (_, __) => cardWithChild(
+        icon: Icons.system_update_rounded,
+        title: 'App version',
+        subtitle: 'Version ${InscloudUrls.appVersion}',
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: CustomText(
+            'Could not check for updates',
+            type: CustomTextType.caption,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+      data: (info) {
+        final available = info != null && info.isUpdateAvailable;
+        final days = info?.daysOutdated;
+        final isDev =
+            ref.watch(authProvider).user?.email == UpdateChecker.devEmail;
+        return cardWithChild(
+          icon: available
+              ? Icons.system_update_rounded
+              : Icons.verified_rounded,
+          title: 'App version',
+          subtitle: available
+              ? 'Update available: v${info.latestVersion}'
+              : 'You’re up to date',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                'Installed: v${InscloudUrls.appVersion}',
+                type: CustomTextType.caption,
+                color: onSurface.withOpacity(0.55),
+              ),
+              if (available && days != null) ...[
+                const SizedBox(height: 4),
+                CustomText(
+                  days <= 0
+                      ? 'Released today'
+                      : 'Your app is $days day${days == 1 ? '' : 's'} behind',
+                  type: CustomTextType.caption,
+                  color: Colors.orange,
+                ),
+              ],
+              const SizedBox(height: 12),
+              if (available)
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomAdvancedButton(
+                    label: 'View update',
+                    variant: ButtonVariant.primary,
+                    onPressed: () =>
+                        UpdateChecker.showUpdateDialog(context, info),
+                  ),
+                )
+              else
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: CustomText(
+                    'You have the latest version installed.',
+                    type: CustomTextType.caption,
+                    color: Colors.grey,
+                  ),
+                ),
+              if (isDev) ...[
+                const Divider(height: 24),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: CustomText(
+                        'Show update popup on web ',
+                        type: CustomTextType.caption,
+                      ),
+                    ),
+                    Switch(
+                      value: ref.watch(showUpdateOnWebProvider),
+                      onChanged: (v) =>
+                          ref.read(showUpdateOnWebProvider.notifier).set(v),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 

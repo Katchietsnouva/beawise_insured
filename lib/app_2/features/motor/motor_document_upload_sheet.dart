@@ -101,20 +101,52 @@ class _MotorDocumentUploadSheetState
   }
 
   Future<void> _pickFile(int index) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-      allowMultiple: false,
+    final doc = _docs[index];
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+        allowMultiple: false,
+        // On mobile (Android/iOS) file.bytes is null unless we request it.
+        // On web bytes are always provided and there is no path.
+        withData: true,
+      );
+      // User cancelled the picker — not an error, just do nothing.
+      if (result == null || result.files.isEmpty) return;
+
+      final file = result.files.first;
+      final bytes = file.bytes;
+      // A file was selected but we couldn't read its contents. Tell the user
+      // instead of silently doing nothing (previously failed here on Android).
+      if (bytes == null || bytes.isEmpty) {
+        _showPickError(doc.label);
+        return;
+      }
+
+      setState(() {
+        doc.bytes = bytes;
+        doc.fileName = file.name;
+        doc.status = _UploadStatus.idle;
+      });
+    } catch (e, st) {
+      print('❌ PICK [${doc.apiName}] ERROR: $e');
+      print('❌ STACKTRACE: $st');
+      _showPickError(doc.label);
+    }
+  }
+
+  void _showPickError(String label) {
+    if (!mounted) return;
+    FuturisticToastS.show(
+      context: context,
+      message:
+          "Couldn't read the selected file for $label.\n\nPlease try again or pick a different PDF, JPG or PNG.",
+      icon: Icons.error_outline,
+      iconColor: Colors.redAccent,
+      alignment: Alignment.topCenter,
+      duration: const Duration(seconds: 5),
+      showCloseButton: true,
     );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.first;
-    final bytes = file.bytes;
-    if (bytes == null || bytes.isEmpty) return;
-    setState(() {
-      _docs[index].bytes = bytes;
-      _docs[index].fileName = file.name;
-      _docs[index].status = _UploadStatus.idle;
-    });
   }
 
   Future<void> _uploadFile(int index) async {

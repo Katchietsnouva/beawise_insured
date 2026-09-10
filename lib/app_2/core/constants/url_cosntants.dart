@@ -51,8 +51,9 @@ class InscloudUrls {
     return 'https://beawise-insured.vercel.app/#/installation';
   }
 
+  static const baseUrl = "https://beawise-insured.vercel.app";
   static const applicationId = "com.insured.beawise";
-  static const appVersion = '1.0.8';
+  static const appVersion = '1.0.9';
   static const businessNo = '4060615',
           ///
           ///
@@ -92,12 +93,8 @@ class PesapalUrls {
       status = '$base/Transactions/GetTransactionStatus';
 }
 
-
-
 // // final authUrl = InscloudUrls.auth;
 // // final pesapalToken = PesapalUrls.token;
-
-
 
 // // $2y$12$g6s9dhG60Ta2ODHJRyEeF.nlCgjmxV/NtGBwNmQM9MJsjWQtwb9ba
 // // E79FB3A9F89ED57BD0563B2E389738
