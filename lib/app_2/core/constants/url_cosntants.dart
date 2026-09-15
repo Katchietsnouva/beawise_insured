@@ -53,7 +53,7 @@ class InscloudUrls {
 
   static const baseUrl = "https://beawise-insured.vercel.app";
   static const applicationId = "com.insured.beawise";
-  static const appVersion = '1.0.9';
+  static const appVersion = '1.1.0';
   static const businessNo = '4060615',
           ///
           ///
