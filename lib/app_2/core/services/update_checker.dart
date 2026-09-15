@@ -44,7 +44,7 @@ class UpdateInfo {
   bool get isUpdateAvailable =>
       UpdateChecker.isNewer(latestVersion, currentVersion);
 
-  String get target => downloadUrl ?? InscloudUrls.installationPage;
+  String get target => InscloudUrls.installationPage;
 
   /// How many days the newest version has been out (i.e. how long the
   /// installed app has been outdated). Null when there's no release date.
@@ -198,38 +198,39 @@ class UpdateChecker {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(info.message),
-                  if (info.daysOutdated != null) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      _outdatedLabel(info.daysOutdated!),
-                      style: const TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                  if (info.changes.isNotEmpty || info.history.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Theme(
-                      // Hide ExpansionTile's default divider lines.
-                      data: Theme.of(
-                        context,
-                      ).copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        tilePadding: EdgeInsets.zero,
-                        childrenPadding: const EdgeInsets.only(
-                          left: 4,
-                          bottom: 8,
+                      if (info.daysOutdated != null) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          _outdatedLabel(info.daysOutdated!),
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
                         ),
-                        title: const Text(
-                          "What's new",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                      ],
+                      if (info.changes.isNotEmpty ||
+                          info.history.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Theme(
+                          // Hide ExpansionTile's default divider lines.
+                          data: Theme.of(
+                            context,
+                          ).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            tilePadding: EdgeInsets.zero,
+                            childrenPadding: const EdgeInsets.only(
+                              left: 4,
+                              bottom: 8,
+                            ),
+                            title: const Text(
+                              "What's new",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            children: _changelog(info),
+                          ),
                         ),
-                        children: _changelog(info),
-                      ),
-                    ),
-                  ],
+                      ],
                     ],
                   ),
                 ),
