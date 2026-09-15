@@ -131,6 +131,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/app_router.dart';
 import 'package:insured/app_2/core/constants/url_cosntants.dart';
+import 'package:insured/app_2/core/services/update_checker.dart';
 import 'package:insured/app_2/core/theme/app_theme.dart';
 import 'package:insured/app_2/core/utils/text_scale_provider.dart';
 import 'package:insured/app_2/core/utils/theme_provider.dart';
@@ -169,6 +170,15 @@ class _InsuredAppState extends ConsumerState<InsuredApp> {
   void initState() {
     super.initState();
     // _autoDetectLanguage();
+
+    // Once the first frame is up (so the router's navigator exists), check
+    // version.json for a newer release. On mobile this shows the update popup
+    // whenever the installed app is older than the published version; on web
+    // it's a no-op unless the dev toggle is enabled. Safe to fire-and-forget:
+    // UpdateChecker.check() swallows its own errors and null contexts.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateChecker.check();
+    });
   }
 
   // Future<void> _autoDetectLanguage_() async {

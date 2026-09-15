@@ -53,6 +53,22 @@ class UpdateInfo {
     final days = DateTime.now().difference(releaseDate!).inDays;
     return days < 0 ? 0 : days;
   }
+
+  /// How many published releases are newer than the installed app, counted from
+  /// the version history (e.g. installed 1.0.4, history has 1.0.6 and 1.0.5 →
+  /// 2 versions behind). Duplicate version numbers are counted once. Falls back
+  /// to 1 when there's no usable history but an update is available.
+  int get versionsBehind {
+    if (!isUpdateAvailable) return 0;
+    final seen = <String>{};
+    var count = 0;
+    for (final entry in history) {
+      final v = entry.version.trim();
+      if (v.isEmpty || !seen.add(v)) continue; // skip blanks and duplicates
+      if (UpdateChecker.isNewer(v, currentVersion)) count++;
+    }
+    return count == 0 ? 1 : count;
+  }
 }
 
 /// Fetches version.json once and exposes it to the UI (Settings screen, etc.).
@@ -209,6 +225,17 @@ class UpdateChecker {
                           ),
                         ),
                       ],
+                      if (info.isUpdateAvailable) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          _versionsBehindLabel(info.versionsBehind),
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                       if (info.changes.isNotEmpty ||
                           info.history.isNotEmpty) ...[
                         const SizedBox(height: 8),
@@ -306,6 +333,11 @@ class UpdateChecker {
     if (days <= 0) return 'Released today';
     if (days == 1) return 'Your app is 1 day behind';
     return 'Your app is $days days behind';
+  }
+
+  static String _versionsBehindLabel(int versions) {
+    if (versions <= 1) return 'Your app is 1 version behind';
+    return 'Your app is $versions versions behind';
   }
 
   // Builds the expander body: grouped per-version history when available,

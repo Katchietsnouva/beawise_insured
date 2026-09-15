@@ -186,6 +186,15 @@ class SettingsScreen extends ConsumerWidget {
                   color: Colors.orange,
                 ),
               ],
+              if (available) ...[
+                const SizedBox(height: 4),
+                CustomText(
+                  'Your app is ${info.versionsBehind} '
+                  'version${info.versionsBehind == 1 ? '' : 's'} behind',
+                  type: CustomTextType.caption,
+                  color: Colors.orange,
+                ),
+              ],
               const SizedBox(height: 12),
               if (available)
                 SizedBox(
