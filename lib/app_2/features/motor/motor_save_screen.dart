@@ -151,13 +151,16 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
     //     ? quote.amount
     //     : quote.amount + benefitAdd;
 
-    // Original calculation kept for comparison:
-    // final newBasicPremium = quote.basicPremium + benefitAdd;
-    final newBasicPremium = sharedCalculation.newBasicPremium;
+    // IMPORTANT: the backend adds the markup on top of `total_basic` ITSELF
+    // (amount = total_basic + taxes + markup). `sharedCalculation` is seeded
+    // from `option.amount`, which already includes the markup, so the payload
+    // must strip it back out to the RAW basic — otherwise the markup is counted
+    // twice on the server (e.g. 590 instead of 570).
+    final newBasicPremium = sharedCalculation.newBasicPremium - quote.markupValue;
 
-    // Original calculation kept for comparison:
-    // double totalTaxes = 0;
-    final totalTaxes = sharedCalculation.totalTaxes;
+    // Taxes must be computed on the RAW basic (the base the backend uses), so
+    // recompute here rather than reusing the markup-inclusive shared value.
+    double totalTaxes = 0;
     final List<TaxItem> computedTaxes = [];
 
     for (final tax in quote.taxes) {
@@ -168,8 +171,7 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       } else if (tax.calculations == 'Duty') {
         amount = double.parse(tax.rate); // fixed amount
       }
-      // Original calculation kept for comparison:
-      // totalTaxes += amount;
+      totalTaxes += amount;
       computedTaxes.add(
         TaxItem(
           taxId: tax.id,
@@ -179,9 +181,10 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
       );
     }
 
-    // Original calculation kept for comparison:
-    // final totalPremium = newBasicPremium + totalTaxes;
-    final totalPremium = sharedCalculation.totalPremium;
+    // Full figure the customer pays: raw basic + taxes + markup. The backend
+    // recomputes `amount` the same way; we send this for reference/consistency.
+    final totalPremium = (newBasicPremium + totalTaxes + quote.markupValue)
+        .roundToDouble();
 
     return (
       newBasicPremium: newBasicPremium,

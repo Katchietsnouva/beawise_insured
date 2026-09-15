@@ -1,0 +1,81 @@
+{
+    "version": "1.0.9",
+    "release_date": "2026-09-07",
+    "download_url": "https://piragryn-insured.vercel.app/#/installation",
+    "force_update": false,
+    "message": "A new version of the app is available.",
+    "changes": [
+        "Fixed document upload on Android (file picker)",
+        "New in-app update notifications with changelog",
+        "Release-aware update tracking",
+        "Improved update dialog and version handling",
+        "General stability and performance improvements"
+    ],
+    "history": [
+        {
+            "version": "1.0.9",
+            "release_date": "2026-09-07",
+            "changes": [
+                "Fixed document upload on Android (file picker)",
+                "New in-app update notifications with changelog",
+                "Release-aware update tracking",
+                "Improved update dialog and version handling",
+                "General stability and performance improvements"
+            ]
+        },
+        {
+            "version": "1.0.8",
+            "release_date": "2026-08-19",
+            "changes": [
+                "Corrected seats in the quote summary",
+                "Aligned motor policy totals with the shared premium calculator",
+                "Fixed phone extraction and WhatsApp link generation",
+                "Centralised app versioning",
+                "General stability and performance improvements"
+            ]
+        },
+        {
+            "version": "1.0.7",
+            "release_date": "2026-08-10",
+            "changes": [
+                "Added Invite Agents / Share App",
+                "Added WhatsApp support integration",
+                "Backend-driven motor class flow with vehicle class as first step",
+                "Grouped commercial coverage options by category",
+                "Added certificate availability support",
+                "Extended motorcycle TOR coverage and dynamic TOR handling",
+                "Improved back navigation in the motor quote flow",
+                "Added premium price sorting to quote results"
+            ]
+        },
+        {
+            "version": "1.0.6",
+            "release_date": "2026-07-30",
+            "changes": [
+                "Server-side client search with improved search experience",
+                "Better client-search error handling and feedback",
+                "Auto-refresh Quotes after creating a motor policy",
+                "Added Production Excel export with cross-platform downloads",
+                "Fixed coverage limits",
+                "Fixed file upload and image handling",
+                "Centralised versioning"
+            ]
+        },
+        {
+            "version": "1.0.2.5",
+            "release_date": "2026-07-02",
+            "changes": [
+                "Added Paybill payment option"
+            ]
+        },
+        {
+            "version": "1.0.2",
+            "release_date": "2026-06-22",
+            "changes": [
+                "Added document upload plus terms & conditions",
+                "Fixed 'download not found' issue",
+                "General app readiness fixes"
+            ]
+        }
+    ]
+}
