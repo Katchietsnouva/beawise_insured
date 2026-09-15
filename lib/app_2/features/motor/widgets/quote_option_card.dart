@@ -244,11 +244,10 @@ class _QuoteOptionCardState extends ConsumerState<QuoteOptionCard> {
                   ),
 
                   CustomText(
-                    // Original display kept for comparison:
-                    // '${currency.format(result.totalPremium.round())}',
-                    currency.format(
-                      (result.totalPremium + option.markupValue).round(),
-                    ),
+                    // `totalPremium` already includes the markup because the
+                    // calculator is seeded from `option.amount` (basic + markup).
+                    // Do NOT add `option.markupValue` again — that double-counts it.
+                    currency.format(result.totalPremium.round()),
                     type: CustomTextType.subHeader,
                   ),
 

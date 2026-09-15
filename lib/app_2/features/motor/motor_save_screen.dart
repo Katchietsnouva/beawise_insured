@@ -515,8 +515,11 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   }
 
   double _displayTotalPremium() {
+    // `premiumCtrl.text` is set from `sharedCalculation.totalPremium`, which is
+    // seeded from `option.amount` (basic + markup) — so the markup is ALREADY
+    // included. Do not add `markupValue` again; that double-counts it.
     final calculated = double.tryParse(premiumCtrl.text) ?? 0;
-    return calculated + (widget.selectedQuote?.markupValue ?? 0);
+    return calculated;
   }
 
   @override

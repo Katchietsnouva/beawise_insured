@@ -190,11 +190,10 @@ class _QuoteDetailsModalState extends ConsumerState<QuoteDetailsModal> {
                     themeText,
                     'Total Premium',
                     // currency.format(premium.round()),
-                    // Original display kept for comparison:
-                    // currency.format(resulT.totalPremium.round()),
-                    currency.format(
-                      (resulT.totalPremium + option.markupValue).round(),
-                    ),
+                    // `totalPremium` already includes the markup (calculator is
+                    // seeded from `option.amount` = basic + markup). Adding
+                    // `option.markupValue` again double-counts it.
+                    currency.format(resulT.totalPremium.round()),
                     // '${option.rate}%',
                     Icons.payments,
                     color: !isDark ? Colors.green[900]! : Colors.greenAccent,
