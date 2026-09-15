@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:insured/app_2/core/services/api_service.dart';
+import 'package:insured/app_2/core/utils/error_parser.dart';
 import 'package:insured/app_2/core/utils/formatHumanDate.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
@@ -452,6 +453,11 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
               user: authState.user,
               balance: shortfall,
               installationBalance: shortfall,
+              // Once payment is confirmed, clear the stale "insufficient
+              // payment" result and re-issue so the error banner can't persist.
+              onPaymentConfirmed: () {
+                if (mounted) _submit();
+              },
             );
           },
         ),
@@ -469,7 +475,10 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
         _bannerTile(
           color: Colors.red,
           icon: Icons.error_outline_rounded,
-          title: errorCode != null ? '$errorCode · $message' : message,
+          // title: errorCode != null ? '$errorCode · $message' : message,
+          title: errorCode != null
+              ? '$errorCode · $message'
+              : ErrorParser.fromRaw(result).message,
           subtitle: 'Check the policy details and try again.',
         ),
         const SizedBox(height: 20),
@@ -598,8 +607,6 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
     ],
   );
 }
- 
-
 
 // class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
 //   bool _isLoading = false;
@@ -823,12 +830,9 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
 //   }
 // }
 
-
 /////////////
 ///
 ///
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
