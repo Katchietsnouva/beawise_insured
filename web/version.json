@@ -1,13 +1,23 @@
 {
-    "version": "1.1.1",
+    "version": "1.1.2",
     "release_date": "2026-09-15",
     "force_update": false,
     "message": "A new version of the app is available.",
     "changes": [
-        "Improved reliability of the in-app update and download link",
+        "Fixed the app returning to the install page after updating",
+        "Automatic update checks, showing how many versions you're behind",
         "General stability and performance improvements"
     ],
     "history": [
+        {
+            "version": "1.1.2",
+            "release_date": "2026-09-15",
+            "changes": [
+                "Fixed the app returning to the install page after updating",
+                "Automatic update checks, showing how many versions you're behind",
+                "General stability and performance improvements"
+            ]
+        },
         {
             "version": "1.1.1",
             "release_date": "2026-09-15",

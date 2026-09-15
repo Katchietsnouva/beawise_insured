@@ -143,7 +143,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final rememberMe = prefs.getBool('remember_me') ?? false;
-  final lastRoute = prefs.getString('last_route') ?? '/onboarding';
+  var lastRoute = prefs.getString('last_route') ?? '/onboarding';
+
+  // Clear stale "installation screen" memory: a user who updated the app from
+  // that screen would otherwise be resumed straight back onto it on next launch
+  // (and bounced to the browser again). Drop it and resume somewhere sensible.
+  if (lastRoute.startsWith('/installation')) {
+    lastRoute = '/dashboard';
+    await prefs.setString('last_route', lastRoute);
+  }
+
   final initialLocation = rememberMe ? lastRoute : '/onboarding';
 
   runApp(

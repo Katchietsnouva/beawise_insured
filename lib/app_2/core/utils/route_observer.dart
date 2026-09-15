@@ -81,8 +81,14 @@ class RouteLogger extends NavigatorObserver {
     if (routeName == null ||
         routeName == 'onboarding' ||
         routeName == 'login' ||
-        routeName == 'register')
+        routeName == 'register' ||
+        // Never remember the installation/download screen. Resuming onto it
+        // after an update dumps the user back on the page whose buttons relaunch
+        // the browser — the erratic "back to installation" loop.
+        routeName == 'installation' ||
+        routeName == '/installation') {
       return;
+    }
 
     Future.microtask(() {
       ref.read(currentRouteProvider.notifier).state = routeName;
