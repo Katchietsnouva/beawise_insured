@@ -466,20 +466,56 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
     );
   }
 
+  /// Flattens a Laravel-style `errors` map ({field: [msg, ...]}) into readable
+  /// lines for the banner subtitle. Returns '' when there are no field errors.
+  String _flattenErrors(Map<String, dynamic>? errors) {
+    if (errors == null || errors.isEmpty) return '';
+    final lines = <String>[];
+    errors.forEach((_, value) {
+      if (value is List) {
+        lines.addAll(value.map((e) => e.toString()));
+      } else if (value != null) {
+        lines.add(value.toString());
+      }
+    });
+    return lines.join('\n');
+  }
+
   Widget _buildError(Map<String, dynamic> result) {
     final errorCode = result['error_code']?.toString();
-    final message = (result['message'] ?? 'Something went wrong').toString();
+
+    // The failure arrives in several shapes (see msc/err/*.jpeg):
+    //  - {"status":"error","message":"Policy period has already expired."}
+    //  - {"success":false,"message":"...","errors":{"field":["detail", ...]}}
+    //  - either of the above wrapped as an "Exception: {json}" string in
+    //    result['message'].
+    // Parse the message string first (this unwraps "Exception: {json}"), then
+    // fall back to any sibling `errors` map on the raw result.
+    final parsed = ErrorParser.fromRaw(result['message'] ?? result);
+    final message = parsed.message.isNotEmpty
+        ? parsed.message
+        : (result['message']?.toString() ?? 'Something went wrong');
+
+    final fieldErrors =
+        parsed.errors ??
+        (result['errors'] is Map<String, dynamic>
+            ? result['errors'] as Map<String, dynamic>
+            : null);
+
+    // Enumerate the field-level details into the subtitle; otherwise keep the
+    // generic hint.
+    final details = _flattenErrors(fieldErrors);
+    final subtitle = details.isNotEmpty
+        ? details
+        : 'Check the policy details and try again.';
 
     return Column(
       children: [
         _bannerTile(
           color: Colors.red,
           icon: Icons.error_outline_rounded,
-          // title: errorCode != null ? '$errorCode · $message' : message,
-          title: errorCode != null
-              ? '$errorCode · $message'
-              : ErrorParser.fromRaw(result).message,
-          subtitle: 'Check the policy details and try again.',
+          title: errorCode != null ? '$errorCode · $message' : message,
+          subtitle: subtitle,
         ),
         const SizedBox(height: 20),
         SizedBox(
