@@ -44,6 +44,12 @@ class CustomAdvancedButton extends StatefulWidget {
   final Color? color2;
   final Color? textColor;
 
+  /// Minimum gap between two accepted presses. Rapid repeat taps within this
+  /// window are ignored so callers can't fire `onPressed` twice from a
+  /// double-click before their own loading state kicks in. Set to
+  /// [Duration.zero] to opt out.
+  final Duration debounceDuration;
+
   const CustomAdvancedButton({
     super.key,
     required this.label,
@@ -67,6 +73,7 @@ class CustomAdvancedButton extends StatefulWidget {
     this.color1,
     this.color2,
     this.textColor,
+    this.debounceDuration = const Duration(milliseconds: 600),
   });
 
   @override
@@ -80,6 +87,17 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
 
   late final Animation<double> _scale;
   bool get _isDisabled => widget.isDisabled || (widget.loading ?? false);
+
+  /// Timestamp of the last accepted press, used to swallow rapid double-taps.
+  DateTime? _lastPressedAt;
+
+  /// True when a press should be ignored because it lands within
+  /// [CustomAdvancedButton.debounceDuration] of the previous accepted one.
+  bool get _isWithinDebounce {
+    final last = _lastPressedAt;
+    if (last == null || widget.debounceDuration == Duration.zero) return false;
+    return DateTime.now().difference(last) < widget.debounceDuration;
+  }
 
   @override
   void initState() {
@@ -126,6 +144,11 @@ class _CustomAdvancedButtonState extends State<CustomAdvancedButton>
                 ? null
                 : (_) {
                     _controller.reverse();
+
+                    // Debounce: swallow a second tap that lands too soon after
+                    // the previous accepted one (double-click protection).
+                    if (_isWithinDebounce) return;
+                    _lastPressedAt = DateTime.now();
 
                     if (widget.validator != null && !widget.validator!()) {
                       debugPrint(
@@ -409,8 +432,11 @@ class _PrimaryButton extends StatelessWidget {
                   // color: (isDisabled || (isloading ?? false))
                   // color: (isDisabled) ? Colors.white70 : Colors.black87,
                   // color: (isDisabled) ? Colors.white70 : Colors.white70,
+                  // Disabled/loading fill is a theme-aware grey, so pick a
+                  // label colour that stays readable on it: light grey text on
+                  // the dark (dark-mode) fill, dark grey text on the light one.
                   color: isDisabled
-                      ? Colors.white70
+                      ? (isDark ? Colors.white70 : Colors.black45)
                       : (textColor ?? Colors.white70),
                 ),
               ),
@@ -515,8 +541,11 @@ class _SecondaryButton extends StatelessWidget {
                       style: TextStyle(
                         fontSize: customFontSize ?? 14,
                         fontWeight: FontWeight.w400,
+                        // Disabled/loading fill is a light grey in light theme
+                        // and near-transparent white in dark theme; use a dark
+                        // label on the former, a light one on the latter.
                         color: (isDisabled || (isloading ?? false))
-                            ? Colors.white38
+                            ? (isLight ? Colors.black38 : Colors.white38)
                             : Colors.white,
                       ),
                     ),

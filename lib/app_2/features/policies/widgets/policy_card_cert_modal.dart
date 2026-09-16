@@ -38,6 +38,11 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
   Map<String, dynamic>? _result;
 
   Future<void> _submit() async {
+    // Guard against double-clicks / rapid re-taps: while a request is in flight
+    // ignore further presses. Otherwise a second tap fires a second request
+    // that the backend rejects (e.g. "already issued"), flashing a red error
+    // even though the first request is succeeding.
+    if (_isLoading) return;
     setState(() {
       _isLoading = true;
       _result = null;
@@ -521,7 +526,7 @@ class _IssueCertificateModalState extends ConsumerState<IssueCertificateModal> {
         SizedBox(
           width: double.infinity,
           child: FilledButton(
-            onPressed: _submit,
+            onPressed: _isLoading ? null : _submit,
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
