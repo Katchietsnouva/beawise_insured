@@ -757,19 +757,27 @@ class _MotorSaveScreenState extends ConsumerState<MotorSaveScreen> {
   }
 
   void _updateEndDate() {
-    if (startDateCtrl.text.isEmpty || selectedCoverPeriod == null) return;
+    if (startDateCtrl.text.isEmpty) return;
 
     try {
       DateTime start = DateFormat('yyyy-MM-dd').parse(startDateCtrl.text);
       DateTime end;
 
-      if (selectedCoverPeriod == 'annual') {
+      // Prefer the term length the API returned for the selected option. For
+      // duration-based cover (e.g. TOR), `days` is 30 / 180 / etc., so the end
+      // date is simply that many days after the start — no hardcoded months.
+      final int? apiDays = widget.selectedQuote?.days;
+
+      if (apiDays != null && apiDays > 0) {
+        end = start.add(Duration(days: apiDays));
+      } else if (selectedCoverPeriod == 'annual') {
         end = DateTime(
           start.year + 1,
           start.month,
           start.day,
         ).subtract(const Duration(days: 1));
       } else if (selectedCoverPeriod == 'tor') {
+        // Fallback only when the API didn't send a day count.
         final isMotorcycle =
             classSaved?.toString().toLowerCase() == 'motorcycle';
         final torMonths = isMotorcycle ? 6 : 1;

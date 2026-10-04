@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:insured/app_2/core/widgets/card_animation_layout.dart';
 import 'package:insured/app_2/core/widgets/custom_advanced_button.dart';
+import 'package:insured/app_2/core/widgets/custom_super_tab_bar.dart';
 import 'package:insured/app_2/core/widgets/custom_text.dart';
 import 'package:insured/app_2/data/models/motor_quote_request_model.dart'
     show QuoteOption;
@@ -45,9 +46,40 @@ class MotorQuoteResultSection extends StatefulWidget {
 
 class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
   bool _ascending = true;
+  int _selectedDuration = 0;
 
-  List<QuoteOption> get _sortedOptions {
-    final sorted = widget.options.cast<QuoteOption>().toList();
+  // Group options by their term length (`days`). Annual/no-term options come
+  // back with `days == null` and all fall into a single group.
+  Map<int?, List<QuoteOption>> get _groupedByDuration {
+    final map = <int?, List<QuoteOption>>{};
+    for (final option in widget.options.cast<QuoteOption>()) {
+      map.putIfAbsent(option.days, () => []).add(option);
+    }
+    return map;
+  }
+
+  // Distinct durations, shortest first, with annual (null) pushed to the end.
+  List<int?> get _durationKeys {
+    final keys = _groupedByDuration.keys.toList();
+    keys.sort((a, b) {
+      if (a == null) return 1;
+      if (b == null) return -1;
+      return a.compareTo(b);
+    });
+    return keys;
+  }
+
+  String _durationLabel(int? days) {
+    if (days == null) return 'Annual';
+    if (days % 30 == 0) {
+      final months = days ~/ 30;
+      return '$days Days · ${months == 1 ? '1 Month' : '$months Months'}';
+    }
+    return '$days Days';
+  }
+
+  List<QuoteOption> _sortByPrice(List<QuoteOption> options) {
+    final sorted = [...options];
     sorted.sort((a, b) {
       final comparison = a.amount.compareTo(b.amount);
       return _ascending ? comparison : -comparison;
@@ -112,6 +144,17 @@ class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
       );
     }
 
+    final durationKeys = _durationKeys;
+    final hasDurationTabs = durationKeys.length > 1;
+    // Keep the selected tab in range if the options change under us.
+    final selectedIndex = _selectedDuration.clamp(0, durationKeys.length - 1);
+    final activeKey = durationKeys[selectedIndex];
+    final visibleOptions = _sortByPrice(
+      hasDurationTabs
+          ? (_groupedByDuration[activeKey] ?? const [])
+          : widget.options.cast<QuoteOption>(),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -139,68 +182,23 @@ class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
           ),
         ),
 
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final isWide = constraints.maxWidth > 700;
+        // Policy-duration tabs, generated dynamically from the `days` returned
+        // per option (e.g. 30 days / 180 days). Hidden when there's only one
+        // term (annual quotes), so nothing changes for those.
+        if (hasDurationTabs) ...[
+          CustomSuperTabBar(
+            mode: SuperTabBarMode.ColorModeB,
+            selectedIndex: selectedIndex,
+            tabs: [
+              for (final key in durationKeys)
+                SuperTabItem(label: _durationLabel(key)),
+            ],
+            onTap: (index) => setState(() => _selectedDuration = index),
+          ),
+          const SizedBox(height: 16),
+        ],
 
-            if (isWide) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Wrap(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
-                  runSpacing: 8,
-                  children:
-                      // options.map((option) {
-                      _sortedOptions.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final option = entry.value;
-                        return SizedBox(
-                          // child: Padding(
-                          // padding: const EdgeInsets.all(4.0),
-                          width: (constraints.maxWidth / 3) - 12,
-                          child: CardAnimationLayout(
-                            index: index,
-                            child: QuoteOptionCard(
-                              key: ValueKey(option.insurerId),
-                              option: option,
-                              onSelect: () {
-                                motorSaveScreen(context, option);
-                              },
-                            ),
-                          ),
-                          // ),
-                        );
-                      }).toList(),
-                ),
-              );
-            } else {
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 4, left: 1, right: 1),
-                itemCount: _sortedOptions.length,
-                itemBuilder: (context, index) {
-                  final option = _sortedOptions[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                      vertical: 1,
-                    ),
-                    child: CardAnimationLayout(
-                      index: index,
-                      child: QuoteOptionCard(
-                        key: ValueKey(option.insurerId),
-                        option: option,
-                        onSelect: () => motorSaveScreen(context, option),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }
-          },
-        ),
+        _buildOptionsGrid(visibleOptions),
 
         if (widget.onRegenerate != null)
           Padding(
@@ -222,6 +220,72 @@ class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildOptionsGrid(List<QuoteOption> options) {
+    if (options.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: CustomText(
+          'No quotes for this duration',
+          type: CustomTextType.paragraph,
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 700;
+
+        if (isWide) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: options.asMap().entries.map((entry) {
+                final index = entry.key;
+                final option = entry.value;
+                return SizedBox(
+                  width: (constraints.maxWidth / 3) - 12,
+                  child: CardAnimationLayout(
+                    index: index,
+                    child: QuoteOptionCard(
+                      key: ValueKey(option.insurerId),
+                      option: option,
+                      onSelect: () {
+                        motorSaveScreen(context, option);
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          );
+        } else {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 4, left: 1, right: 1),
+            itemCount: options.length,
+            itemBuilder: (context, index) {
+              final option = options[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                child: CardAnimationLayout(
+                  index: index,
+                  child: QuoteOptionCard(
+                    key: ValueKey(option.insurerId),
+                    option: option,
+                    onSelect: () => motorSaveScreen(context, option),
+                  ),
+                ),
+              );
+            },
+          );
+        }
+      },
     );
   }
 }

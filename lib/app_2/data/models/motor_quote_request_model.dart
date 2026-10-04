@@ -113,6 +113,9 @@ class QuoteOption {
   final int insurerId;
   final String insurer;
   final bool certificateAvailable;
+  // Term length in days for duration-based cover (e.g. TOR 30 / 180). Null for
+  // annual cover, where the term is a fixed year rather than a day count.
+  final int? days;
   final String rateType;
   final double rate;
   final double calculated;
@@ -132,6 +135,7 @@ class QuoteOption {
     required this.insurerId,
     required this.insurer,
     required this.certificateAvailable,
+    this.days,
     required this.rateType,
     required this.rate,
     required this.calculated,
@@ -156,6 +160,7 @@ class QuoteOption {
       insurerId: json['insurer_id'],
       insurer: json['insurer'],
       certificateAvailable: json['certificate_available'] == true,
+      days: json['days'] == null ? null : parseDouble(json['days']).toInt(),
       rateType: json['rate_type'],
       // rate: (json['rate'] as num).toDouble(),
       rate: parseDouble(json['rate']),
@@ -191,6 +196,7 @@ class QuoteOption {
       'insurer_id': insurerId,
       'insurer': insurer,
       'certificate_available': certificateAvailable,
+      'days': days,
       'rate_type': rateType,
       'rate': rate,
       'calculated': calculated,
