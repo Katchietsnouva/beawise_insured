@@ -145,7 +145,10 @@ class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
     }
 
     final durationKeys = _durationKeys;
-    final hasDurationTabs = durationKeys.length > 1;
+    // Show the duration tabs whenever the quote has a day-based term — even a
+    // single one (e.g. TOR 30-only renders one tab). Only annual-only quotes
+    // (every `days` is null) skip the tabs, since there's no term to group by.
+    final hasDurationTabs = durationKeys.any((key) => key != null);
     // Keep the selected tab in range if the options change under us.
     final selectedIndex = _selectedDuration.clamp(0, durationKeys.length - 1);
     final activeKey = durationKeys[selectedIndex];
