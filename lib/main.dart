@@ -153,6 +153,45 @@ void main() async {
     await prefs.setString('last_route', lastRoute);
   }
 
+  // Self-heal stale `last_route` values written by an older build whose route
+  // observer saved the GoRoute *name* ("/motor-quote", "/production",
+  // "/client-detail", …) instead of its real path. Those strings no longer
+  // match any route and render a 404 on launch. Validate the restored route
+  // against the known app paths and fall back to the dashboard otherwise.
+  const resumablePaths = <String>{
+    '/dashboard',
+    '/clients',
+    '/policies',
+    '/production-detail',
+    '/dmvic-double-insurance',
+    '/dmvic-stock',
+    '/statement',
+    '/renewals',
+    '/renewal-detail',
+    '/quotes',
+    '/quote-detail',
+    '/certificates',
+    '/certificate-detail',
+    '/quotes_old',
+    '/quote-detail-old',
+    '/settings',
+    '/profile',
+    '/notifications',
+    '/offline-queue',
+    '/motor/quote',
+  };
+  final queryIndex = lastRoute.indexOf('?');
+  final restoredPath = queryIndex == -1
+      ? lastRoute
+      : lastRoute.substring(0, queryIndex);
+  final isResumable =
+      resumablePaths.contains(restoredPath) ||
+      restoredPath.startsWith('/client/');
+  if (!isResumable) {
+    lastRoute = '/dashboard';
+    await prefs.setString('last_route', lastRoute);
+  }
+
   final initialLocation = rememberMe ? lastRoute : '/onboarding';
 
   runApp(
