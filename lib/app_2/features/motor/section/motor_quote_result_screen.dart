@@ -73,7 +73,7 @@ class _MotorQuoteResultSectionState extends State<MotorQuoteResultSection> {
     if (days == null) return 'Annual';
     if (days % 30 == 0) {
       final months = days ~/ 30;
-      return '$days Days · ${months == 1 ? '1 Month' : '$months Months'}';
+      return '$days Days ( ${months == 1 ? '1 Month' : '$months Months'} )';
     }
     return '$days Days';
   }
