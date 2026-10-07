@@ -123,7 +123,15 @@ class MotorNotifier extends StateNotifier<MotorState> {
       debugPrint("📦 SAVE POLICY RESPONSE:");
       debugPrint(response.toString());
 
-      if (response['message'] != null) {
+      // A real save returns the policy identifiers. Checking only `message` is
+      // not enough: validation/business errors (and odd replies during a
+      // connectivity blip) also carry a `message` but no identifiers, and then
+      // force-casting the missing `client_no`/`client_key` throws the cryptic
+      // "type 'Null' is not a subtype of type 'String'" — hiding the real error.
+      final isSuccess =
+          response['client_key'] != null && response['risknote'] != null;
+
+      if (isSuccess) {
         final saveResponse = MotorSaveResponse.fromJson(response);
         state = state.copyWith(
           isLoading: false,
@@ -132,7 +140,9 @@ class MotorNotifier extends StateNotifier<MotorState> {
         );
         return saveResponse;
       } else {
-        throw Exception(response['message'] ?? 'Failed to save policy');
+        // Surface the full body so ErrorParser can extract the real message and
+        // any field-level validation errors instead of a null-cast crash.
+        throw Exception(jsonEncode(response));
       }
     } catch (e) {
       if (e is AuthenticationException) {

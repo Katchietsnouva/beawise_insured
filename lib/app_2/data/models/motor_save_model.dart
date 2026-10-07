@@ -219,12 +219,18 @@ class MotorSaveResponse {
   });
 
   factory MotorSaveResponse.fromJson(Map<String, dynamic> json) {
+    // Defensive parsing: never force-cast a possibly-missing field. A null
+    // String field used to throw "type 'Null' is not a subtype of type
+    // 'String'" and mask the real backend response.
+    int toInt(dynamic v) =>
+        v is int ? v : int.tryParse(v?.toString() ?? '') ?? 0;
+
     return MotorSaveResponse(
-      message: json['message'],
-      risknote: json['risknote'],
-      id: json['id'],
-      clientNo: json['client_no'],
-      clientKey: json['client_key'],
+      message: json['message']?.toString() ?? '',
+      risknote: toInt(json['risknote']),
+      id: toInt(json['id']),
+      clientNo: json['client_no']?.toString() ?? '',
+      clientKey: json['client_key']?.toString() ?? '',
     );
   }
 
