@@ -227,7 +227,8 @@ class MotorSaveResponse {
 
     return MotorSaveResponse(
       message: json['message']?.toString() ?? '',
-      risknote: toInt(json['risknote']),
+      risknote: json['risknote'],
+      // risknote: toInt(json['risknote']),
       id: toInt(json['id']),
       clientNo: json['client_no']?.toString() ?? '',
       clientKey: json['client_key']?.toString() ?? '',
